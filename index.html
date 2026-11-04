@@ -55,14 +55,15 @@ td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowr
 .mod label{font-size:13px;font-weight:600;display:grid;gap:5px}.chk{display:flex;gap:10px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hide{display:none!important}
-   /* สไตล์สำหรับกราฟวงกลมสัดส่วนงาน */
+
+   /* สไตล์สำหรับกราฟวงกลมสัดส่วนงานที่ปรับให้ชัดเจนขึ้น */
    .pie-container{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0}
    .pie-chart{width:150px;height:150px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
    .pie-chart::after{content:'';position:absolute;width:84px;height:84px;background:var(--card);border-radius:50%}
    .pie-legend{display:flex;flex-direction:column;gap:10px;font-size:13.5px;font-weight:600}
    .pie-item{display:flex;align-items:center;gap:10px}
    .pie-dot{width:14px;height:14px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
- 
+
 .ic{margin-right:10px}.sh,.sw{display:none}
 @keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
@@ -153,14 +154,24 @@ const near=t=>t.progress<100&&dd(t.deadline,TODAY)<=3;
 const nm=id=>(E.find(e=>e.id===id)||{name:'(ไม่พบ)'}).name;
 const sc=s=>s==='เสร็จสิ้น'?'s-done':s==='รอเริ่ม'?'s-wait':'s-run';
 const avg=a=>a.length?Math.round(a.reduce((s,t)=>s+t.progress,0)/a.length):0;
-const VIEWS={ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน']};
-const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard'};
+
+const VIEWS={
+  ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],
+  tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],
+  cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
+  em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
+  db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน'],
+  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ 💼']
+};
+const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา'};
+
 let ani=true;
 function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 function render(){nav();$('#ttl').textContent=VIEWS[view][0];$('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูลได้อย่างเดียว (หัวหน้างานกดปุ่มด้านซ้ายเพื่อเข้าสู่ระบบ)';
- $('#nt').classList.toggle('hide',!head);$('#v').innerHTML=({ov,tb,cal,em,db:dash})[view]();$('#v').classList.toggle('an',ani);ani=false;
+ $('#nt').classList.toggle('hide',!head||view==='ct');$('#v').innerHTML=({ov,tb,cal,em,db:dash,ct:contracts})[view]();$('#v').classList.toggle('an',ani);ani=false;
  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}}
+
 function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
    function ov2(){
      const total = T.length;
@@ -171,7 +182,6 @@ function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="marg
      const p = avg(T);
      const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
      
-     // คำนวณองศาสำหรับทำกราฟวงกลม (Conic Gradient)
      const pDone = total ? (done / total) * 100 : 0;
      const pRun = total ? (run / total) * 100 : 0;
      const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
@@ -209,6 +219,66 @@ function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="marg
        </div>
      </div>`;
    }
+
+// ข้อมูลสัญญาโครงการดึงตามไฟล์ Excel ของคุณ
+let Contracts = [
+  {id:'c1', code:'KS003/68', name:'งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B', loc:'รพ.ศรีนครินทร์', val:18000, cost:6000, profit:12000, status:'เซ็นสัญญาแล้ว', pay:'-%'},
+  {id:'c2', code:'KS026.68', name:'สัญญาบริการดูแลรักษาเครื่องปรับอากาศ รพ.หนองคาย', loc:'รพ.หนองคาย', val:429906, cost:200000, profit:229906, status:'เซ็นสัญญาแล้ว', pay:'100%'},
+  {id:'c3', code:'KS044.68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย', loc:'รพ.หนองคาย', val:130841, cost:60000, profit:70841, status:'เซ็นสัญญาแล้ว', pay:'100%'},
+  {id:'c4', code:'KS045.68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ห้อง หอผู้ป่วยหนักทารกแรกเกิด', loc:'รพ.หนองคาย', val:121495, cost:55000, profit:66495, status:'เซ็นสัญญาแล้ว', pay:'100%'},
+  {id:'c5', code:'EN-K016-68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ รพ.สมเด็จพระยุพราชธาตุพนม', loc:'รพ.ธาตุพนม', val:172897, cost:90000, profit:82897, status:'เซ็นสัญญาแล้ว', pay:'50%'},
+  {id:'c6', code:'KS013.68', name:'งานบริการบำรุงรักษาระบบควบคุมอากาศปลอดเชื้อ ห้อง สว.1', loc:'รพ.ศรีนครินทร์', val:423396, cost:150000, profit:273396, status:'เซ็นสัญญาแล้ว', pay:'50%'},
+  {id:'c7', code:'KS033.69', name:'สัญญาบริการงานจ้างเหมาบริการดูแลรักษาแอร์ รพ.หนองคาย', loc:'รพ.หนองคาย', val:429906, cost:200000, profit:229906, status:'เซ็นสัญญาแล้ว', pay:'100%'}
+];
+
+function contracts(){
+  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+  
+  const totalVal = Contracts.reduce((s,c)=>s+c.val,0);
+  const totalCost = Contracts.reduce((s,c)=>s+c.cost,0);
+  const totalProfit = Contracts.reduce((s,c)=>s+c.profit,0);
+  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v.toLocaleString()}<span>บาท</span></div></div>`;
+
+  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จำกัดสิทธิ์เฉพาะหัวหน้างาน)</p></div></div>
+  
+  <div class="grid g3" style="margin-top:16px">
+    ${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}
+    ${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}
+    ${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}
+  </div>
+
+  <div class="card tw" style="margin-top:16px;padding:0">
+    <table>
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>เลขที่ใบเสนอราคา</th>
+          <th>ชื่อโครงการ / สถานที่</th>
+          <th>มูลค่างาน</th>
+          <th>ต้นทุน</th>
+          <th>กำไรสุทธิ</th>
+          <th>สถานะ</th>
+          <th>การชำระเงิน</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Contracts.map((ct,i)=>`
+          <tr>
+            <td>${i+1}</td>
+            <td><span class="code">${esc(ct.code)}</span></td>
+            <td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td>
+            <td><b>${ct.val.toLocaleString()}</b></td>
+            <td style="color:var(--yw)">${ct.cost.toLocaleString()}</td>
+            <td style="color:var(--gn);font-weight:700">${ct.profit.toLocaleString()}</td>
+            <td><span class="pill s-done">${ct.status}</span></td>
+            <td><span class="pill s-run">${ct.pay}</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
 function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
@@ -233,7 +303,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
  <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${t.deadline}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
-/* popups */
+
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
 function showT(id){const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
@@ -275,7 +345,7 @@ function showDay(s){const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.
 $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
 ${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${t.id}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}
 ${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;pm.classList.add('on')}
-/* write helpers */
+
 async function w(fn){try{if(!db)throw 0;await fn()}catch(e){alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
@@ -305,27 +375,37 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=head?'':'on';render()};
-    // ฟังก์ชันแก้ไขข้อมูลพนักงาน
-   function editE(id){
-     const emp = E.find(e => e.id === id);
-     if(!emp) return;
-     const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name);
-     if(newName === null) return; // กด cancel
-     const newRole = prompt('แก้ไขตำแหน่ง:', emp.role);
-     if(newRole === null) return;
-     
-     if(!newName.trim()) return alert('กรุณาระบุชื่อพนักงาน');
-     
-     w(async()=>{
-       await db.doc('employees/'+id).update({
-         name: newName.trim(),
-         role: newRole.trim() || 'Staff'
-       });
-       toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว');
-     });
-   }
 
+function editE(id){
+  const emp = E.find(e => e.id === id);
+  if(!emp) return;
+  const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name);
+  if(newName === null) return;
+  const newRole = prompt('แก้ไขตำแหน่ง:', emp.role);
+  if(newRole === null) return;
+  if(!newName.trim()) return alert('กรุณาระบุชื่อพนักงาน');
+  w(async()=>{
+    await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' });
+    toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว');
+  });
+}
 
+// ระบบโหมดมืด/สว่าง (อัปเดตอัตโนมัติตามช่วงเวลา และจดจำการกดสลับ)
+const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
+const applyTheme = t => { if(t) document.documentElement.dataset.theme = t; $('#dm').textContent = isDark() ? '☀️' : '🌙'; };
+const hour = new Date().getHours();
+const autoTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+let currentTheme = localStorage.getItem('theme');
+if (!currentTheme || (hour === 6 || hour === 18)) {
+  currentTheme = autoTheme;
+  localStorage.setItem('theme', currentTheme);
+}
+applyTheme(currentTheme);
+$('#dm').onclick = () => {
+  const t = isDark() ? 'light' : 'dark';
+  localStorage.setItem('theme', t);
+  applyTheme(t);
+};
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
@@ -340,16 +420,14 @@ window.seed=()=>w(async()=>{const em=[['e1','สมชาย ใจดี','Lead
 render();
 </script>
 <script type="module">
-// ===== วางค่า config จาก Firebase ตรงนี้ (Project settings > Your apps > Web app) =====
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
   messagingSenderId: "593763757538",
   appId: "1:593763757538:web:54ac8e4928036a2623ddbb"
 };
-// ==================================================================================
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,doc,onSnapshot,setDoc,updateDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
