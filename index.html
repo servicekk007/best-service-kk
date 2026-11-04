@@ -256,6 +256,25 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=head?'':'on';render()};
+    // ฟังก์ชันแก้ไขข้อมูลพนักงาน
+   function editE(id){
+     const emp = E.find(e => e.id === id);
+     if(!emp) return;
+     const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name);
+     if(newName === null) return; // กด cancel
+     const newRole = prompt('แก้ไขตำแหน่ง:', emp.role);
+     if(newRole === null) return;
+     
+     if(!newName.trim()) return alert('กรุณาระบุชื่อพนักงาน');
+     
+     w(async()=>{
+       await db.doc('employees/'+id).update({
+         name: newName.trim(),
+         role: newRole.trim() || 'Staff'
+       });
+       toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว');
+     });
+   }
 
 // ระบบโหมดมืด/สว่าง (เช็คเวลาอัตโนมัติ + รองรับการกดปุ่มสลับเอง)
 const isDark=()=>getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()==='#0b1020';
