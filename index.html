@@ -187,6 +187,7 @@ function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=ed
  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:#e11d48;margin-right:auto" onclick="if(confirm('ลบงานนี้?'))w(async()=>{await db.doc('tasks/'+edit.id).delete();toast('🗑 ลบงานแล้ว');mod.classList.remove('on')})">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="mod.classList.remove('on')">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;mod.classList.add('on')}
 $('#f').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
+                           if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
  await w(async()=>{if(edit)await db.doc('tasks/'+edit.id).update(o);else{const n=T.length+1;await db.doc('tasks/'+uid()).set({...o,created:TODAY,code:'TSK-'+String(n).padStart(3,'0')+'-'+Math.random().toString(36).slice(2,4).toUpperCase()})}toast(o.progress>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':edit?'✅ บันทึกการแก้ไขแล้ว':'✅ เพิ่มงานใหม่แล้ว');mod.classList.remove('on')})};
 const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
   for(const t of T.filter(t=>t.assignees.includes(id)))
