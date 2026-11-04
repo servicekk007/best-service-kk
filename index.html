@@ -162,23 +162,7 @@ function ov2(){const done=T.filter(t=>t.progress>=100).length,pend=T.length-done
  <div class="card"><b>🔥 สัดส่วนงานตามความสำคัญ</b><div class="grid g4f" style="margin-top:16px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}</div></div></div>`}
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)).sort((a,b)=>a.created>b.created?1:-1)}
 function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
-function tb(){
-
-  const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
-
-  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
-
-  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
-
-  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
-
-  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
-
-  <button class="btn ${flt.my?'g':''}" onclick="flt.my=!flt.my;render()">📌 งานของฉัน</button></div>
-
-  <div class="card tw" style="margin-top:16px;padding:0"><table><thead><tr><th>ลำดับ</th><th>เพิ่มเมื่อ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ (AUTO)</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>`;
-
-}
+function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
@@ -262,7 +246,7 @@ render();
 <script type="module">
 // ===== วางค่า config จาก Firebase ตรงนี้ (Project settings > Your apps > Web app) =====
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "AIzaSyD-วางรหัสapiKeyของคุณตรงนี้",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
