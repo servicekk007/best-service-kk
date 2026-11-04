@@ -326,12 +326,7 @@ window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=h
      });
    }
 
-// ระบบโหมดมืด/สว่าง (เช็คเวลาอัตโนมัติ + รองรับการกดปุ่มสลับเอง)
-const isDark=()=>getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()==='#0b1020';
-const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t;$('#dm').textContent=isDark()?'☀️':'🌙'};
-const getAutoTheme=()=>(new Date().getHours()>=6&&new Date().getHours()<18)?'light':'dark';
-applyTheme(localStorage.getItem('theme')||getAutoTheme());
-$('#dm').onclick=()=>{const t=isDark()?'light':'dark';localStorage.setItem('theme',t);applyTheme(t)};
+
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
