@@ -244,25 +244,56 @@ function contracts(){
 
 function openC(id){
   editC = Contracts.find(c => c.id === id) || null;
-  const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:'100%'};
+  const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
   <div class="two">
-    <label>เลขที่ใบเสนอราคา<input name="code" required value="${esc(c.code)}"></label>
+    <label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label>
     <label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label>
   </div>
   <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
   <div class="two">
-    <label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" required value="${c.val}"></label>
-    <label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" required value="${c.cost}"></label>
+    <label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" value="${c.val!==''&&c.val!=null?c.val:''}"></label>
+    <label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${c.cost!==''&&c.cost!=null?c.cost:''}"></label>
   </div>
   <div class="two">
     <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
-    <label>การชำระเงิน<input name="pay" required value="${esc(c.pay)}"></label>
+    <label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label>
   </div>
   <div class="tools" style="justify-content:flex-end">
     <button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button>
     <button class="btn d">บันทึกสัญญา</button>
   </div>`;
+  mod.classList.add('on');
+  $('#f').onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
+    const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
+    const data = {
+      code: fd.get('code').trim() || '-',
+      name: fd.get('name').trim(),
+      loc: fd.get('loc').trim(),
+      val: val,
+      cost: cost,
+      profit: Number((val - cost).toFixed(2)),
+      status: fd.get('status'),
+      pay: fd.get('pay').trim() || '-'
+    };
+    await w(async()=>{
+      if(editC) {
+        await db.doc('contracts/'+editC.id).update(data);
+        toast('✅ บันทึกการแก้ไขสัญญาแล้ว');
+      } else {
+        await db.doc('contracts/'+uid()).set(data);
+        toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว');
+      }
+      mod.classList.remove('on');
+      $('#f').onsubmit = mainFormSubmit;
+    });
+  };
+}
+
+ 
   mod.classList.add('on');
   $('#f').onsubmit = async (e) => {
     e.preventDefault();
