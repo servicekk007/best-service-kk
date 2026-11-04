@@ -57,12 +57,11 @@ td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowr
 .hide{display:none!important}
    /* สไตล์สำหรับกราฟวงกลมสัดส่วนงาน */
    .pie-container{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0}
-   .pie-chart{width:140px;height:140px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center}
-   .pie-chart::after{content:'';position:absolute;width:90px;height:90px;background:var(--card);border-radius:50%}
-   .pie-legend{display:flex;flex-direction:column;gap:8px;font-size:13px}
-   .pie-item{display:flex;align-items:center;gap:8px}
-   .pie-dot{width:12px;height:12px;border-radius:4px}
-
+   .pie-chart{width:150px;height:150px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+   .pie-chart::after{content:'';position:absolute;width:84px;height:84px;background:var(--card);border-radius:50%}
+   .pie-legend{display:flex;flex-direction:column;gap:10px;font-size:13.5px;font-weight:600}
+   .pie-item{display:flex;align-items:center;gap:10px}
+   .pie-dot{width:14px;height:14px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
  
 .ic{margin-right:10px}.sh,.sw{display:none}
 @keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
