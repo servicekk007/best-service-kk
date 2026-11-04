@@ -133,6 +133,9 @@ const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+Stri
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
 let T=[],E=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},db=null,edit=null;
 $('#today').textContent=TODAY;
+// จุดที่ 3: ตรวจสอบและรีเฟรชหน้าเว็บอัตโนมัติเมื่อข้ามวัน
+setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
+
 const status=t=>t.progress>=100?'เสร็จสิ้น':t.progress>0?'กำลังดำเนินการ':'รอเริ่ม';
 const left=t=>t.progress>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:(n=>n<0?{x:'เลยกำหนด '+(-n)+' วัน',c:'s-late'}:{x:'เหลือ '+n+' วัน',c:n<=3?'p2':'s-wait'})(dd(t.deadline,TODAY));
 const near=t=>t.progress<100&&dd(t.deadline,TODAY)<=3;
@@ -152,7 +155,7 @@ function ov2(){const done=T.filter(t=>t.progress>=100).length,pend=T.length-done
  const c=(n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
  return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','#059669')}${c('งานที่ค้าง',pend,'รอดำเนินการ / กำลังทำ','#d97706')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','#e11d48')}</div>
  <div class="grid" style="grid-template-columns:1fr 2fr;margin-top:16px"><div class="card"><b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b><p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p><div class="big">${p}%</div><p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p><div class="bar"><i style="width:${p}%"></i></div></div>
- <div class="card"><b>🔥 สัดส่วนงานตามความสำคัญ</b><div class="grid g4" style="margin-top:16px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}</div></div></div>`}
+ <div class="card"><b>🔥 สัดส่วนงานตามความสำคัญ</b><div class="grid g4f" style="margin-top:16px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}</div></div></div>`}
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)).sort((a,b)=>a.created>b.created?1:-1)}
 function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">👤 ${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:#e11d48" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
@@ -198,11 +201,12 @@ function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=ed
  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${t.deadline}"></label>
  <label>เริ่มวันที่<input type="date" name="start" required value="${t.start}"></label><label>ถึงวันที่<input type="date" name="end" required value="${t.end}"></label></div>
  <label>ความคืบหน้า: <span id="pv">${t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv.textContent=this.value"></label>
- <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:#e11d48;margin-right:auto" onclick="if(confirm('ลบงานนี้?'))w(async()=>{await db.doc('tasks/'+edit.id).delete();toast('🗑 ลบงานแล้ว');mod.classList.remove('on')})">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="mod.classList.remove('on')">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;mod.classList.add('on')}
+ <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:#e11d48;margin-right:auto" onclick="pm.classList.remove('on');delT('${edit.id}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="mod.classList.remove('on')">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;mod.classList.add('on')}
 $('#f').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
-                           if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
+ if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
  await w(async()=>{if(edit)await db.doc('tasks/'+edit.id).update(o);else{const n=T.length+1;await db.doc('tasks/'+uid()).set({...o,created:TODAY,code:'TSK-'+String(n).padStart(3,'0')+'-'+Math.random().toString(36).slice(2,4).toUpperCase()})}toast(o.progress>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':edit?'✅ บันทึกการแก้ไขแล้ว':'✅ เพิ่มงานใหม่แล้ว');mod.classList.remove('on')})};
+const delT=id=>confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');pm.classList.remove('on')});
 const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
   for(const t of T.filter(t=>t.assignees.includes(id)))
     await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
@@ -215,7 +219,13 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=head?'':'on';render()};
-$('#dm').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()==='#0b1020';r.dataset.theme=d?'light':'dark'};
+
+// จุดที่ 2: ระบบจำโหมดมืด/สว่าง และเปลี่ยนไอคอนปุ่มอัตโนมัติ
+const isDark=()=>getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()==='#0b1020';
+const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t;$('#dm').textContent=isDark()?'☀️':'🌙'};
+applyTheme(localStorage.getItem('theme'));
+$('#dm').onclick=()=>{const t=isDark()?'light':'dark';localStorage.setItem('theme',t);applyTheme(t)};
+
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
  const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
@@ -231,7 +241,7 @@ render();
 <script type="module">
 // ===== วางค่า config จาก Firebase ตรงนี้ (Project settings > Your apps > Web app) =====
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
