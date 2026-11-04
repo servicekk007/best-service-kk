@@ -192,10 +192,10 @@ function ov2(){
 function contracts(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
-  const totalVal = Contracts.reduce((s,c)=>s+c.val,0);
-  const totalCost = Contracts.reduce((s,c)=>s+c.cost,0);
-  const totalProfit = Contracts.reduce((s,c)=>s+c.profit,0);
-  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v.toLocaleString()}<span>บาท</span></div></div>`;
+  const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
+  const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
+  const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
+  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
 
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
   
@@ -226,9 +226,9 @@ function contracts(){
             <td>${i+1}</td>
             <td><span class="code">${esc(ct.code)}</span></td>
             <td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td>
-            <td><b>${ct.val.toLocaleString()}</b></td>
-            <td style="color:var(--yw)">${ct.cost.toLocaleString()}</td>
-            <td style="color:var(--gn);font-weight:700">${ct.profit.toLocaleString()}</td>
+            <td><b>${Number(ct.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td>
+            <td style="color:var(--yw)">${Number(ct.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+            <td style="color:var(--gn);font-weight:700">${Number(ct.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
             <td><span class="pill s-done">${ct.status}</span></td>
             <td><span class="pill s-run">${ct.pay}</span></td>
             <td>
@@ -244,7 +244,7 @@ function contracts(){
 
 function openC(id){
   editC = Contracts.find(c => c.id === id) || null;
-  const c = editC || {code:'', name:'', loc:'', val:0, cost:0, status:'เซ็นสัญญาแล้ว', pay:'100%'};
+  const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:'100%'};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
   <div class="two">
     <label>เลขที่ใบเสนอราคา<input name="code" required value="${esc(c.code)}"></label>
@@ -252,8 +252,8 @@ function openC(id){
   </div>
   <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
   <div class="two">
-    <label>มูลค่างาน (Pre-VAT)<input type="number" name="val" required value="${c.val}"></label>
-    <label>ต้นทุนทั้งหมด<input type="number" name="cost" required value="${c.cost}"></label>
+    <label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" required value="${c.val}"></label>
+    <label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" required value="${c.cost}"></label>
   </div>
   <div class="two">
     <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
@@ -267,14 +267,15 @@ function openC(id){
   $('#f').onsubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    const val = +fd.get('val'), cost = +fd.get('cost');
+    const val = parseFloat(fd.get('val')) || 0;
+    const cost = parseFloat(fd.get('cost')) || 0;
     const data = {
       code: fd.get('code').trim(),
       name: fd.get('name').trim(),
       loc: fd.get('loc').trim(),
       val: val,
       cost: cost,
-      profit: val - cost,
+      profit: Number((val - cost).toFixed(2)),
       status: fd.get('status'),
       pay: fd.get('pay').trim()
     };
@@ -447,7 +448,7 @@ window.seed=()=>w(async()=>{
   const ct=[
     ['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์',18000,6000,12000,'เซ็นสัญญาแล้ว','-%'],
     ['c2','KS026.68','สัญญาบริการดูแลรักษาเครื่องปรับอากาศ รพ.หนองคาย','รพ.หนองคาย',429906,200000,229906,'เซ็นสัญญาแล้ว','100%'],
-    ['c3','KS044.68','งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย','รพ.หนองคาย',130841,60000,70841,'เซ็นสัญญาแล้ว','100%']
+    ['c3','KS044.68','งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย','รพ.หนองคาย',130841.12,60000,70841.12,'เซ็นสัญญาแล้ว','100%']
   ];
   for(const [id,code,name,loc,val,cost,profit,status,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,val,cost,profit,status,pay});
 });
@@ -455,7 +456,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
