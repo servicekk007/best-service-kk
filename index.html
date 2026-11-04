@@ -56,13 +56,12 @@ td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowr
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hide{display:none!important}
 
-   /* สไตล์สำหรับกราฟวงกลมสัดส่วนงานที่ปรับให้ชัดเจนขึ้น */
-   .pie-container{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0}
-   .pie-chart{width:150px;height:150px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
-   .pie-chart::after{content:'';position:absolute;width:84px;height:84px;background:var(--card);border-radius:50%}
-   .pie-legend{display:flex;flex-direction:column;gap:10px;font-size:13.5px;font-weight:600}
-   .pie-item{display:flex;align-items:center;gap:10px}
-   .pie-dot{width:14px;height:14px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.pie-container{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0}
+.pie-chart{width:150px;height:150px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.pie-chart::after{content:'';position:absolute;width:84px;height:84px;background:var(--card);border-radius:50%}
+.pie-legend{display:flex;flex-direction:column;gap:10px;font-size:13.5px;font-weight:600}
+.pie-item{display:flex;align-items:center;gap:10px}
+.pie-dot{width:14px;height:14px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
 
 .ic{margin-right:10px}.sh,.sw{display:none}
 @keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
@@ -77,7 +76,6 @@ td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowr
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--dk);color:#fff;padding:12px 22px;border-radius:99px;opacity:0;transition:.3s;z-index:99;pointer-events:none;font-weight:600;white-space:nowrap}#toast.on{opacity:1;transform:translate(-50%,0)}
 .tools select{flex:1;min-width:130px}
 
-/* ===== ปรับแต่งพิเศษสำหรับหน้าจอมือถือ ===== */
 @media(max-width:820px){
 body{flex-direction:column;padding-bottom:84px}
 aside{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:nowrap;align-items:center;padding:12px;gap:10px;border-right:0;border-bottom:1px solid var(--bd)}
@@ -88,30 +86,11 @@ nav button{flex:1;padding:6px 2px;text-align:center;font-size:11px;border-radius
 .ic{display:block;margin:0 0 2px;font-size:19px}.lb{display:none}.sh{display:block}.sw{display:inline}.fw{display:none}
 main{padding:12px;gap:12px}.card{padding:16px;border-radius:20px}.hd h1{font-size:18px}
 .hd .tools{width:100%}.hd .tools .btn{flex:1;padding:8px 6px;font-size:12px}.hd .tools #dm{flex:none}
-.g4{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}main .grid[style*="1fr 2fr"]{grid-template-columns:1fr!important}
-.num{font-size:24px}.big{font-size:42px}.pc b{font-size:20px}
-.two{grid-template-columns:1fr}
-.tools input{min-width:100%}
-.tools select{min-width:100%;flex:1 1 100%}
-
-.card.tw{background:none;border:0;overflow:visible;padding:0}
-table,thead,tbody,tr,td{display:block;min-width:0!important}thead{display:none}
-tr{border:1px solid var(--bd);border-radius:16px;padding:14px;margin:0 0 12px;background:var(--card);box-shadow:0 3px 10px #00000005}
-td{border:0!important;padding:6px 0!important;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:right!important;font-size:13.5px}
-td::before{content:attr(data-label);color:var(--mu);font-size:12px;font-weight:600;text-align:left;flex:none}
-td:nth-child(1){display:none}td:nth-child(2){display:none}
-td:nth-child(3){display:block!important;text-align:left!important;font-size:14.5px;font-weight:700;padding-bottom:10px!important;border-bottom:1px solid var(--bd)!important;margin-bottom:4px}
-td:nth-child(3)::before{display:none}
-td:nth-child(11){flex-wrap:wrap;padding-top:8px!important}td:nth-child(11) .bar{flex:1 1 100%;margin-top:4px}
-
-.cal{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;padding:10px}
-.cal .h{padding:6px 0;font-size:11px;border-radius:8px}.cal .d{min-height:56px;padding:4px;border-radius:10px;font-size:11.5px;gap:2px}
-.ev{font-size:0;height:6px;padding:0;border-width:0;border-radius:99px}.pl{display:none}
-.mod{place-items:end center;padding:0}.mod form,.pbox{width:100%;border-radius:24px 24px 0 0;animation:up .28s ease!important}
-#toast{bottom:92px}
+.g4{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}
+.num{font-size:24px}.big{font-size:42px}.pc b{font-size:20px}.two{grid-template-columns:1fr}
+.tools input,.tools select{min-width:100%;flex:1 1 100%}
 }
 
- /* ===== สีสันและโหมด ===== */
 :root{--gn:#059669;--bl:#2563eb;--yw:#d97706;--rd:#e11d48;--in:#4f46e5}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc}}
 :root[data-theme=dark]{--bg:#0b1020;--card:#151b2e;--tx:#e8ecf5;--mu:#94a3b8;--bd:#263049;--dk:#6366f1;--soft:#1d2540;--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc}
@@ -144,7 +123,7 @@ const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>
 const PR=['ปกติ','สำคัญ','ด่วน','ด่วนมาก'],TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
-let T=[],E=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},db=null,edit=null,myId='';
+let T=[],E=[],Contracts=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},db=null,edit=null,editC=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -166,71 +145,50 @@ const VIEWS={
 const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา'};
 
 let ani=true;
-function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
+function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 function render(){nav();$('#ttl').textContent=VIEWS[view][0];$('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูลได้อย่างเดียว (หัวหน้างานกดปุ่มด้านซ้ายเพื่อเข้าสู่ระบบ)';
  $('#nt').classList.toggle('hide',!head||view==='ct');$('#v').innerHTML=({ov,tb,cal,em,db:dash,ct:contracts})[view]();$('#v').classList.toggle('an',ani);ani=false;
  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}}
 
 function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
-   function ov2(){
-     const total = T.length;
-     const done = T.filter(t => t.progress >= 100).length;
-     const run = T.filter(t => t.progress > 0 && t.progress < 100).length;
-     const wait = T.filter(t => t.progress === 0).length;
-     const nr = T.filter(near).length;
-     const p = avg(T);
-     const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
-     
-     const pDone = total ? (done / total) * 100 : 0;
-     const pRun = total ? (run / total) * 100 : 0;
-     const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
+function ov2(){
+  const total = T.length, done = T.filter(t => t.progress >= 100).length, run = T.filter(t => t.progress > 0 && t.progress < 100).length, wait = T.filter(t => t.progress === 0).length, nr = T.filter(near).length, p = avg(T);
+  const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
+  const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0;
+  const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
+  const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
+  
+  return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">
+    <div class="card">
+      <b>📊 สัดส่วนสถานะงานรวม</b>
+      <p style="color:var(--mu);font-size:13px;margin-bottom:14px">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
+      <div class="pie-container">
+        <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
+        <div class="pie-legend">
+          <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done} งาน)</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังดำเนินการ (${run} งาน)</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait} งาน)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b>
+      <p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p>
+      <div class="big">${p}%</div>
+      <p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p>
+      <div class="bar"><i style="width:${p}%"></i></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
+    <div class="grid g4f" style="margin-top:16px">
+      ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
+    </div>
+  </div>`;
+}
 
-     const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
-     
-     return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
-     
-     <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">
-       <div class="card">
-         <b>📊 สัดส่วนสถานะงานรวม</b>
-         <p style="color:var(--mu);font-size:13px;margin-bottom:14px">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
-         <div class="pie-container">
-           <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
-           <div class="pie-legend">
-             <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done} งาน)</span></div>
-             <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังดำเนินการ (${run} งาน)</span></div>
-             <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait} งาน)</span></div>
-           </div>
-         </div>
-       </div>
-
-       <div class="card">
-         <b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b>
-         <p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p>
-         <div class="big">${p}%</div>
-         <p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p>
-         <div class="bar"><i style="width:${p}%"></i></div>
-       </div>
-     </div>
-
-     <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
-       <div class="grid g4f" style="margin-top:16px">
-         ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
-       </div>
-     </div>`;
-   }
-
-// ข้อมูลสัญญาโครงการดึงตามไฟล์ Excel ของคุณ
-let Contracts = [
-  {id:'c1', code:'KS003/68', name:'งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B', loc:'รพ.ศรีนครินทร์', val:18000, cost:6000, profit:12000, status:'เซ็นสัญญาแล้ว', pay:'-%'},
-  {id:'c2', code:'KS026.68', name:'สัญญาบริการดูแลรักษาเครื่องปรับอากาศ รพ.หนองคาย', loc:'รพ.หนองคาย', val:429906, cost:200000, profit:229906, status:'เซ็นสัญญาแล้ว', pay:'100%'},
-  {id:'c3', code:'KS044.68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย', loc:'รพ.หนองคาย', val:130841, cost:60000, profit:70841, status:'เซ็นสัญญาแล้ว', pay:'100%'},
-  {id:'c4', code:'KS045.68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ห้อง หอผู้ป่วยหนักทารกแรกเกิด', loc:'รพ.หนองคาย', val:121495, cost:55000, profit:66495, status:'เซ็นสัญญาแล้ว', pay:'100%'},
-  {id:'c5', code:'EN-K016-68', name:'งานจ้างเหมาบริการดูแลรักษาแอร์ รพ.สมเด็จพระยุพราชธาตุพนม', loc:'รพ.ธาตุพนม', val:172897, cost:90000, profit:82897, status:'เซ็นสัญญาแล้ว', pay:'50%'},
-  {id:'c6', code:'KS013.68', name:'งานบริการบำรุงรักษาระบบควบคุมอากาศปลอดเชื้อ ห้อง สว.1', loc:'รพ.ศรีนครินทร์', val:423396, cost:150000, profit:273396, status:'เซ็นสัญญาแล้ว', pay:'50%'},
-  {id:'c7', code:'KS033.69', name:'สัญญาบริการงานจ้างเหมาบริการดูแลรักษาแอร์ รพ.หนองคาย', loc:'รพ.หนองคาย', val:429906, cost:200000, profit:229906, status:'เซ็นสัญญาแล้ว', pay:'100%'}
-];
-
+// ----------------- ระบบสัญญาโครงการ (Contracts) -----------------
 function contracts(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -239,7 +197,7 @@ function contracts(){
   const totalProfit = Contracts.reduce((s,c)=>s+c.profit,0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v.toLocaleString()}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จำกัดสิทธิ์เฉพาะหัวหน้างาน)</p></div></div>
+  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
   
   <div class="grid g3" style="margin-top:16px">
     ${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}
@@ -259,6 +217,7 @@ function contracts(){
           <th>กำไรสุทธิ</th>
           <th>สถานะ</th>
           <th>การชำระเงิน</th>
+          <th>จัดการ</th>
         </tr>
       </thead>
       <tbody>
@@ -272,6 +231,10 @@ function contracts(){
             <td style="color:var(--gn);font-weight:700">${ct.profit.toLocaleString()}</td>
             <td><span class="pill s-done">${ct.status}</span></td>
             <td><span class="pill s-run">${ct.pay}</span></td>
+            <td>
+              <button class="ib" onclick="openC('${ct.id}')">✎</button>
+              <button class="ib" style="color:var(--rd)" onclick="delC('${ct.id}')">🗑</button>
+            </td>
           </tr>
         `).join('')}
       </tbody>
@@ -279,6 +242,62 @@ function contracts(){
   </div>`;
 }
 
+function openC(id){
+  editC = Contracts.find(c => c.id === id) || null;
+  const c = editC || {code:'', name:'', loc:'', val:0, cost:0, status:'เซ็นสัญญาแล้ว', pay:'100%'};
+  $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
+  <div class="two">
+    <label>เลขที่ใบเสนอราคา<input name="code" required value="${esc(c.code)}"></label>
+    <label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label>
+  </div>
+  <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
+  <div class="two">
+    <label>มูลค่างาน (Pre-VAT)<input type="number" name="val" required value="${c.val}"></label>
+    <label>ต้นทุนทั้งหมด<input type="number" name="cost" required value="${c.cost}"></label>
+  </div>
+  <div class="two">
+    <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
+    <label>การชำระเงิน<input name="pay" required value="${esc(c.pay)}"></label>
+  </div>
+  <div class="tools" style="justify-content:flex-end">
+    <button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button>
+    <button class="btn d">บันทึกสัญญา</button>
+  </div>`;
+  mod.classList.add('on');
+  $('#f').onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const val = +fd.get('val'), cost = +fd.get('cost');
+    const data = {
+      code: fd.get('code').trim(),
+      name: fd.get('name').trim(),
+      loc: fd.get('loc').trim(),
+      val: val,
+      cost: cost,
+      profit: val - cost,
+      status: fd.get('status'),
+      pay: fd.get('pay').trim()
+    };
+    await w(async()=>{
+      if(editC) {
+        await db.doc('contracts/'+editC.id).update(data);
+        toast('✅ บันทึกการแก้ไขสัญญาแล้ว');
+      } else {
+        await db.doc('contracts/'+uid()).set(data);
+        toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว');
+      }
+      mod.classList.remove('on');
+      $('#f').onsubmit = mainFormSubmit;
+    });
+  };
+}
+
+const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{
+  await db.doc('contracts/'+id).delete();
+  toast('🗑 ลบสัญญาโครงการแล้ว');
+});
+
+// ----------------- ระบบงานทั่วไป -----------------
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
 function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
@@ -294,8 +313,8 @@ function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),of
  for(let d=1;d<=n;d++){const s=ymd(new Date(y,m,d));h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${t.id}')">${esc(t.title)}</div>`).join('')}</div>`}
  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`}
 const mine=id=>T.filter(t=>t.assignees.includes(id));
-   function em(){return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้างในระบบ (รองรับ 1 งานหลายผู้รับผิดชอบ)</p></div>${head?'<button class="btn d" onclick="addE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
-    <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div>${head?`<div><button class="ib" onclick="editE('${e.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${e.id}')">🗑</button></div>`:''}</div>
+function em(){return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้างในระบบ (รองรับ 1 งานหลายผู้รับผิดชอบ)</p></div>${head?'<button class="btn d" onclick="addE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
+ <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div>${head?`<div><button class="ib" onclick="editE('${e.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${e.id}')">🗑</button></div>`:''}</div>
  <div class="row s"><span style="color:var(--tx);font-weight:400">ภารกิจที่รับผิดชอบทั้งหมด:</span><span>${m.length} งาน (เสร็จแล้ว ${m.filter(t=>t.progress>=100).length})</span></div><p style="font-size:12px;color:var(--mu);margin:14px 0 0">งานที่กำลังรับผิดชอบ:</p>
  ${m.map(t=>`<div class="row"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`}
 function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
@@ -390,7 +409,6 @@ function editE(id){
   });
 }
 
-// ระบบโหมดมืด/สว่าง (อัปเดตอัตโนมัติตามช่วงเวลา และจดจำการกดสลับ)
 const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
 const applyTheme = t => { if(t) document.documentElement.dataset.theme = t; $('#dm').textContent = isDark() ? '☀️' : '🌙'; };
 const hour = new Date().getHours();
@@ -411,17 +429,33 @@ $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื�
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
  const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)};
-window.initDb=d=>{db=d;d.collection('tasks').onSnapshot(x=>{T=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
- d.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,...k.data()}));render()},render)};
-window.seed=()=>w(async()=>{const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
- for(const [id,name,role] of em)await db.doc('employees/'+id).set({name,role});
- const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
- for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title})});
+
+window.initDb=d=>{
+  db=d;
+  d.collection('tasks').onSnapshot(x=>{T=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
+  d.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
+  d.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
+};
+
+window.seed=()=>w(async()=>{
+  const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
+  for(const [id,name,role] of em)await db.doc('employees/'+id).set({name,role});
+  
+  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
+  for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
+
+  const ct=[
+    ['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์',18000,6000,12000,'เซ็นสัญญาแล้ว','-%'],
+    ['c2','KS026.68','สัญญาบริการดูแลรักษาเครื่องปรับอากาศ รพ.หนองคาย','รพ.หนองคาย',429906,200000,229906,'เซ็นสัญญาแล้ว','100%'],
+    ['c3','KS044.68','งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย','รพ.หนองคาย',130841,60000,70841,'เซ็นสัญญาแล้ว','100%']
+  ];
+  for(const [id,code,name,loc,val,cost,profit,status,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,val,cost,profit,status,pay});
+});
 render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
