@@ -95,6 +95,20 @@ td:nth-child(11){flex-wrap:wrap}td:nth-child(11) .bar{flex:1 1 100%}
 .mod{place-items:end center;padding:0}.mod form,.pbox{width:100%;border-radius:24px 24px 0 0;animation:up .28s ease!important}
 #toast{bottom:92px}
 }
+ /* ===== สีที่ปรับตามโหมดสว่าง/มืด ===== */
+:root{--gn:#059669;--bl:#2563eb;--yw:#d97706;--rd:#e11d48;--in:#4f46e5}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc}}
+:root[data-theme=dark]{--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc}
+.p0,.p1,.p2,.p3,.s-run,.s-done,.s-late,.av,.ev,.btn.g{--c:var(--in);color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border-color:color-mix(in srgb,var(--c) 35%,transparent)}
+.p0,.s-done,.ev.ok,.btn.g{--c:var(--gn)}.p1{--c:var(--bl)}.p2{--c:var(--yw)}.p3,.s-late{--c:var(--rd)}
+.ib{color:var(--tx)}.emp i{background:var(--soft)}
+.pc.ok{background:color-mix(in srgb,var(--gn) 12%,transparent)}.pc.ok b{color:var(--gn)}
+.pc.wn{background:color-mix(in srgb,var(--yw) 12%,transparent)}.pc.wn b{color:var(--yw)}
+/* ===== Layout ===== */
+.g4f{grid-template-columns:repeat(4,1fr)}.g3f{grid-template-columns:repeat(3,1fr)}
+.emp>div[style]{display:block;flex:none}
+.more{font-size:11px;color:var(--mu);font-weight:600;padding-left:4px}
+@media(max-width:820px){.g4f{grid-template-columns:repeat(2,1fr)}}
 </style></head><body>
 <aside>
  <div class="logo"><i>✦</i><div><b>BEST Service kk</b></div></div>
