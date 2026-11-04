@@ -221,10 +221,30 @@ $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$(
 window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=head?'':'on';render()};
 
 // จุดที่ 2: ระบบจำโหมดมืด/สว่าง และเปลี่ยนไอคอนปุ่มอัตโนมัติ
-const isDark=()=>getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()==='#0b1020';
-const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t;$('#dm').textContent=isDark()?'☀️':'🌙'};
-applyTheme(localStorage.getItem('theme'));
-$('#dm').onclick=()=>{const t=isDark()?'light':'dark';localStorage.setItem('theme',t);applyTheme(t)};
+// ระบบโหมดมืด/สว่าง (เช็คเวลาอัตโนมัติ + รองรับการกดปุ่มสลับเอง)
+const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
+
+const applyTheme = (t) => {
+  if (t) document.documentElement.dataset.theme = t;
+  $('#dm').textContent = isDark() ? '☀️' : '🌙';
+};
+
+// เช็คเวลาอัตโนมัติ: 6 โมงเช้า - 6 โมงเย็น เป็นโหมดสว่าง, นอกนั้นโหมดมืด
+const getAutoTheme = () => {
+  const hour = new Date().getHours();
+  return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+};
+
+// ลำดับการแสดงผล: ถ้าผู้เคยเลือกเอง ให้จำค่าที่เลือกไว้ก่อน ถ้ายังไม่เคย ให้ใช้ตามเวลาปัจจุบัน
+const savedTheme = localStorage.getItem('theme') || getAutoTheme();
+applyTheme(savedTheme);
+
+// เมื่อผู้ใช้กดปุ่มสลับโหมด
+$('#dm').onclick = () => {
+  const nextTheme = isDark() ? 'light' : 'dark';
+  localStorage.setItem('theme', nextTheme);
+  applyTheme(nextTheme);
+};
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
