@@ -163,11 +163,53 @@ function render(){nav();$('#ttl').textContent=VIEWS[view][0];$('#sub').textConte
  $('#nt').classList.toggle('hide',!head);$('#v').innerHTML=({ov,tb,cal,em,db:dash})[view]();$('#v').classList.toggle('an',ani);ani=false;
  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}}
 function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
-function ov2(){const done=T.filter(t=>t.progress>=100).length,pend=T.length-done,nr=T.filter(near).length,p=avg(T),pc=[0,1,2,3].map(i=>T.filter(t=>t.priority===i).length);
- const c=(n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
- return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',pend,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
- <div class="grid" style="grid-template-columns:1fr 2fr;margin-top:16px"><div class="card"><b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b><p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p><div class="big">${p}%</div><p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p><div class="bar"><i style="width:${p}%"></i></div></div>
- <div class="card"><b>🔥 สัดส่วนงานตามความสำคัญ</b><div class="grid g4f" style="margin-top:16px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}</div></div></div>`}
+   function ov2(){
+     const total = T.length;
+     const done = T.filter(t => t.progress >= 100).length;
+     const run = T.filter(t => t.progress > 0 && t.progress < 100).length;
+     const wait = T.filter(t => t.progress === 0).length;
+     const nr = T.filter(near).length;
+     const p = avg(T);
+     const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
+     
+     // คำนวณองศาสำหรับทำกราฟวงกลม (Conic Gradient)
+     const pDone = total ? (done / total) * 100 : 0;
+     const pRun = total ? (run / total) * 100 : 0;
+     const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
+
+     const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
+     
+     return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
+     
+     <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">
+       <div class="card">
+         <b>📊 สัดส่วนสถานะงานรวม</b>
+         <p style="color:var(--mu);font-size:13px;margin-bottom:14px">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
+         <div class="pie-container">
+           <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
+           <div class="pie-legend">
+             <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done} งาน)</span></div>
+             <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังดำเนินการ (${run} งาน)</span></div>
+             <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait} งาน)</span></div>
+           </div>
+         </div>
+       </div>
+
+       <div class="card">
+         <b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b>
+         <p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p>
+         <div class="big">${p}%</div>
+         <p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p>
+         <div class="bar"><i style="width:${p}%"></i></div>
+       </div>
+     </div>
+
+     <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
+       <div class="grid g4f" style="margin-top:16px">
+         ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
+       </div>
+     </div>`;
+   }
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
 function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
