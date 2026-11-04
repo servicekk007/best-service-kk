@@ -292,35 +292,6 @@ function openC(id){
     });
   };
 }
-mod.classList.add('on');
-  $('#f').onsubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const val = parseFloat(fd.get('val')) || 0;
-    const cost = parseFloat(fd.get('cost')) || 0;
-    const data = {
-      code: fd.get('code').trim(),
-      name: fd.get('name').trim(),
-      loc: fd.get('loc').trim(),
-      val: val,
-      cost: cost,
-      profit: Number((val - cost).toFixed(2)),
-      status: fd.get('status'),
-      pay: fd.get('pay').trim()
-    };
-    await w(async()=>{
-      if(editC) {
-        await db.doc('contracts/'+editC.id).update(data);
-        toast('✅ บันทึกการแก้ไขสัญญาแล้ว');
-      } else {
-        await db.doc('contracts/'+uid()).set(data);
-        toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว');
-      }
-      mod.classList.remove('on');
-      $('#f').onsubmit = mainFormSubmit;
-    });
-  };
-}
 
 const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{
   await db.doc('contracts/'+id).delete();
@@ -485,7 +456,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
