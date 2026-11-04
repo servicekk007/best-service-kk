@@ -123,7 +123,7 @@ const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>
 const PR=['ปกติ','สำคัญ','ด่วน','ด่วนมาก'],TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
-let T=[],E=[],Contracts=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},db=null,edit=null,editC=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -140,15 +140,16 @@ const VIEWS={
   cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
   em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
   db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน'],
-  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ 💼']
+  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ 💼'],
+  sl:['บริหารงานขายและติดตามใบเสนอราคา','งานขาย 📈']
 };
-const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา'};
+const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼',sl:'📈'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา',sl:'งานขาย'};
 
 let ani=true;
-function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
+function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':k==='sl'?' ('+Sales.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 function render(){nav();$('#ttl').textContent=VIEWS[view][0];$('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูลได้อย่างเดียว (หัวหน้างานกดปุ่มด้านซ้ายเพื่อเข้าสู่ระบบ)';
- $('#nt').classList.toggle('hide',!head||view==='ct');$('#v').innerHTML=({ov,tb,cal,em,db:dash,ct:contracts})[view]();$('#v').classList.toggle('an',ani);ani=false;
+ $('#nt').classList.toggle('hide',!head||(view==='ct'||view==='sl'));$('#v').innerHTML=({ov,tb,cal,em,db:dash,ct:contracts,sl:sales})[view]();$('#v').classList.toggle('an',ani);ani=false;
  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}}
 
 function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
@@ -191,112 +192,82 @@ function ov2(){
 // ----------------- ระบบสัญญาโครงการ (Contracts) -----------------
 function contracts(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-  
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
   const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
   const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
 
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
-  
-  <div class="grid g3" style="margin-top:16px">
-    ${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}
-    ${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}
-    ${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}
-  </div>
-
-  <div class="card tw" style="margin-top:16px;padding:0">
-    <table>
-      <thead>
-        <tr>
-          <th>ลำดับ</th>
-          <th>เลขที่ใบเสนอราคา</th>
-          <th>ชื่อโครงการ / สถานที่</th>
-          <th>มูลค่างาน</th>
-          <th>ต้นทุน</th>
-          <th>กำไรสุทธิ</th>
-          <th>สถานะ</th>
-          <th>การชำระเงิน</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${Contracts.map((ct,i)=>`
-          <tr>
-            <td>${i+1}</td>
-            <td><span class="code">${esc(ct.code)}</span></td>
-            <td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td>
-            <td><b>${Number(ct.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td>
-            <td style="color:var(--yw)">${Number(ct.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
-            <td style="color:var(--gn);font-weight:700">${Number(ct.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
-            <td><span class="pill s-done">${ct.status}</span></td>
-            <td><span class="pill s-run">${ct.pay}</span></td>
-            <td>
-              <button class="ib" onclick="openC('${ct.id}')">✎</button>
-              <button class="ib" style="color:var(--rd)" onclick="delC('${ct.id}')">🗑</button>
-            </td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-  </div>`;
+  <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
+  <div class="card tw" style="margin-top:16px;padding:0"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${Number(ct.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td><td style="color:var(--yw)">${Number(ct.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td style="color:var(--gn);font-weight:700">${Number(ct.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td><span class="pill s-done">${ct.status}</span></td><td><span class="pill s-run">${ct.pay}</span></td><td><button class="ib" onclick="openC('${ct.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${ct.id}')">🗑</button></td></tr>`).join('')}
+  </tbody></table></div>`;
 }
 
 function openC(id){
   editC = Contracts.find(c => c.id === id) || null;
   const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
-  <div class="two">
-    <label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label>
-    <label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label>
-  </div>
+  <div class="two"><label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label></div>
   <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
-  <div class="two">
-    <label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" value="${c.val!==''&&c.val!=null?c.val:''}"></label>
-    <label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${c.cost!==''&&c.cost!=null?c.cost:''}"></label>
-  </div>
-  <div class="two">
-    <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
-    <label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label>
-  </div>
-  <div class="tools" style="justify-content:flex-end">
-    <button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button>
-    <button class="btn d">บันทึกสัญญา</button>
-  </div>`;
+  <div class="two"><label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" value="${c.val!==''&&c.val!=null?c.val:''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${c.cost!==''&&c.cost!=null?c.cost:''}"></label></div>
+  <div class="two"><label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button><button class="btn d">บันทึกสัญญา</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
     const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
     const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {
-      code: fd.get('code').trim() || '-',
-      name: fd.get('name').trim(),
-      loc: fd.get('loc').trim(),
-      val: val,
-      cost: cost,
-      profit: Number((val - cost).toFixed(2)),
-      status: fd.get('status'),
-      pay: fd.get('pay').trim() || '-'
-    };
+    const data = {code: fd.get('code').trim() || '-', name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), pay: fd.get('pay').trim() || '-'};
     await w(async()=>{
-      if(editC) {
-        await db.doc('contracts/'+editC.id).update(data);
-        toast('✅ บันทึกการแก้ไขสัญญาแล้ว');
-      } else {
-        await db.doc('contracts/'+uid()).set(data);
-        toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว');
-      }
-      mod.classList.remove('on');
-      $('#f').onsubmit = mainFormSubmit;
+      if(editC) { await db.doc('contracts/'+editC.id).update(data); toast('✅ บันทึกการแก้ไขสัญญาแล้ว'); }
+      else { await db.doc('contracts/'+uid()).set(data); toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว'); }
+      mod.classList.remove('on'); $('#f').onsubmit = mainFormSubmit;
     });
   };
 }
+const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{ await db.doc('contracts/'+id).delete(); toast('🗑 ลบสัญญาโครงการแล้ว'); });
 
-const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{
-  await db.doc('contracts/'+id).delete();
-  toast('🗑 ลบสัญญาโครงการแล้ว');
-});
+// ----------------- ระบบงานขาย (Sales & Quotations) -----------------
+function sales(){
+  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลงานขายและใบเสนอราคา กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+  const totalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
+  const totalCost = Sales.reduce((s,x)=>s+(+x.cost||0),0);
+  const totalProfit = Sales.reduce((s,x)=>s+(+x.profit||0),0);
+  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
+
+  return `<div class="card hd"><div><b style="font-size:18px">📈 บริหารงานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสถานะการวางบิล (จัดการเฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
+  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
+  <div class="card tw" style="margin-top:16px;padding:0"><table><thead><tr><th>ลำดับ</th><th>วันที่</th><th>โครงการ / รายละเอียด</th><th>สถานที่</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
+  ${Sales.map((s,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(s.date)}</span></td><td style="text-align:left"><b>${esc(s.name)}</b>${s.note?`<br><small style="color:var(--mu)">📝 ${esc(s.note)}</small>`:''}</td><td style="text-align:left">📍 ${esc(s.loc)}</td><td><b>${Number(s.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td><td style="color:var(--yw)">${Number(s.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td style="color:var(--gn);font-weight:700">${Number(s.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}">${esc(s.status)}</span></td><td><button class="ib" onclick="openS('${s.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${s.id}')">🗑</button></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+function openS(id){
+  editS = Sales.find(x => x.id === id) || null;
+  const s = editS || {date:TODAY, name:'', loc:'', val:'', cost:'', status:'วางบิลแล้ว', note:''};
+  $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
+  <div class="two"><label>วันที่<input type="date" name="date" required value="${s.date}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
+  <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
+  <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" name="val" value="${s.val!==''&&s.val!=null?s.val:''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${s.cost!==''&&s.cost!=null?s.cost:''}"></label></div>
+  <div class="two"><label>สถานะใบเสนอราคา<select name="status"><option value="วางบิลแล้ว" ${s.status==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option><option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${s.status==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option><option value="อยู่ระหว่างรอดำเนินการ" ${s.status==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option></select></label><label>หมายเหตุ<input name="note" value="${esc(s.note)}"></label></div>
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button><button class="btn d">บันทึกงานขาย</button></div>`;
+  mod.classList.add('on');
+  $('#f').onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
+    const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
+    const data = {date: fd.get('date'), name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), note: fd.get('note').trim()};
+    await w(async()=>{
+      if(editS) { await db.doc('sales/'+editS.id).update(data); toast('✅ บันทึกการแก้ไขงานขายแล้ว'); }
+      else { await db.doc('sales/'+uid()).set(data); toast('✅ เพิ่มรายการงานขายใหม่แล้ว'); }
+      mod.classList.remove('on'); $('#f').onsubmit = mainFormSubmit;
+    });
+  };
+}
+const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
 
 // ----------------- ระบบงานทั่วไป -----------------
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
@@ -331,33 +302,20 @@ $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:1
 <div style="margin:14px 0"><span class="pill p${t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
 <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${t.start} → ${t.end}</span></div><div class="row"><span>Deadline</span><b>${t.deadline}</b></div>
 <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${t.progress}%</div><div class="bar"><i style="width:${t.progress}%"></i></div>
-<div class="tools" style="justify-content:space-between;margin-top:18px">
-  <button class="btn g" onclick="openProgress('${t.id}')">📊 อัปเดตความคืบหน้างาน</button>
-  ${head?`<div><button class="ib" onclick="pm.classList.remove('on');openT('${t.id}')">✎ แก้ไข</button><button class="ib" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${t.id}')">🗑 ลบ</button></div>`:''}
-</div>`;pm.classList.add('on')}
+<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${t.id}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="ib" onclick="pm.classList.remove('on');openT('${t.id}')">✎ แก้ไข</button><button class="ib" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${t.id}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on')}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
   pm.classList.remove('on');
-  $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้างาน</h3>
-  <p style="margin:4px 0 12px;color:var(--mu);font-size:13px">${esc(t.title)}</p>
-  <label>ความคืบหน้าปัจจุบัน: <span id="pv2">${t.progress}</span>%
-  <input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv2.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">
-    <button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button>
-    <button class="btn d">บันทึกความคืบหน้า</button>
-  </div>`;
+  $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้างาน</h3><p style="margin:4px 0 12px;color:var(--mu);font-size:13px">${esc(t.title)}</p>
+  <label>ความคืบหน้าปัจจุบัน: <span id="pv2">${t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv2.textContent=this.value"></label>
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit;">ยกเลิก</button><button class="btn d">บันทึกความคืบหน้า</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit = async (e) => {
     e.preventDefault();
     const f = new FormData(e.target);
     const newProg = +f.get('progress');
-    await w(async()=>{
-      await db.doc('tasks/'+id).update({progress: newProg});
-      toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
-      mod.classList.remove('on');
-      $('#f').onsubmit = mainFormSubmit;
-    });
+    await w(async()=>{ await db.doc('tasks/'+id).update({progress: newProg}); toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว'); mod.classList.remove('on'); $('#f').onsubmit = mainFormSubmit; });
   };
 }
 
@@ -384,10 +342,8 @@ $('#f').onsubmit = mainFormSubmit;
 
 const delT=id=>confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');pm.classList.remove('on')});
 const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
-  for(const t of T.filter(t=>t.assignees.includes(id)))
-    await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
-  await db.doc('employees/'+id).delete();
-  toast('🗑 ลบพนักงานแล้ว');
+  for(const t of T.filter(t=>t.assignees.includes(id))) await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
+  await db.doc('employees/'+id).delete(); toast('🗑 ลบพนักงานแล้ว');
 });
 function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name)return;const role=prompt('ตำแหน่ง')||'Staff';w(()=>db.doc('employees/'+uid()).set({name,role}))}
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
@@ -397,17 +353,11 @@ $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$(
 window.setUser=u=>{head=!!u;$('#rH').className=head?'on':'';$('#rE').className=head?'':'on';render()};
 
 function editE(id){
-  const emp = E.find(e => e.id === id);
-  if(!emp) return;
-  const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name);
-  if(newName === null) return;
-  const newRole = prompt('แก้ไขตำแหน่ง:', emp.role);
-  if(newRole === null) return;
+  const emp = E.find(e => e.id === id); if(!emp) return;
+  const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name); if(newName === null) return;
+  const newRole = prompt('แก้ไขตำแหน่ง:', emp.role); if(newRole === null) return;
   if(!newName.trim()) return alert('กรุณาระบุชื่อพนักงาน');
-  w(async()=>{
-    await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' });
-    toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว');
-  });
+  w(async()=>{ await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' }); toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว'); });
 }
 
 const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
@@ -415,16 +365,9 @@ const applyTheme = t => { if(t) document.documentElement.dataset.theme = t; $('#
 const hour = new Date().getHours();
 const autoTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
 let currentTheme = localStorage.getItem('theme');
-if (!currentTheme || (hour === 6 || hour === 18)) {
-  currentTheme = autoTheme;
-  localStorage.setItem('theme', currentTheme);
-}
+if (!currentTheme || (hour === 6 || hour === 18)) { currentTheme = autoTheme; localStorage.setItem('theme', currentTheme); }
 applyTheme(currentTheme);
-$('#dm').onclick = () => {
-  const t = isDark() ? 'light' : 'dark';
-  localStorage.setItem('theme', t);
-  applyTheme(t);
-};
+$('#dm').onclick = () => { const t = isDark() ? 'light' : 'dark'; localStorage.setItem('theme', t); applyTheme(t); };
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
@@ -436,6 +379,7 @@ window.initDb=d=>{
   d.collection('tasks').onSnapshot(x=>{T=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
   d.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
   d.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
+  d.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},render);
 };
 
 window.seed=()=>w(async()=>{
@@ -445,18 +389,20 @@ window.seed=()=>w(async()=>{
   const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
   for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
 
-  const ct=[
-    ['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์',18000,6000,12000,'เซ็นสัญญาแล้ว','-%'],
-    ['c2','KS026.68','สัญญาบริการดูแลรักษาเครื่องปรับอากาศ รพ.หนองคาย','รพ.หนองคาย',429906,200000,229906,'เซ็นสัญญาแล้ว','100%'],
-    ['c3','KS044.68','งานจ้างเหมาบริการดูแลรักษาแอร์ห้องโถง ER รพ.หนองคาย','รพ.หนองคาย',130841.12,60000,70841.12,'เซ็นสัญญาแล้ว','100%']
-  ];
+  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์',18000,6000,12000,'เซ็นสัญญาแล้ว','-%']];
   for(const [id,code,name,loc,val,cost,profit,status,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,val,cost,profit,status,pay});
+
+  const sl=[
+    ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'เสนอให้กับทางโรงพยาบาลแล้ว','-'],
+    ['s2','2026-09-01','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว','-']
+  ];
+  for(const [id,date,name,loc,val,cost,profit,status,note] of sl)await db.doc('sales/'+id).set({date,name,loc,val,cost,profit,status,note});
 });
 render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
