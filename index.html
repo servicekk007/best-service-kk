@@ -55,7 +55,15 @@ td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowr
 .mod label{font-size:13px;font-weight:600;display:grid;gap:5px}.chk{display:flex;gap:10px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hide{display:none!important}
+   /* สไตล์สำหรับกราฟวงกลมสัดส่วนงาน */
+   .pie-container{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0}
+   .pie-chart{width:140px;height:140px;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center}
+   .pie-chart::after{content:'';position:absolute;width:90px;height:90px;background:var(--card);border-radius:50%}
+   .pie-legend{display:flex;flex-direction:column;gap:8px;font-size:13px}
+   .pie-item{display:flex;align-items:center;gap:8px}
+   .pie-dot{width:12px;height:12px;border-radius:4px}
 
+ 
 .ic{margin-right:10px}.sh,.sw{display:none}
 @keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
