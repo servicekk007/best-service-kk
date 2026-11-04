@@ -139,7 +139,7 @@ const near=t=>t.progress<100&&dd(t.deadline,TODAY)<=3;
 const nm=id=>(E.find(e=>e.id===id)||{name:'(ไม่พบ)'}).name;
 const sc=s=>s==='เสร็จสิ้น'?'s-done':s==='รอเริ่ม'?'s-wait':'s-run';
 const avg=a=>a.length?Math.round(a.reduce((s,t)=>s+t.progress,0)/a.length):0;
-const VIEWS={ov:['หน้าภาพรวมรายงาน (Overview Report)','▦ ภาพรวม (Overview)'],tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน']};
+const VIEWS={ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน']};
 const IC={ov:'▦',tb:'☰',cal:'📅',em:'👥',db:'📊'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard'};
 let ani=true;
 function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
