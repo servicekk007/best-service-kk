@@ -234,7 +234,6 @@ function sales(){
   const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort().reverse();
   const grandTotalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
 
-  // คำนวณสรุปยอดแต่ละปีเตรียมไว้แสดงเป็นภาพรวมสัดส่วน
   const yearSummary = allYears.map(y => {
     const ySales = Sales.filter(x => (x.date || '').startsWith(y));
     const yVal = ySales.reduce((s,x)=>s+(+x.val||0),0);
@@ -247,12 +246,11 @@ function sales(){
   const totalCost = filteredSales.reduce((s,x)=>s+(+x.cost||0),0);
   const totalProfit = filteredSales.reduce((s,x)=>s+(+x.profit||0),0);
   
-  // ถ้าเลือกปี ให้คิดสัดส่วนเฉพาะปีนั้นเทียบกับยอดรวมทุกปี แต่ถ้าเลือก "ทุกปีทั้งหมด" ให้เป็น 100%
   const currentYearPercent = (!salesYear) ? '100.0' : (grandTotalVal > 0 ? ((totalVal / grandTotalVal) * 100).toFixed(1) : '0.0');
 
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา (แยกตามปี)</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปสัดส่วนยอดขายรายปี</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
   
   <div class="card tools" style="margin-top:16px">
     <span>📅 เลือกปีพิจารณา:</span>
@@ -260,16 +258,19 @@ function sales(){
       <option value="">-- ทุกปีทั้งหมด (รวมทุกปี) --</option>
       ${allYears.map(y=>`<option value="${y}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${y})</option>`).join('')}
     </select>
-    <div style="margin-left:auto;font-weight:600;color:var(--pri)">สัดส่วนยอดขายปีที่เลือก: <span style="font-size:18px">${currentYearPercent}%</span> <small style="color:var(--mu);font-weight:400">(เทียบกับยอดรวมทุกปี)</small></div>
+    <div style="margin-left:auto;font-weight:600;color:var(--pri)">สัดส่วนยอดขาย: <span style="font-size:16px">${currentYearPercent}%</span> <small style="color:var(--mu);font-weight:400">(เทียบยอดรวม)</small></div>
   </div>
 
-  <div class="card" style="margin-top:16px;background:var(--soft)">
-    <b>📊 สรุปยอดขายแยกตามรายปีทั้งหมด:</b>
-    <div class="grid g3" style="margin-top:12px">
-      ${yearSummary.map(ys=>`<div class="pc" style="background:var(--card);text-align:left;padding:14px;cursor:pointer;border:${salesYear===ys.year?'2px solid var(--pri)':'1px solid var(--bd)'}" onclick="salesYear='${ys.year}';render()">
-        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px;color:var(--pri)">ปี ${+ys.year+543}</b><span class="pill p1">${ys.pct}% ของยอดรวม</span></div>
-        <div style="font-size:18px;font-weight:800;margin:8px 0 4px">${Number(ys.val).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})} <span style="font-size:12px;font-weight:400;color:var(--mu)">บาท</span></div>
-        <small style="color:var(--mu)">จำนวน ${ys.count} โครงการ (คลิกเพื่อดูเจาะจงปีนี้)</small>
+  <div class="card" style="margin-top:16px;padding:14px 18px;background:var(--soft)">
+    <b style="font-size:13.5px;color:var(--mu)">📊 สรุปยอดขายแยกรายปี (คลิกเพื่อเลือกดู):</b>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <div onclick="salesYear='';render()" style="flex:1;min-width:140px;padding:10px 14px;border-radius:12px;cursor:pointer;background:var(--card);border:${salesYear===''?'2px solid var(--pri)':'1px solid var(--bd)'};text-align:center">
+        <div style="font-size:12px;color:var(--mu)">ทุกปีทั้งหมด</div>
+        <div style="font-size:15px;font-weight:700;margin-top:2px">100%</div>
+      </div>
+      ${yearSummary.map(ys=>`<div onclick="salesYear='${ys.year}';render()" style="flex:1;min-width:140px;padding:10px 14px;border-radius:12px;cursor:pointer;background:var(--card);border:${salesYear===ys.year?'2px solid var(--pri)':'1px solid var(--bd)'};text-align:center">
+        <div style="font-size:12px;color:var(--mu)">ปี ${+ys.year+543} (${ys.count} งาน)</div>
+        <div style="font-size:15px;font-weight:700;color:var(--pri);margin-top:2px">${ys.pct}% <span style="font-size:11px;color:var(--mu);font-weight:400">(${Number(ys.val).toLocaleString()} ฿)</span></div>
       </div>`).join('')}
     </div>
   </div>
@@ -469,7 +470,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
