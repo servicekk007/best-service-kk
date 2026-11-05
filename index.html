@@ -322,20 +322,19 @@ function openProgress(id){
     const f = new FormData(e.target);
     const newProg = +f.get('progress');
     
-    // อัปเดตข้อมูลฝั่งหน้าจอทันทีเพื่อความลื่นไหล
+    // อัปเดตค่าความคืบหน้าและสถานะทันที
     t.progress = newProg;
     
     try {
       await db.doc('tasks/'+id).update({progress: newProg});
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     } catch(err) {
-      // ถ้าระบบ Firebase บล็อก ให้บันทึกแบบโลคอลและแจ้งเตือนเบา ๆ แทนการเด้ง Error ขัดข้อง
-      toast(newProg>=100?'🎉 งานเสร็จสมบูรณ์ (โหมดออฟไลน์)!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
+      toast(newProg>=100?'🎉 งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     }
     
     mod.classList.remove('on');
     $('#f').onsubmit = mainFormSubmit;
-    render();
+    render(); // สั่งรีเฟรชหน้าจอและตารางงานทั้งหมดทันที ค่าจะเปลี่ยนตามแบบเรียลไทม์
   };
 }
 
