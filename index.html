@@ -131,7 +131,7 @@ const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+Stri
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
 const kfmt=v=>v>=1000?(v/1000).toFixed(v>=100000?0:1).replace(/\.0$/,'')+'k':String(Math.round(v));
 const money=v=>Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-let T=[],E=[],Contracts=[],Sales=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -155,7 +155,7 @@ const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼',sl:'📈'}
 
 let ani=true;
 function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':k==='sl'?' ('+Sales.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
-$('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
+$('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';ani=true;scrollTo(0,0);render()}};
 
 function render(){
   const a=document.activeElement,v=$('#v');
@@ -165,10 +165,20 @@ function render(){
 
   nav();$('#ttl').textContent=VIEWS[view][0];$('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูลได้อย่างเดียว (หัวหน้างานกดปุ่มด้านซ้ายเพื่อเข้าสู่ระบบ)';
   $('#nt').classList.toggle('hide',!head||(view==='ct'||view==='sl'));
-  v.innerHTML=({ov,tb,cal,em,db:dash,ct:contracts,sl:sales})[view]();
+  
+  if(view==='ov'){
+    v.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+      <button class="btn ${subView==='ov1'?'d':''}" onclick="subView='ov1';render()">1. ภาพรวมงานทั่วไป</button>
+      <button class="btn ${subView==='ov2'?'d':''}" onclick="subView='ov2';render()">2. Dashboard พนักงาน</button>
+      <button class="btn ${subView==='ov3'?'d':''}" onclick="subView='ov3';render()">3. Dashboard สัญญาโครงการ</button>
+      <button class="btn ${subView==='ov4'?'d':''}" onclick="subView='ov4';render()">4. Dashboard งานขาย</button>
+    </div>`+({ov1:ov2, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
+  } else {
+    v.innerHTML=({tb,cal,em,db:dash,ct:contracts,sl:sales})[view]();
+  }
+
   v.classList.toggle('an',ani);ani=false;
   if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}
-
   if(aid){const n=document.getElementById(aid);if(n){n.focus();if(ps!=null){try{n.setSelectionRange(ps,pe)}catch(_){}}}}
 }
 
@@ -258,6 +268,54 @@ function ov2(){
       ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
     </div>
   </div>`;
+}
+
+// หน้า Dashboard สัญญาโครงการ (ดึงข้อมูลมาจากหน้า ct เดิม)
+function contractsDash(){
+  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+  const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
+  const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
+  const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
+  const signedCount = Contracts.filter(c=>c.status==='เซ็นสัญญาแล้ว').length;
+  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
+
+  return `<div class="card">
+    <b>📊 Dashboard สรุปสัญญาโครงการและรายได้</b>
+    <p style="color:var(--mu);font-size:13px">รายงานวิเคราะห์มูลค่าสัญญา ต้นทุน และกำไรสุทธิจากโครงการทั้งหมด</p>
+  </div>
+  <div class="grid g4" style="margin-top:16px">
+    ${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}
+    ${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}
+    ${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}
+    <div class="card st"><small>สัญญาที่เซ็นแล้ว</small><div class="num" style="color:var(--bl)">${signedCount}<span>โครงการ</span></div></div>
+  </div>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th></tr></thead><tbody>
+  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+
+// หน้า Dashboard งานขาย (ดึงข้อมูลมาจากหน้า sl เดิม)
+function salesDash(){
+  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard งานขาย กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+  const totalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
+  const totalCost = Sales.reduce((s,x)=>s+(+x.cost||0),0);
+  const totalProfit = Sales.reduce((s,x)=>s+(+x.profit||0),0);
+  const billedCount = Sales.filter(x=>x.status==='วางบิลแล้ว').length;
+  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
+
+  return `<div class="card">
+    <b>📈 Dashboard สรุปงานขายและใบเสนอราคา</b>
+    <p style="color:var(--mu);font-size:13px">รายงานวิเคราะห์ยอดขาย ใบเสนอราคา และสถานะงานขายทั้งหมด</p>
+  </div>
+  <div class="grid g4" style="margin-top:16px">
+    ${c('ยอดขายรวมทั้งหมด', totalVal, 'var(--tx)')}
+    ${c('ต้นทุนงานขายรวม', totalCost, 'var(--yw)')}
+    ${c('กำไรงานขายสุทธิ', totalProfit, 'var(--gn)')}
+    <div class="card st"><small>รายการที่วางบิลแล้ว</small><div class="num" style="color:var(--bl)">${billedCount}<span>รายการ</span></div></div>
+  </div>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>วันที่</th><th>โครงการ / รายละเอียด</th><th>สถานที่</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th></tr></thead><tbody>
+  ${Sales.map((s,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(s.date)}</span></td><td style="text-align:left"><b>${esc(s.name)}</b></td><td style="text-align:left">📍 ${esc(s.loc)}</td><td><b>${money(s.val)}</b></td><td style="color:var(--yw)">${money(s.cost)}</td><td style="color:var(--gn);font-weight:700">${money(s.profit)}</td><td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}">${esc(s.status)}</span></td></tr>`).join('')}
+  </tbody></table></div></div>`;
 }
 
 function contracts(){
