@@ -241,7 +241,10 @@ function sales(){
     return {year: y, val: yVal, pct: yPct, count: ySales.length};
   });
 
-  const filteredSales = salesYear ? Sales.filter(x => (x.date || '').startsWith(salesYear)) : Sales;
+  // กรองตามปี และเรียงลำดับตามวันที่จากใหม่ไปเก่าอัตโนมัติ
+  const filteredSales = (salesYear ? Sales.filter(x => (x.date || '').startsWith(salesYear)) : Sales)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
   const totalVal = filteredSales.reduce((s,x)=>s+(+x.val||0),0);
   const totalCost = filteredSales.reduce((s,x)=>s+(+x.cost||0),0);
   const totalProfit = filteredSales.reduce((s,x)=>s+(+x.profit||0),0);
