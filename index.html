@@ -40,7 +40,6 @@ td{padding:14px 12px;border-top:1px solid var(--bd);vertical-align:middle;text-a
 th:nth-child(3),td:nth-child(3){min-width:180px;white-space:normal;line-height:1.4}th:nth-child(4),td:nth-child(4){min-width:140px}
 td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowrap}th:nth-child(11),td:nth-child(11){min-width:100px;text-align:left}@media(max-width:1450px){th:nth-child(2),td:nth-child(2){display:none}}td:nth-child(12){white-space:nowrap}
 .av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:12px;padding:3px 8px;margin:2px;font-size:11.5px;font-weight:600}
-.code{color:var(--pri);font-size:11px;font-family:monospace;font-weight:600}
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:6px 8px;cursor:pointer;margin-right:4px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
 .cal .h{background:var(--soft);border-radius:12px;padding:10px;text-align:center;font-weight:600;font-size:13px}
@@ -190,7 +189,6 @@ function ov2(){
   </div>`;
 }
 
-// ----------------- ระบบสัญญาโครงการ (Contracts) -----------------
 function contracts(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
@@ -230,7 +228,6 @@ function openC(id){
 }
 const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{ await db.doc('contracts/'+id).delete(); toast('🗑 ลบสัญญาโครงการแล้ว'); });
 
-// ----------------- ระบบงานขาย (Sales & Quotations) -----------------
 function sales(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลงานขายและใบเสนอราคา กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   const totalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
@@ -270,9 +267,8 @@ function openS(id){
 }
 const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
 
-// ----------------- ระบบงานทั่วไป -----------------
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
-function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b><br><span class="code">${esc(t.code)}</span></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
+function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
@@ -299,7 +295,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
 function showT(id){const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3><span class="code">${esc(t.code)}</span></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
 <div style="margin:14px 0"><span class="pill p${t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
 <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${t.start} → ${t.end}</span></div><div class="row"><span>Deadline</span><b>${t.deadline}</b></div>
 <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${t.progress}%</div><div class="bar"><i style="width:${t.progress}%"></i></div>
@@ -321,16 +317,11 @@ function openProgress(id){
     e.preventDefault();
     const f = new FormData(e.target);
     const newProg = +f.get('progress');
-    
-    // บังคับเปลี่ยนค่าในตัวแปรหน้าจอทันที (แก้ปัญหาพนักงานอัปเดตแล้วค่าไม่เปลี่ยน)
     const targetTask = T.find(x => x.id === id);
     if(targetTask) targetTask.progress = newProg;
-    
     mod.classList.remove('on');
     $('#f').onsubmit = mainFormSubmit;
-    render(); // สั่งรีเฟรชหน้าจอและตารางทันที
-    
-    // ส่งข้อมูลไปบันทึกเบื้องหลัง (รองรับกรณีติดสิทธิ์ Security Rules ของ Firebase)
+    render();
     try {
       await db.doc('tasks/'+id).update({progress: newProg});
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
@@ -390,8 +381,8 @@ if (!currentTheme || (hour === 6 || hour === 18)) { currentTheme = autoTheme; lo
 applyTheme(currentTheme);
 $('#dm').onclick = () => { const t = isDark() ? 'light' : 'dark'; localStorage.setItem('theme', t); applyTheme(t); };
 
-$('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รหัส','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
- const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.code,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
+$('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
+ const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
  const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)};
 
@@ -423,7 +414,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
