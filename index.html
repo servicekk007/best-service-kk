@@ -148,7 +148,7 @@ table.tk{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0
 .ava{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex:none}
 
 /* ความสำคัญ */
-.prio{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid;white-space:nowrap}
+.prio{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:12px;font-size:11.5px;font-weight:700;border:1px solid;white-space:nowrap}
 .lv{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
 .lv i{width:3px;border-radius:2px;background:currentColor;opacity:.25}
 .lv i:nth-child(1){height:4px}.lv i:nth-child(2){height:7px}.lv i:nth-child(3){height:10px}.lv i:nth-child(4){height:12px}
@@ -162,14 +162,14 @@ table.tk{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0
 .cd small{display:block;font-size:9.5px;color:var(--mu);padding-bottom:3px}
 .dx{display:flex;flex-direction:column;gap:3px;align-items:center}
 .wd{font-size:11px;color:var(--mu);font-weight:600;white-space:nowrap}
-.dx .pill{font-size:10.5px;padding:2px 8px}
+.dx .pill{font-size:10px;padding:2px 6px}
 
 /* สถานะ + ความคืบหน้า */
-.sp{display:flex;flex-direction:column;gap:7px;align-items:center;padding:0 4px}
-.stp{font-size:11px;padding:3px 9px}
-.stp::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:5px;vertical-align:middle}
-.pg{display:flex;align-items:center;gap:6px;width:100%}
-.pg .bar{flex:1}.pg b{font-size:12px;min-width:34px;text-align:right}
+.sp{display:flex;flex-direction:column;gap:7px;align-items:center;padding:0 2px}
+.stp{font-size:11px;padding:3px 8px}
+.stp::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:4px;vertical-align:middle}
+.pg{display:flex;align-items:center;gap:4px;width:100%}
+.pg .bar{flex:1}.pg b{font-size:11.5px;min-width:32px;text-align:right}
 
 .emptybox{display:grid;gap:6px;justify-items:center;padding:50px 10px;color:var(--mu)}
 .emptybox b{color:var(--tx);font-size:15px}
@@ -183,7 +183,7 @@ table.tk{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0
 @media(max-width:1279px){
  table.tk{display:block;table-layout:auto}
  .tk colgroup,.tk thead{display:none}
- .tk tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px;padding:12px}
+ .tk tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:12px;padding:12px}
  .tk tr{display:block;border:1px solid var(--bd);border-radius:16px;padding:12px 14px 12px 20px;background:var(--card);box-shadow:inset 5px 0 0 var(--pc,transparent)}
  .tk tbody tr:hover{background:var(--soft)}
  .tk td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;padding:6px 0;text-align:right}
@@ -227,7 +227,7 @@ $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
 const status=t=>t.progress>=100?'เสร็จสิ้น':t.progress>0?'กำลังดำเนินการ':'รอเริ่ม';
-const left=t=>t.progress>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:(n=>n<0?{x:'เลยกำหนด '+(-n)+' วัน',c:'s-late'}:{x:'เหลือ '+n+' วัน',c:n<=3?'p2':'s-wait'})(dd(t.deadline,TODAY));
+const left=t=>t.progress>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:!t.deadline?{x:'ไม่ระบุ',c:'s-wait'}:(n=>n<0?{x:'เลยกำหนด '+(-n)+' วัน',c:'s-late'}:{x:'เหลือ '+n+' วัน',c:n<=3?'p2':'s-wait'})(dd(t.deadline,TODAY));
 const near=t=>t.progress<100&&dd(t.deadline,TODAY)<=3;
 const nm=id=>(E.find(e=>e.id===id)||{name:'(ไม่พบ)'}).name;
 const sc=s=>s==='เสร็จสิ้น'?'s-done':s==='รอเริ่ม'?'s-wait':'s-run';
@@ -249,7 +249,6 @@ function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<butt
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 
 function render(){
-  // จำตำแหน่งโฟกัส (เฉพาะช่องที่มี id อยู่ในพื้นที่แสดงผล) เพื่อไม่ให้พิมพ์ค้นหาแล้วหลุด
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;
   let ps=null,pe=null;
@@ -272,7 +271,6 @@ function ov2(){
   const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
   const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
 
-  // ส่วนกราฟยอดขาย: แสดงเฉพาะหัวหน้างาน
   let salesBlock='';
   if(head){
     const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort();
@@ -545,7 +543,7 @@ function tb(){
 <div class="tk-wrap" style="margin-top:12px">
   <div class="tk-bar"><span>แสดง <b id="cnt">${list().length}</b> จาก ${T.length} งาน</span><span>คลิกที่แถวเพื่อดูรายละเอียดและอัปเดตความคืบหน้า</span></div>
   <table class="tk">
-   <colgroup><col style="width:34px"><col><col style="width:124px"><col style="width:106px"><col style="width:114px"><col style="width:66px"><col style="width:66px"><col style="width:126px"><col style="width:68px"></colgroup>
+   <colgroup><col style="width:34px"><col><col style="width:124px"><col style="width:108px"><col style="width:122px"><col style="width:66px"><col style="width:66px"><col style="width:134px"><col style="width:84px"></colgroup>
    <thead><tr><th>#</th><th style="text-align:left;padding-left:10px">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ / ความคืบหน้า</th><th>จัดการ</th></tr></thead>
    <tbody id="tbody">${rows()}</tbody></table>
 </div>`;
@@ -569,7 +567,6 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
 
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 
-// คลิกพื้นหลังเพื่อปิดป๊อปอัป — ถ้าเป็นฟอร์มหลัก ให้คืน handler เดิมด้วย
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
@@ -599,7 +596,7 @@ function openProgress(id){
     const newProg = +f.get('progress');
     const targetTask = T.find(x => x.id === id);
     const old = targetTask ? targetTask.progress : 0;
-    if(targetTask) targetTask.progress = newProg;   // อัปเดตหน้าจอทันที (optimistic)
+    if(targetTask) targetTask.progress = newProg;
     closeMod();
     render();
     try {
@@ -608,7 +605,7 @@ function openProgress(id){
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     } catch(err) {
       console.error(err);
-      if(targetTask) targetTask.progress = old;     // ย้อนค่ากลับถ้าบันทึกไม่สำเร็จ
+      if(targetTask) targetTask.progress = old;
       render();
       toast('❌ บันทึกไม่สำเร็จ (ไม่มีสิทธิ์หรือออฟไลน์)');
     }
@@ -656,7 +653,6 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
-// สมัครรับข้อมูลที่เป็นความลับ (สัญญา/งานขาย) เฉพาะตอนล็อกอินเป็นหัวหน้างานแล้ว
 let privUnsubs=[];
 function watchPrivate(){
   privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
@@ -703,7 +699,10 @@ $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื�
 
 window.initDb=d=>{
   db=d;
-  d.collection('tasks').onSnapshot(x=>{T=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error);
+  d.collection('tasks').onSnapshot(x=>{
+    T=x.docs.map(k=>{const v=k.data();return {id:k.id,title:'',code:'',assignees:[],priority:0,progress:0,...v,assignees:Array.isArray(v.assignees)?v.assignees:[]}});
+    render();
+  },console.error);
   d.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error);
   watchPrivate();
 };
