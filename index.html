@@ -322,19 +322,22 @@ function openProgress(id){
     const f = new FormData(e.target);
     const newProg = +f.get('progress');
     
-    // อัปเดตค่าความคืบหน้าและสถานะทันที
-    t.progress = newProg;
+    // 1. อัปเดตค่าลงในอาเรย์ T โดยตรงทันที เพื่อให้ตารางอ่านค่าใหม่ได้เลย
+    const targetTask = T.find(x => x.id === id);
+    if(targetTask) targetTask.progress = newProg;
     
+    // 2. สั่งวาดหน้าจอใหม่ทันทีก่อนบันทึกฐานข้อมูล
+    mod.classList.remove('on');
+    $('#f').onsubmit = mainFormSubmit;
+    render();
+    
+    // 3. ส่งข้อมูลไปอัปเดตที่ฐานข้อมูลเบื้องหลัง
     try {
       await db.doc('tasks/'+id).update({progress: newProg});
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     } catch(err) {
       toast(newProg>=100?'🎉 งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     }
-    
-    mod.classList.remove('on');
-    $('#f').onsubmit = mainFormSubmit;
-    render(); // สั่งรีเฟรชหน้าจอและตารางงานทั้งหมดทันที ค่าจะเปลี่ยนตามแบบเรียลไทม์
   };
 }
 
