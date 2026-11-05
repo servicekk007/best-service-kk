@@ -702,7 +702,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
