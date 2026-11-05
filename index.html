@@ -17,7 +17,7 @@ aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;d
 nav{display:flex;flex-direction:column;gap:6px}nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun;color:var(--mu);cursor:pointer}
 nav button.on{background:var(--dk);color:#fff;box-shadow:0 6px 16px #0003}
 main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:column;gap:20px;overflow-x:hidden}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:22px;max-width:100%;overflow-x:hidden}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:22px;max-width:100%}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .hd h1{margin:0;font-size:21px}.hd p{margin:4px 0 0;color:var(--mu);font-size:13px}
 .btn{border:1px solid var(--bd);border-radius:14px;padding:11px 16px;font:600 13px Sarabun;cursor:pointer;background:var(--soft);color:var(--tx)}
@@ -386,7 +386,7 @@ function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เพิ่มเมื่อ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ (AUTO)</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`}
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
- let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw कुलकर्णी || ['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
+ let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw">${['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
  for(let i=0;i<off;i++)h+='<div class="d e"></div>';
  for(let d=1;d<=n;d++){const s=ymd(new Date(y,m,d));h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${t.id}')">${esc(t.title)}</div>`).join('')}</div>`}
  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`}
@@ -539,7 +539,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
