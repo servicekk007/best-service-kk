@@ -277,7 +277,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
-// หน้า Dashboard สัญญาโครงการและรายได้
+// หน้า Dashboard สัญญาโครงการและรายได้ (พร้อมแสดง % กำไรเทียบต้นทุน)
 function contractsDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -363,7 +363,7 @@ function contractsDash(){
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px">
       <div>
         <b>📊 กราฟแท่งเปรียบเทียบต้นทุนและกำไรสุทธิแยกตามโรงพยาบาล</b>
-        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">เปรียบเทียบแท่งต้นทุนรวม (สีส้ม) กับแท่งกำไรสุทธิ (สีเขียว) ในแต่ละโรงพยาบาล</p>
+        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">เปรียบเทียบแท่งต้นทุนรวม (สีส้ม) กับแท่งกำไรสุทธิ (สีเขียว) พร้อมอัตรากำไรเทียบต้นทุน (% Margin)</p>
       </div>
       <div style="display:flex;gap:14px;font-size:12px;font-weight:600">
         <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;background:var(--yw);border-radius:3px"></span> ต้นทุนรวม</span>
@@ -371,12 +371,14 @@ function contractsDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:24px;height:200px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:24px;height:210px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
         const profitH = Math.round((item.profit / maxCostProfit) * 100);
-        return `<div style="flex:1;min-width:110px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+        const profitPctOfCost = item.cost > 0 ? ((item.profit / item.cost) * 100).toFixed(1) : '0.0';
+        return `<div style="flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
               <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.cost)}</span>
@@ -394,7 +396,7 @@ function contractsDash(){
   </div>`;
 }
 
-// หน้า Dashboard สรุปงานขายและใบเสนอราคา (ทำเลียนแบบ Dashboard สัญญาโครงการ แต่ดึงข้อมูลจากหน้า งานขาย)
+// หน้า Dashboard สรุปงานขายและใบเสนอราคา (พร้อมแสดง % กำไรเทียบต้นทุน)
 function salesDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard งานขาย กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -403,7 +405,6 @@ function salesDash(){
   const totalProfit = Sales.reduce((s,x)=>s+(+x.profit||0),0);
   const totalSalesCount = Sales.length;
 
-  // รวบรวมข้อมูลแยกตามโรงพยาบาล/สถานที่ของงานขาย
   const locMap = {};
   Sales.forEach(s => {
     const loc = s.loc || 'ไม่ระบุสถานที่';
@@ -481,7 +482,7 @@ function salesDash(){
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px">
       <div>
         <b>📊 กราฟแท่งเปรียบเทียบต้นทุนและกำไรงานขายแยกตามโรงพยาบาล</b>
-        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">เปรียบเทียบแท่งต้นทุนรวม (สีส้ม) กับแท่งกำไรสุทธิ (สีเขียว) ในแต่ละโรงพยาบาล</p>
+        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">เปรียบเทียบแท่งต้นทุนรวม (สีส้ม) กับแท่งกำไรสุทธิ (สีเขียว) พร้อมอัตรากำไรเทียบต้นทุน (% Margin)</p>
       </div>
       <div style="display:flex;gap:14px;font-size:12px;font-weight:600">
         <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;background:var(--yw);border-radius:3px"></span> ต้นทุนงานขาย</span>
@@ -489,12 +490,14 @@ function salesDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:24px;height:200px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:24px;height:210px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
         const profitH = Math.round((item.profit / maxCostProfit) * 100);
-        return `<div style="flex:1;min-width:110px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+        const profitPctOfCost = item.cost > 0 ? ((item.profit / item.cost) * 100).toFixed(1) : '0.0';
+        return `<div style="flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
               <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.cost)}</span>
