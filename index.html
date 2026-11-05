@@ -372,14 +372,30 @@ function editE(id){
   w(async()=>{ await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' }); toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว'); });
 }
 
-const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
-const applyTheme = t => { if(t) document.documentElement.dataset.theme = t; $('#dm').textContent = isDark() ? '☀️' : '🌙'; };
+const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark' || (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+const applyTheme = t => { 
+  document.documentElement.setAttribute('data-theme', t); 
+  $('#dm').textContent = t === 'dark' ? '☀️' : '🌙'; 
+};
+
+// เช็คเวลาปัจจุบัน (06:00 - 17:59 เป็น light, นอกนั้นเป็น dark)
 const hour = new Date().getHours();
 const autoTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+
+// โหลดค่าเดิมที่เคยเลือกไว้ (ถ้ายังไม่เคยเลือก ให้ใช้ตามเวลาปัจจุบัน)
 let currentTheme = localStorage.getItem('theme');
-if (!currentTheme || (hour === 6 || hour === 18)) { currentTheme = autoTheme; localStorage.setItem('theme', currentTheme); }
+if (!currentTheme) {
+  currentTheme = autoTheme;
+  localStorage.setItem('theme', currentTheme);
+}
 applyTheme(currentTheme);
-$('#dm').onclick = () => { const t = isDark() ? 'light' : 'dark'; localStorage.setItem('theme', t); applyTheme(t); };
+
+// ปุ่มกดสลับธีม
+$('#dm').onclick = () => { 
+  const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
+  localStorage.setItem('theme', nextTheme); 
+  applyTheme(nextTheme); 
+};
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
