@@ -6,8 +6,8 @@
 :root{--bg:#f8fafc;--card:#fff;--tx:#0f172a;--mu:#64748b;--bd:#e2e8f0;--pri:#6366f1;--dk:#0f172a;--soft:#f1f5f9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1020;--card:#151b2e;--tx:#e8ecf5;--mu:#94a3b8;--bd:#263049;--dk:#6366f1;--soft:#1d2540}}
 :root[data-theme=dark]{--bg:#0b1020;--card:#151b2e;--tx:#e8ecf5;--mu:#94a3b8;--bd:#263049;--dk:#6366f1;--soft:#1d2540}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:Sarabun,system-ui,sans-serif;display:flex;min-height:100vh}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Sarabun,system-ui,sans-serif;display:flex;min-height:100vh;max-width:100%;overflow-x:hidden}
 aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;display:flex;flex-direction:column;gap:14px;background:var(--card);position:sticky;top:0;height:100vh}
 .logo{display:flex;gap:12px;align-items:center}.logo i{width:46px;height:46px;border-radius:14px;background:var(--dk);color:#fff;display:grid;place-items:center;font-style:normal;font-size:22px}
 .logo b{color:var(--pri);font-size:17px;display:block}.logo small{color:var(--mu)}
@@ -16,13 +16,13 @@ aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;d
 .seg{display:flex;gap:6px}.seg button{flex:1;border:0;border-radius:99px;padding:7px;font:600 12px Sarabun;background:var(--bd);color:var(--tx);cursor:pointer}.seg button.on{background:var(--pri);color:#fff}
 nav{display:flex;flex-direction:column;gap:6px}nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun;color:var(--mu);cursor:pointer}
 nav button.on{background:var(--dk);color:#fff;box-shadow:0 6px 16px #0003}
-main{flex:1;padding:24px;min-width:0;display:flex;flex-direction:column;gap:20px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:22px}
+main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:column;gap:20px;overflow-x:hidden}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:22px;max-width:100%;overflow-x:hidden}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .hd h1{margin:0;font-size:21px}.hd p{margin:4px 0 0;color:var(--mu);font-size:13px}
 .btn{border:1px solid var(--bd);border-radius:14px;padding:11px 16px;font:600 13px Sarabun;cursor:pointer;background:var(--soft);color:var(--tx)}
 .btn.g{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.btn.d{background:var(--dk);color:#fff;border:0}
-.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .st small{color:var(--mu);font-weight:600}.num{font-size:32px;font-weight:800;margin:10px 0 4px}.num span{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
 .big{font-size:56px;font-weight:800;color:var(--pri);text-align:center;margin:14px 0 4px}
 .bar{height:8px;border-radius:9px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981)}
@@ -33,11 +33,13 @@ main{flex:1;padding:24px;min-width:0;display:flex;flex-direction:column;gap:20px
 .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 input,select,textarea{font:14px Sarabun;border:1px solid var(--bd);border-radius:14px;padding:10px 14px;background:var(--soft);color:var(--tx)}
 .tools input{flex:1;min-width:200px}
-.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:11.5px}
-.sales-table th{background:var(--soft);padding:6px 6px;text-align:center;white-space:nowrap;font-size:11.5px;font-weight:700;vertical-align:middle;color:var(--mu)}
-.sales-table td{padding:6px 6px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;line-height:1.3}
-th:nth-child(3),td:nth-child(3){min-width:160px;white-space:normal;line-height:1.3}th:nth-child(4),td:nth-child(4){min-width:120px}
-td:nth-child(2),td:nth-child(6),td:nth-child(7),td:nth-child(8){white-space:nowrap}th:nth-child(11),td:nth-child(11){min-width:90px;text-align:left}@media(max-width:1450px){th:nth-child(2),td:nth-child(2){display:none}}td:nth-child(12){white-space:nowrap}
+
+/* จัดการตารางทุกหน้าไม่ให้ล้นหรือตกขอบ */
+.tw{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;white-space:nowrap}
+th,td{padding:8px 8px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;line-height:1.3}
+th{background:var(--soft);font-weight:700;color:var(--mu)}
+
 .av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:12px;padding:3px 8px;margin:2px;font-size:11.5px;font-weight:600}
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:3px 5px;cursor:pointer;margin-right:2px;font-size:10.5px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
@@ -88,6 +90,7 @@ main{padding:12px;gap:12px}.card{padding:16px;border-radius:20px}.hd h1{font-siz
 .g4{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}
 .num{font-size:24px}.big{font-size:42px}.pc b{font-size:20px}.two{grid-template-columns:1fr}
 .tools input,.tools select{min-width:100%;flex:1 1 100%}
+.sales-filter-grid{grid-template-columns:1fr!important}
 }
 
 :root{--gn:#059669;--bl:#2563eb;--yw:#d97706;--rd:#e11d48;--in:#4f46e5}
@@ -170,7 +173,7 @@ function ov2(){
 
   return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
   
-  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:16px">
     <div class="card">
       <b>📊 สัดส่วนสถานะงานรวม</b>
       <p style="color:var(--mu);font-size:13px;margin-bottom:14px">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
@@ -247,9 +250,9 @@ function contracts(){
 
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="card tw" style="margin-top:16px;padding:0"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
   ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${Number(ct.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td><td style="color:var(--yw)">${Number(ct.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td style="color:var(--gn);font-weight:700">${Number(ct.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td><span class="pill s-done">${ct.status}</span></td><td><span class="pill s-run">${ct.pay}</span></td><td><button class="ib" onclick="openC('${ct.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${ct.id}')">🗑</button></td></tr>`).join('')}
-  </tbody></table></div>`;
+  </tbody></table></div></div>`;
 }
 
 function openC(id){
@@ -303,51 +306,49 @@ function sales(){
   
   const currentYearPercent = (!salesYear) ? '100.0' : (grandTotalVal > 0 ? ((filteredSales.reduce((s,x)=>s+(+x.val||0),0) / grandTotalVal) * 100).toFixed(1) : '0.0');
 
-  const c=(n,v,col)=>`<div class="card st" style="padding:14px 18px"><small style="font-size:11.5px">${n}</small><div class="num" style="font-size:22px;margin:6px 0 2px;color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
+  const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px;color:var(--mu)">${n}</small><div class="num" style="font-size:20px;margin:4px 0 2px;color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
 
   return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
   
-  <!-- แผงกรองข้อมูลแบบกระชับ เรียงแถวเดียว -->
-  <div class="card" style="margin-top:16px;padding:14px 18px;background:var(--soft)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px">
-      <b style="font-size:13px">🔍 ตัวกรองและค้นหาข้อมูล</b>
-      <div style="font-size:13px;font-weight:600;color:var(--pri)">สัดส่วนยอดขาย: <span style="font-size:14.5px">${currentYearPercent}%</span></div>
+  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+      <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองข้อมูล</b>
+      <div style="font-size:12.5px;font-weight:600;color:var(--pri)">สัดส่วนยอดขาย: <span style="font-size:14px">${currentYearPercent}%</span></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;align-items:center">
-      <select onchange="salesYear=this.value;render()" style="padding:8px 12px;font-size:13px;width:100%">
-        <option value="">📅 ทุกปีทั้งหมด (รวมทุกปี)</option>
+    <div style="display:grid;grid-template-columns:180px 200px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
+      <select onchange="salesYear=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
+        <option value="">📅 ทุกปีทั้งหมด</option>
         ${allYears.map(y=>`<option value="${y}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${y})</option>`).join('')}
       </select>
-      <select onchange="salesFlt.s=this.value;render()" style="padding:8px 12px;font-size:13px;width:100%">
-        <option value="">📌 ทุกสถานะใบเสนอราคา</option>
+      <select onchange="salesFlt.s=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
+        <option value="">📌 ทุกสถานะ</option>
         <option value="วางบิลแล้ว" ${salesFlt.s==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option>
         <option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${salesFlt.s==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option>
         <option value="อยู่ระหว่างรอดำเนินการ" ${salesFlt.s==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option>
       </select>
       <div style="display:flex;gap:6px;width:100%">
-        <input placeholder="ค้นหาชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 12px;font-size:13px;flex:1">
-        ${(salesFlt.q || salesFlt.s || salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:8px 12px;font-size:12px" title="ล้างตัวกรอง">✕ ล้าง</button>`:''}
+        <input placeholder="ค้นหาชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:7px 10px;font-size:12.5px;flex:1">
+        ${(salesFlt.q || salesFlt.s || salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:7px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
       </div>
     </div>
   </div>
 
-  <!-- ปุ่มย่อเลือกดูยอดขายรายปี -->
-  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px">
-    <div onclick="salesYear='';render()" style="flex:0 0 auto;min-width:110px;padding:8px 12px;border-radius:12px;cursor:pointer;background:${salesYear===''?'var(--pri)':'var(--card)'};color:${salesYear===''?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
-      <div style="font-size:10.5px;opacity:.8">ยอดรวมทุกปี</div>
-      <div style="font-size:12.5px;font-weight:700;margin-top:2px">100%</div>
+  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px">
+    <div onclick="salesYear='';render()" style="flex:0 0 auto;min-width:100px;padding:6px 10px;border-radius:10px;cursor:pointer;background:${salesYear===''?'var(--pri)':'var(--card)'};color:${salesYear===''?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
+      <div style="font-size:10px;opacity:.8">ยอดรวมทุกปี</div>
+      <div style="font-size:12px;font-weight:700;margin-top:1px">100%</div>
     </div>
-    ${yearSummary.map(ys=>`<div onclick="salesYear='${ys.year}';render()" style="flex:0 0 auto;min-width:130px;padding:8px 12px;border-radius:12px;cursor:pointer;background:${salesYear===ys.year?'var(--pri)':'var(--card)'};color:${salesYear===ys.year?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
-      <div style="font-size:10.5px;opacity:.8">ปี ${+ys.year+543} (${ys.count} งาน)</div>
-      <div style="font-size:12.5px;font-weight:700;margin-top:2px">${ys.pct}% <span style="font-size:9.5px;font-weight:400">(${(ys.val/1000).toFixed(0)}k ฿)</span></div>
+    ${yearSummary.map(ys=>`<div onclick="salesYear='${ys.year}';render()" style="flex:0 0 auto;min-width:115px;padding:6px 10px;border-radius:10px;cursor:pointer;background:${salesYear===ys.year?'var(--pri)':'var(--card)'};color:${salesYear===ys.year?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
+      <div style="font-size:10px;opacity:.8">ปี ${+ys.year+543} (${ys.count})</div>
+      <div style="font-size:12px;font-weight:700;margin-top:1px">${ys.pct}% <span style="font-size:9px;font-weight:400">(${(ys.val/1000).toFixed(0)}k)</span></div>
     </div>`).join('')}
   </div>
 
   <div class="grid g3" style="margin-top:2px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
   
-  <div class="card tw" style="margin-top:16px;padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>วันที่</th><th>โครงการ / รายละเอียด</th><th>สถานที่</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>วันที่</th><th>โครงการ / รายละเอียด</th><th>สถานที่</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
   ${filteredSales.map((s,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(s.date)}</span></td><td style="text-align:left"><b>${esc(s.name)}</b>${s.note?`<br><small style="color:var(--mu);font-size:11px">📝 ${esc(s.note)}</small>`:''}</td><td style="text-align:left">📍 ${esc(s.loc)}</td><td><b>${Number(s.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td><td style="color:var(--yw)">${Number(s.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td style="color:var(--gn);font-weight:700">${Number(s.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td><td><button class="ib" onclick="openS('${s.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${s.id}')">🗑</button></td></tr>`).join('')}
-  </tbody></table></div>`;
+  </tbody></table></div></div>`;
 }
 
 function openS(id){
@@ -383,9 +384,9 @@ function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="card tw" style="margin-top:16px;padding:0"><table><thead><tr><th>ลำดับ</th><th>เพิ่มเมื่อ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ (AUTO)</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>`}
+ <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เพิ่มเมื่อ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ (AUTO)</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`}
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
- let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw">${['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
+ let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw कुलकर्णी || ['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
  for(let i=0;i<off;i++)h+='<div class="d e"></div>';
  for(let d=1;d<=n;d++){const s=ymd(new Date(y,m,d));h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${t.id}')">${esc(t.title)}</div>`).join('')}</div>`}
  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`}
@@ -538,7 +539,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
