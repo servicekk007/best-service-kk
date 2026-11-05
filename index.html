@@ -147,11 +147,10 @@ const VIEWS={
   tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],
   cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
   em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
-  db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน'],
   ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ '],
   sl:['งานขายและติดตามใบเสนอราคา','งานขาย ']
 };
-const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼',sl:'📈'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา',sl:'งานขาย'};
+const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',ct:'💼',sl:'📈'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
 
 let ani=true;
 function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':k==='sl'?' ('+Sales.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
@@ -168,13 +167,13 @@ function render(){
   
   if(view==='ov'){
     v.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
-      <button class="btn ${subView==='ov1'?'d':''}" onclick="subView='ov1';render()">1. ภาพรวมงานทั่วไป</button>
+      <button class="btn ${subView==='ov1'?'d':''}" onclick="subView='ov1';render()">1. หน้าภาพรวมรายงาน</button>
       <button class="btn ${subView==='ov2'?'d':''}" onclick="subView='ov2';render()">2. Dashboard พนักงาน</button>
       <button class="btn ${subView==='ov3'?'d':''}" onclick="subView='ov3';render()">3. Dashboard สัญญาโครงการ</button>
       <button class="btn ${subView==='ov4'?'d':''}" onclick="subView='ov4';render()">4. Dashboard งานขาย</button>
     </div>`+({ov1:ov2, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
   } else {
-    v.innerHTML=({tb,cal,em,db:dash,ct:contracts,sl:sales})[view]();
+    v.innerHTML=({tb,cal,em,ct:contracts,sl:sales})[view]();
   }
 
   v.classList.toggle('an',ani);ani=false;
@@ -269,6 +268,13 @@ function ov2(){
     </div>
   </div>`;
 }
+
+// หน้า Dashboard พนักงาน (ย้ายมาจากหน้า db เดิม)
+function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
+ <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px"><div class="emp"><div><div><b style="font-size:15px">${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
+ <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
+ <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
+ <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
 // หน้า Dashboard สัญญาโครงการ (ดึงข้อมูลมาจากหน้า ct เดิม)
 function contractsDash(){
@@ -516,11 +522,6 @@ function em(){return `<div class="card hd"><div><b style="font-size:18px">👥 �
  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div>${head?`<div><button class="ib" onclick="editE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></div>`:''}</div>
  <div class="row s"><span style="color:var(--tx);font-weight:400">ภารกิจที่รับผิดชอบทั้งหมด:</span><span>${m.length} งาน (เสร็จแล้ว ${m.filter(t=>t.progress>=100).length})</span></div><p style="font-size:12px;color:var(--mu);margin:14px 0 0">งานที่กำลังรับผิดชอบ:</p>
  ${m.map(t=>`<div class="row"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${+t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`}
-function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
- <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px"><div class="emp"><div><div><b style="font-size:15px">${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
- <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
- <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
- <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 
@@ -608,7 +609,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
