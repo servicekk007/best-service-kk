@@ -1,10 +1,11 @@
-ยินดีครับ! เพื่อให้หน้า **"ตารางงานทั้งหมด"** ดูสะอาดตา ทันสมัย และอ่านง่ายขึ้นมาก ผมได้ทำการปรับปรุงและจัดระเบียบโครงสร้างคอลัมน์ใหม่ ดังนี้ครับ:
+จัดการปรับปรุงหน้า **"ตารางงานทั้งหมด"** ให้ใหม่เรียบร้อยครับ! 
 
-1. **จัดลำดับความสำคัญของคอลัมน์ใหม่:** เรียงลำดับจากข้อมูลที่สำคัญไปน้อยให้เป็นระเบียบ (`ลำดับ` ➔ `รายละเอียดงาน` ➔ `ผู้รับผิดชอบ` ➔ `ความสำคัญ` ➔ `กำหนดส่ง (Deadline)` ➔ `ระยะเวลาเริ่ม-สิ้นสุด` ➔ `สถานะ` ➔ `วันคงเหลือ` ➔ `ความคืบหน้า` ➔ `จัดการ`)
-2. **ยุบรวมช่องวันที่เริ่ม-ถึงวันที่:** นำมารวมไว้ในคอลัมน์เดียว (รูปแบบ `ว/ด/ป เริ่ม ➔ สิ้นสุด`) เพื่อประหยัดพื้นที่ไม่ให้ตารางยาวแน่นจนเกินไป
-3. **จัดสไตล์ป้ายสถานะและชิปผู้รับผิดชอบ:** ให้ดูพรีเมียม สบายตา และจัดตำแหน่งการวางให้อยู่กึ่งกลางพอดีทุกช่อง
+รอบนี้ผมได้แก้ไขปัญหาคอลัมน์วันที่ที่เคยดูอัดอัดหรือถูกบีบจนย่อเกินไป โดย:
+1. **แยกคอลัมน์ "เริ่มวันที่" และ "ถึงวันที่" ออกจากกันอย่างอิสระ** ให้แสดงผลเต็มรูปแบบ ชัดเจน อ่านง่าย ไม่ต้องกลัวตกหล่น
+2. **จัดลำดับความสำคัญของคอลัมน์ใหม่ให้สมดุลและสวยงามยิ่งขึ้น** (ลำดับ ➔ รายละเอียดงาน ➔ ผู้รับผิดชอบ ➔ ความสำคัญ ➔ Deadline ➔ เริ่มวันที่ ➔ ถึงวันที่ ➔ สถานะ ➔ คงเหลือ ➔ ความคืบหน้า ➔ จัดการ)
+3. **ปรับความกว้างและสไตล์การจัดวางช่องต่าง ๆ** ให้พอดีกับหน้าจอ 100% สมดุลสบายตา
 
-คุณสามารถคัดลอกโค้ดฉบับสมบูรณ์ด้านล่างนี้ไปวางทับในไฟล์ `index.html` บน GitHub ของคุณได้เลยครับ:
+คุณสามารถคัดลอกโค้ดฉบับสมบูรณ์ด้านล่างนี้ไปวางทับในไฟล์ `index.html` บน GitHub ของคุณได้ทันทีเลยครับ:
 
 ```html
 <!DOCTYPE html>
@@ -416,14 +417,15 @@ function rows(){
       <td style="text-align:left"><b>${esc(t.title)}</b></td>
       <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
       <td style="width:90px"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
-      <td style="width:100px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
-      <td style="width:120px;white-space:nowrap;font-size:11px;color:var(--mu)">${esc(t.start)}<br>➔ ${esc(t.end)}</td>
+      <td style="width:110px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
+      <td style="width:110px;white-space:nowrap">${esc(t.start)}</td>
+      <td style="width:110px;white-space:nowrap">${esc(t.end)}</td>
       <td style="width:110px"><span class="pill ${sc(status(t))}">${status(t)}</span></td>
       <td style="width:110px"><span class="pill ${l.c}">${l.x}</span></td>
-      <td style="width:120px"><b>${+t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${+t.progress}%"></i></div></td>
+      <td style="width:110px"><b>${+t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${+t.progress}%"></i></div></td>
       <td style="width:80px;white-space:nowrap;text-align:center">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td>
     </tr>`;
-  }).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
+  }).join('')||'<tr><td colspan="11" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
 }
 
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
@@ -432,7 +434,7 @@ function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${Strin
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>กำหนดส่ง (Deadline)</th><th>ระยะเวลา (เริ่ม ➔ สิ้นสุด)</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
+ <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
@@ -538,11 +540,11 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
-  privUnsubs.forEach(u=>{try{u&&u()}catch(_}{}});privUnsubs=[];
+  privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
   if(!head||!db)return;
   privUnsubs=[
     db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error),
