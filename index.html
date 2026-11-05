@@ -129,12 +129,6 @@ main{padding:12px;gap:12px}.card{padding:16px;border-radius:20px}.hd h1{font-siz
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PR=['ปกติ','สำคัญ','ด่วน','ด่วนมาก'],TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const fmtDate = dStr => {
-  if (!dStr) return '-';
-  const [y, m, d] = dStr.split('-');
-  if (!y || !m || !d) return dStr;
-  return `${parseInt(d)} ${['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'}[parseInt(m)-1]} ${parseInt(y)+543}`;
-};
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
 const kfmt=v=>v>=1000?(v/1000).toFixed(v>=100000?0:1).replace(/\.0$/,'')+'k':String(Math.round(v));
 const money=v=>Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -165,6 +159,7 @@ function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<butt
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 
 function render(){
+  // จำตำแหน่งโฟกัส (เฉพาะช่องที่มี id อยู่ในพื้นที่แสดงผล) เพื่อไม่ให้พิมพ์ค้นหาแล้วหลุด
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;
   let ps=null,pe=null;
@@ -187,6 +182,7 @@ function ov2(){
   const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
   const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
 
+  // ส่วนกราฟยอดขาย: แสดงเฉพาะหัวหน้างาน
   let salesBlock='';
   if(head){
     const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort();
@@ -405,25 +401,7 @@ function openS(id){
 const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
 
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
-function rows(){
-  return list().map((t,i)=>{
-    const l=left(t);
-    return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
-      <td data-label="ลำดับ">${i+1}</td>
-      <td data-label="เพิ่มเมื่อ" style="color:var(--mu);font-size:11.5px">${fmtDate(t.created)}</td>
-      <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td>
-      <td data-label="ความสำคัญ"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
-      <td data-label="DEADLINE"><b style="color:var(--rd)">${fmtDate(t.deadline)}</b></td>
-      <td data-label="เริ่มวันที่" style="color:var(--mu);font-size:11.5px">${fmtDate(t.start)}</td>
-      <td data-label="ถึงวันที่" style="color:var(--mu);font-size:11.5px">${fmtDate(t.end)}</td>
-      <td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td>
-      <td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td>
-      <td data-label="ความคืบหน้า"><b>${+t.progress}%</b><div class="bar"><i style="width:${+t.progress}%"></i></div></td>
-      <td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
-}
+function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${esc(t.deadline)}</b></td><td data-label="เริ่มวันที่">${esc(t.start)}</td><td data-label="ถึงวันที่">${esc(t.end)}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${+t.progress}%</b><div class="bar"><i style="width:${+t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
@@ -449,6 +427,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
 
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 
+// คลิกพื้นหลังเพื่อปิดป๊อปอัป — ถ้าเป็นฟอร์มหลัก ให้คืน handler เดิมด้วย
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
@@ -478,7 +457,7 @@ function openProgress(id){
     const newProg = +f.get('progress');
     const targetTask = T.find(x => x.id === id);
     const old = targetTask ? targetTask.progress : 0;
-    if(targetTask) targetTask.progress = newProg;
+    if(targetTask) targetTask.progress = newProg;   // อัปเดตหน้าจอทันที (optimistic)
     closeMod();
     render();
     try {
@@ -487,7 +466,7 @@ function openProgress(id){
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     } catch(err) {
       console.error(err);
-      if(targetTask) targetTask.progress = old;
+      if(targetTask) targetTask.progress = old;     // ย้อนค่ากลับถ้าบันทึกไม่สำเร็จ
       render();
       toast('❌ บันทึกไม่สำเร็จ (ไม่มีสิทธิ์หรือออฟไลน์)');
     }
@@ -497,7 +476,7 @@ function openProgress(id){
 function showDay(s){const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
 $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
 ${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${+t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}
-${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;pm.classList.add('on')}
+${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;pm.classList.add('on')}
 
 async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
@@ -535,6 +514,7 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
+// สมัครรับข้อมูลที่เป็นความลับ (สัญญา/งานขาย) เฉพาะตอนล็อกอินเป็นหัวหน้างานแล้ว
 let privUnsubs=[];
 function watchPrivate(){
   privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
@@ -606,7 +586,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",   // <-- แทนที่ด้วย API Key จริงของคุณ
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
