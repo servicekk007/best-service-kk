@@ -261,17 +261,11 @@ function sales(){
     <div style="margin-left:auto;font-weight:600;color:var(--pri)">สัดส่วนยอดขาย: <span style="font-size:16px">${currentYearPercent}%</span> <small style="color:var(--mu);font-weight:400">(เทียบยอดรวม)</small></div>
   </div>
 
-  <div class="card" style="margin-top:16px;padding:14px 18px;background:var(--soft)">
-    <b style="font-size:13.5px;color:var(--mu)">📊 สรุปยอดขายแยกรายปี (คลิกเพื่อเลือกดู):</b>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-      <div onclick="salesYear='';render()" style="flex:1;min-width:140px;padding:10px 14px;border-radius:12px;cursor:pointer;background:var(--card);border:${salesYear===''?'2px solid var(--pri)':'1px solid var(--bd)'};text-align:center">
-        <div style="font-size:12px;color:var(--mu)">ทุกปีทั้งหมด</div>
-        <div style="font-size:15px;font-weight:700;margin-top:2px">100%</div>
-      </div>
-      ${yearSummary.map(ys=>`<div onclick="salesYear='${ys.year}';render()" style="flex:1;min-width:140px;padding:10px 14px;border-radius:12px;cursor:pointer;background:var(--card);border:${salesYear===ys.year?'2px solid var(--pri)':'1px solid var(--bd)'};text-align:center">
-        <div style="font-size:12px;color:var(--mu)">ปี ${+ys.year+543} (${ys.count} งาน)</div>
-        <div style="font-size:15px;font-weight:700;color:var(--pri);margin-top:2px">${ys.pct}% <span style="font-size:11px;color:var(--mu);font-weight:400">(${Number(ys.val).toLocaleString()} ฿)</span></div>
-      </div>`).join('')}
+  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:13px;font-weight:600;color:var(--mu)">📊 เลือกดูรายปี:</span>
+      <button class="btn ${salesYear===''?'d':''}" style="padding:6px 14px;font-size:12px;border-radius:99px" onclick="salesYear='';render()">ทุกปีทั้งหมด (100%)</button>
+      ${yearSummary.map(ys=>`<button class="btn ${salesYear===ys.year?'d':''}" style="padding:6px 14px;font-size:12px;border-radius:99px" onclick="salesYear='${ys.year}';render()">ปี ${+ys.year+543} (${ys.pct}%)</button>`).join('')}
     </div>
   </div>
 
@@ -470,7 +464,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "********************************-******",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
