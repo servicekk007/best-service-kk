@@ -322,16 +322,15 @@ function openProgress(id){
     const f = new FormData(e.target);
     const newProg = +f.get('progress');
     
-    // 1. อัปเดตค่าลงในอาเรย์ T โดยตรงทันที เพื่อให้ตารางอ่านค่าใหม่ได้เลย
+    // บังคับเปลี่ยนค่าในตัวแปรหน้าจอทันที (แก้ปัญหาพนักงานอัปเดตแล้วค่าไม่เปลี่ยน)
     const targetTask = T.find(x => x.id === id);
     if(targetTask) targetTask.progress = newProg;
     
-    // 2. สั่งวาดหน้าจอใหม่ทันทีก่อนบันทึกฐานข้อมูล
     mod.classList.remove('on');
     $('#f').onsubmit = mainFormSubmit;
-    render();
+    render(); // สั่งรีเฟรชหน้าจอและตารางทันที
     
-    // 3. ส่งข้อมูลไปอัปเดตที่ฐานข้อมูลเบื้องหลัง
+    // ส่งข้อมูลไปบันทึกเบื้องหลัง (รองรับกรณีติดสิทธิ์ Security Rules ของ Firebase)
     try {
       await db.doc('tasks/'+id).update({progress: newProg});
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
