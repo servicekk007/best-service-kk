@@ -42,7 +42,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;max-width:180px;margin:0 auto}
+.assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-start;align-items:center;max-width:200px}
 .assignee-chip{display:inline-flex;align-items:center;background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
 
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px}
@@ -277,7 +277,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
-// หน้า Dashboard สัญญาโครงการและรายได้ (พร้อมแสดง % กำไรเทียบต้นทุน)
+// หน้า Dashboard สัญญาโครงการและรายได้
 function contractsDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -396,7 +396,7 @@ function contractsDash(){
   </div>`;
 }
 
-// หน้า Dashboard สรุปงานขายและใบเสนอราคา (พร้อมแสดง % กำไรเทียบต้นทุน)
+// หน้า Dashboard สรุปงานขายและใบเสนอราคา
 function salesDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard งานขาย กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -515,172 +515,15 @@ function salesDash(){
   </div>`;
 }
 
-function contracts(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-  const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
-  const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
-  const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
-  const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
-
-  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
-  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
-  </tbody></table></div></div>`;
-}
-
-function closeMod(){mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit}
-
-function openC(id){
-  editC = Contracts.find(c => c.id === id) || null;
-  const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
-  $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
-  <div class="two"><label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label></div>
-  <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
-  <div class="two"><label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" value="${c.val!==''&&c.val!=null?esc(c.val):''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${c.cost!==''&&c.cost!=null?esc(c.cost):''}"></label></div>
-  <div class="two"><label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกสัญญา</button></div>`;
-  mod.classList.add('on');
-  $('#f').onsubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
-    const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {code: fd.get('code').trim() || '-', name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), pay: fd.get('pay').trim() || '-'};
-    await w(async()=>{
-      if(editC) { await db.doc('contracts/'+editC.id).update(data); toast('✅ บันทึกการแก้ไขสัญญาแล้ว'); }
-      else { await db.doc('contracts/'+uid()).set(data); toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว'); }
-      closeMod();
-    });
-  };
-}
-const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{ await db.doc('contracts/'+id).delete(); toast('🗑 ลบสัญญาโครงการแล้ว'); });
-
-function sales(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลงานขายและใบเสนอราคา กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-
-  const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort().reverse();
-  const grandTotalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
-
-  const yearSummary = allYears.map(y => {
-    const ySales = Sales.filter(x => (x.date || '').startsWith(y));
-    const yVal = ySales.reduce((s,x)=>s+(+x.val||0),0);
-    const yPct = grandTotalVal > 0 ? ((yVal / grandTotalVal) * 100).toFixed(1) : 0;
-    return {year: y, val: yVal, pct: yPct, count: ySales.length};
-  });
-
-  const filteredSales = Sales.filter(x => {
-    const matchYear = !salesYear || (x.date || '').startsWith(salesYear);
-    const matchQ = !salesFlt.q || ((x.name||'') + (x.loc||'') + (x.note||'')).toLowerCase().includes(salesFlt.q.toLowerCase());
-    const matchS = !salesFlt.s || x.status === salesFlt.s;
-    return matchYear && matchQ && matchS;
-  }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-  const totalVal = filteredSales.reduce((s,x)=>s+(+x.val||0),0);
-  const totalCost = filteredSales.reduce((s,x)=>s+(+x.cost||0),0);
-  const totalProfit = filteredSales.reduce((s,x)=>s+(+x.profit||0),0);
-
-  const currentYearPercent = (!salesYear) ? '100.0' : (grandTotalVal > 0 ? ((totalVal / grandTotalVal) * 100).toFixed(1) : '0.0');
-
-  const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px;color:var(--mu)">${n}</small><div class="num" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-
-  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
-
-  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
-      <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองข้อมูล</b>
-      <div style="font-size:12.5px;font-weight:600;color:var(--pri)">สัดส่วนยอดขาย: <span style="font-size:14px">${currentYearPercent}%</span></div>
-    </div>
-    <div style="display:grid;grid-template-columns:180px 200px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
-      <select onchange="salesYear=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
-        <option value="">📅 ทุกปีทั้งหมด</option>
-        ${allYears.map(y=>`<option value="${esc(y)}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${esc(y)})</option>`).join('')}
-      </select>
-      <select onchange="salesFlt.s=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
-        <option value="">📌 ทุกสถานะ</option>
-        <option value="วางบิลแล้ว" ${salesFlt.s==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option>
-        <option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${salesFlt.s==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option>
-        <option value="อยู่ระหว่างรอดำเนินการ" ${salesFlt.s==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option>
-      </select>
-      <div style="display:flex;gap:6px;width:100%">
-        <input id="sq" placeholder="ค้นหาชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:7px 10px;font-size:12.5px;flex:1">
-        ${(salesFlt.q || salesFlt.s || salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:7px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
-      </div>
-    </div>
-  </div>
-
-  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-top:16px">
-    <div onclick="salesYear='';render()" style="flex:0 0 auto;min-width:100px;padding:6px 10px;border-radius:10px;cursor:pointer;background:${salesYear===''?'var(--pri)':'var(--card)'};color:${salesYear===''?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
-      <div style="font-size:10px;opacity:.8">ยอดรวมทุกปี</div>
-      <div style="font-size:12px;font-weight:700;margin-top:1px">100%</div>
-    </div>
-    ${yearSummary.map(ys=>`<div onclick="salesYear='${esc(ys.year)}';render()" style="flex:0 0 auto;min-width:115px;padding:6px 10px;border-radius:10px;cursor:pointer;background:${salesYear===ys.year?'var(--pri)':'var(--card)'};color:${salesYear===ys.year?'#fff':'var(--tx)'};border:1px solid var(--bd);text-align:center">
-      <div style="font-size:10px;opacity:.8">ปี ${+ys.year+543} (${ys.count})</div>
-      <div style="font-size:12px;font-weight:700;margin-top:1px">${ys.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(ys.val)})</span></div>
-    </div>`).join('')}
-  </div>
-
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
-    <th style="width:50px">ลำดับ</th>
-    <th style="width:110px">วันที่</th>
-    <th style="text-align:left">โครงการ / รายละเอียด</th>
-    <th style="text-align:left">สถานที่</th>
-    <th style="width:120px">มูลค่าก่อน VAT</th>
-    <th style="width:100px">ต้นทุน</th>
-    <th style="width:100px">กำไรสุทธิ</th>
-    <th style="width:140px">สถานะใบเสนอราคา</th>
-    <th style="width:80px">จัดการ</th>
-  </tr></thead><tbody>
-  ${filteredSales.map((s,i)=>`<tr>
-    <td style="text-align:center">${i+1}</td>
-    <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-    <td style="text-align:left"><b>${esc(s.name)}</b>${s.note&&s.note!=='-'?`<br><small style="color:var(--mu);font-size:11px">📝 ${esc(s.note)}</small>`:''}</td>
-    <td style="text-align:left">📍 ${esc(s.loc)}</td>
-    <td><b>${money(s.val)}</b></td>
-    <td style="color:var(--yw)">${money(s.cost)}</td>
-    <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
-    <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
-    <td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>
-  </tr>`).join('')}
-  </tbody></table></div></div>`;
-}
-
-function openS(id){
-  editS = Sales.find(x => x.id === id) || null;
-  const s = editS || {date:TODAY, name:'', loc:'', val:'', cost:'', status:'วางบิลแล้ว', note:''};
-  $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
-  <div class="two"><label>วันที่<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
-  <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
-  <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" name="val" value="${s.val!==''&&s.val!=null?esc(s.val):''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${s.cost!==''&&s.cost!=null?esc(s.cost):''}"></label></div>
-  <div class="two"><label>สถานะใบเสนอราคา<select name="status"><option value="วางบิลแล้ว" ${s.status==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option><option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${s.status==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option><option value="อยู่ระหว่างรอดำเนินการ" ${s.status==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option></select></label><label>หมายเหตุ<input name="note" value="${esc(s.note)}"></label></div>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกงานขาย</button></div>`;
-  mod.classList.add('on');
-  $('#f').onsubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
-    const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {date: fd.get('date'), name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), note: fd.get('note').trim()};
-    await w(async()=>{
-      if(editS) { await db.doc('sales/'+editS.id).update(data); toast('✅ บันทึกการแก้ไขงานขายแล้ว'); }
-      else { await db.doc('sales/'+uid()).set(data); toast('✅ เพิ่มรายการงานขายใหม่แล้ว'); }
-      closeMod();
-    });
-  };
-}
-const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
-
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
 
 function rows(){
   return list().map((t,i)=>{
     const l=left(t);
-    return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
+    return `<tr onclick="openProgress('${esc(t.id)}')" style="cursor:pointer" title="คลิกเพื่ออัปเดตความคืบหน้า">
       <td style="width:50px;text-align:center">${i+1}</td>
       <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
+      <td style="text-align:left"><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
       <td style="width:90px"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
       <td style="width:110px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
       <td style="width:110px;white-space:nowrap">${esc(t.start)}</td>
@@ -699,7 +542,7 @@ function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${Strin
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
+ <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th style="text-align:left">ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
@@ -725,7 +568,7 @@ $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:1
 <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
 <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
 <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`;pm.classList.add('on')}
+<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd);background:#fff1f2;border-color:#fecdd3" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on')}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
@@ -768,14 +611,17 @@ ${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.cla
 
 async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
- $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
- <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
- <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
- <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
- <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
- <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
- mod.classList.add('on');$('#f').onsubmit=mainFormSubmit}
+function openT(id,date){
+  if(!head) return; // ป้องกันพนักงานทั่วไปเปิดฟอร์มแก้ไขหลัก
+  edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
+  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
+  <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
+  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
+  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
+  <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
+  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+  mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
+}
 
 const mainFormSubmit = async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
