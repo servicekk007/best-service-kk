@@ -34,39 +34,18 @@ main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:
 input,select,textarea{font:14px Sarabun;border:1px solid var(--bd);border-radius:14px;padding:10px 14px;background:var(--soft);color:var(--tx)}
 .tools input{flex:1;min-width:200px}
 
-/* จัดการตารางทุกหน้า */
+/* ปรับสไตล์ตารางใหม่: ให้คอลัมน์ ลำดับ, วันที่, จัดการ กะทัดรัด ส่วนช่องอื่นขยายเต็มตา */
 .tw{width:100%;max-width:100%;overflow-x:auto;border-radius:16px}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 
-table th:first-child, table td:first-child { width: 55px; white-space: nowrap; }
-table th:nth-child(2), table td:nth-child(2) { width: 100px; white-space: nowrap; }
-table th:last-child, table td:last-child { width: 90px; white-space: nowrap; }
+/* กำหนดความกว้างเฉพาะคอลัมน์ */
+table th:first-child, table td:first-child { width: 55px; white-space: nowrap; } /* ลำดับ */
+table th:nth-child(2), table td:nth-child(2) { width: 100px; white-space: nowrap; } /* วันที่ / เพิ่มเมื่อ */
+table th:last-child, table td:last-child { width: 90px; white-space: nowrap; } /* จัดการ */
 
-/* ดีไซน์ป้ายชื่อผู้รับผิดชอบใหม่ */
-.assignee-chip-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  justify-content: center;
-  align-items: center;
-  max-width: 180px;
-  margin: 0 auto;
-}
-.assignee-chip {
-  display: inline-flex;
-  align-items: center;
-  background: var(--soft);
-  color: var(--pri);
-  border: 1px solid var(--bd);
-  border-radius: 99px;
-  padding: 2px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
+.av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:10px;padding:3px 8px;margin:2px;font-size:11px;font-weight:600}
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
 .cal .h{background:var(--soft);border-radius:12px;padding:10px;text-align:center;font-weight:600;font-size:13px}
@@ -403,26 +382,7 @@ function openS(id){
 const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
 
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
-function rows(){
-  return list().map((t,i)=>{
-    const l=left(t);
-    return `<tr onclick="showT('${t.id}')" style="cursor:pointer">
-      <td style="width:50px;text-align:center">${i+1}</td>
-      <td style="width:90px;white-space:nowrap;font-size:11.5px">${esc(t.created)}</td>
-      <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
-      <td><span class="pill p${t.priority}">${PR[t.priority]}</span></td>
-      <td style="white-space:nowrap"><b>${t.deadline}</b></td>
-      <td style="white-space:nowrap">${t.start}</td>
-      <td style="white-space:nowrap">${t.end}</td>
-      <td><span class="pill ${sc(status(t))}">${status(t)}</span></td>
-      <td><span class="pill ${l.c}">${l.x}</span></td>
-      <td><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td>
-      <td style="width:80px;white-space:nowrap;text-align:center">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
-}
-
+function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${t.id}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${t.deadline}</b></td><td data-label="เริ่มวันที่">${t.start}</td><td data-label="ถึงวันที่">${t.end}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${t.progress}%</b><div class="bar"><i style="width:${t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${t.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${t.id}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${v}" ${String(sel)===String(v)?'selected':''}>${l}</option>`).join('');
  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
