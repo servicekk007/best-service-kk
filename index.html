@@ -103,7 +103,7 @@ main{padding:12px;gap:12px}.card{padding:16px;border-radius:20px}.hd h1{font-siz
 @media(max-width:820px){.g4f{grid-template-columns:repeat(2,1fr)}}
 </style></head><body>
 <aside>
- <div class="logo"><i>✦</i><div><b>BEST Service kk</b></div></div>
+ <div class="logo"><img src="logo.png" alt="Logo" style="width:46px;height:46px;border-radius:14px;object-fit:contain;"><div><b>BEST SERVICE KK</b></div></div>
  <div class="box"><small>🛡 สิทธิ์ผู้ใช้งาน:</small><div class="seg"><button id="rH">👑 หัวหน้างาน</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
@@ -140,8 +140,8 @@ const VIEWS={
   cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
   em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
   db:['Dashboard การทำงานของพนักงานทั้งหมดและรายบุคคล','Dashboard พนักงาน'],
-  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ 💼'],
-  sl:['งานขายและติดตามใบเสนอราคา','งานขาย 📈']
+  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ '],
+  sl:['งานขายและติดตามใบเสนอราคา','งานขาย ']
 };
 const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',db:'📊',ct:'💼',sl:'📈'},SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',db:'Dashboard',ct:'สัญญา',sl:'งานขาย'};
 
@@ -372,14 +372,30 @@ function editE(id){
   w(async()=>{ await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' }); toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว'); });
 }
 
-const isDark = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b1020';
-const applyTheme = t => { if(t) document.documentElement.dataset.theme = t; $('#dm').textContent = isDark() ? '☀️' : '🌙'; };
+const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark' || (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+const applyTheme = t => { 
+  document.documentElement.setAttribute('data-theme', t); 
+  $('#dm').textContent = t === 'dark' ? '☀️' : '🌙'; 
+};
+
+// เช็คเวลาปัจจุบัน (06:00 - 17:59 เป็น light, นอกนั้นเป็น dark)
 const hour = new Date().getHours();
 const autoTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+
+// โหลดค่าเดิมที่เคยเลือกไว้ (ถ้ายังไม่เคยเลือก ให้ใช้ตามเวลาปัจจุบัน)
 let currentTheme = localStorage.getItem('theme');
-if (!currentTheme || (hour === 6 || hour === 18)) { currentTheme = autoTheme; localStorage.setItem('theme', currentTheme); }
+if (!currentTheme) {
+  currentTheme = autoTheme;
+  localStorage.setItem('theme', currentTheme);
+}
 applyTheme(currentTheme);
-$('#dm').onclick = () => { const t = isDark() ? 'light' : 'dark'; localStorage.setItem('theme', t); applyTheme(t); };
+
+// ปุ่มกดสลับธีม
+$('#dm').onclick = () => { 
+  const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
+  localStorage.setItem('theme', nextTheme); 
+  applyTheme(nextTheme); 
+};
 
 $('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
  const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
@@ -414,7 +430,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "********************************-******",
+  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
