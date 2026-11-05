@@ -172,7 +172,7 @@ function render(){
       <button class="btn ${subView==='ov2'?'d':''}" onclick="subView='ov2';render()">2. Dashboard พนักงาน</button>
       <button class="btn ${subView==='ov3'?'d':''}" onclick="subView='ov3';render()">3. Dashboard สัญญาโครงการ</button>
       <button class="btn ${subView==='ov4'?'d':''}" onclick="subView='ov4';render()">4. Dashboard งานขาย</button>
-    </div>`+({ov1:ov, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
+    </div>`+({ov1:overviewMain, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
   } else {
     v.innerHTML=({tb,cal,em,ct:contracts,sl:sales})[view]();
   }
@@ -182,8 +182,8 @@ function render(){
   if(aid){const n=document.getElementById(aid);if(n){n.focus();if(ps!=null){try{n.setSelectionRange(ps,pe)}catch(_){}}}}
 }
 
-function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
-function ov2(){
+function overviewMain(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+overviewMainContent()}
+function overviewMainContent(){
   const total = T.length, done = T.filter(t => t.progress >= 100).length, run = T.filter(t => t.progress > 0 && t.progress < 100).length, wait = T.filter(t => t.progress === 0).length, nr = T.filter(near).length, p = avg(T);
   const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
   const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0;
@@ -512,22 +512,22 @@ function salesDash(){
 }
 
 function contracts(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
   const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
   const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร ${head?'(จัดการได้เฉพาะหัวหน้างาน)':''}</p></div>${head?'<button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button>':''}</div>
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
-  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th>${head?'<th>จัดการ</th>':''}</tr></thead><tbody>
+  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td>${head?`<td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td>`:''}</tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
 function closeMod(){mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit}
 
 function openC(id){
+  if(!head) return;
   editC = Contracts.find(c => c.id === id) || null;
   const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
@@ -553,8 +553,6 @@ function openC(id){
 const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{ await db.doc('contracts/'+id).delete(); toast('🗑 ลบสัญญาโครงการแล้ว'); });
 
 function sales(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลงานขายและใบเสนอราคา กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-
   const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort().reverse();
   const grandTotalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
 
@@ -580,7 +578,7 @@ function sales(){
 
   const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px;color:var(--mu)">${n}</small><div class="num" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย ${head?'':'(โหมดอ่านอย่างเดียว)'}</p></div>${head?'<button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button>':''}</div>
 
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
@@ -627,7 +625,7 @@ function sales(){
     <th style="width:100px">ต้นทุน</th>
     <th style="width:100px">กำไรสุทธิ</th>
     <th style="width:140px">สถานะใบเสนอราคา</th>
-    <th style="width:80px">จัดการ</th>
+    ${head?'<th style="width:80px">จัดการ</th>':''}
   </tr></thead><tbody>
   ${filteredSales.map((s,i)=>`<tr>
     <td style="text-align:center">${i+1}</td>
@@ -638,12 +636,13 @@ function sales(){
     <td style="color:var(--yw)">${money(s.cost)}</td>
     <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
     <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
-    <td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>
+    ${head?`<td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>`:''}
   </tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
 function openS(id){
+  if(!head) return;
   editS = Sales.find(x => x.id === id) || null;
   const s = editS || {date:TODAY, name:'', loc:'', val:'', cost:'', status:'วางบิลแล้ว', note:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
@@ -799,7 +798,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
