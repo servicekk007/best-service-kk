@@ -26,7 +26,7 @@ main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:
 .st small{color:var(--mu);font-weight:600}.num{font-size:32px;font-weight:800;margin:10px 0 4px}.num span{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
 .big{font-size:56px;font-weight:800;color:var(--pri);text-align:center;margin:14px 0 4px}
 .bar{height:8px;border-radius:9px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981)}
-.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid;white-space:nowrap}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:600;border:1px solid;white-space:nowrap}
 .p0{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.p1{color:#2563eb;background:#eff6ff;border-color:#bfdbfe}.p2{color:#d97706;background:#fffbeb;border-color:#fde68a}.p3{color:#e11d48;background:#fff1f2;border-color:#fecdd3}
 .s-run{color:#4f46e5;background:#eef2ff;border-color:#c7d2fe}.s-done{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.s-wait{color:#64748b;background:var(--soft);border-color:var(--bd)}.s-late{color:#e11d48;background:#fff1f2;border-color:#fecdd3}
 .pc{border:1px solid var(--bd);border-radius:16px;padding:12px;text-align:center}.pc b{display:block;font-size:24px;margin:6px 0 2px}.pc small{color:var(--mu)}
@@ -34,14 +34,19 @@ main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:
 input,select,textarea{font:14px Sarabun;border:1px solid var(--bd);border-radius:14px;padding:10px 14px;background:var(--soft);color:var(--tx)}
 .tools input{flex:1;min-width:200px}
 
-/* ปรับตารางทุกหน้าให้พอดีจอ 100% ไม่ให้มีแถบเลื่อนล้น */
-.tw{width:100%;max-width:100%;overflow-x:hidden;border-radius:16px}
-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px}
-th,td{padding:7px 5px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;overflow:hidden;text-overflow:ellipsis;word-break:break-word}
+/* ปรับสไตล์ตารางใหม่: ให้คอลัมน์ ลำดับ, วันที่, จัดการ กะทัดรัด ส่วนช่องอื่นขยายเต็มตา */
+.tw{width:100%;max-width:100%;overflow-x:auto;border-radius:16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:10px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 
-.av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:10px;padding:2px 6px;margin:1px;font-size:10.5px;font-weight:600}
-.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:2px 5px;cursor:pointer;margin-right:2px;font-size:10px}
+/* กำหนดความกว้างเฉพาะคอลัมน์ */
+table th:first-child, table td:first-child { width: 55px; white-space: nowrap; } /* ลำดับ */
+table th:nth-child(2), table td:nth-child(2) { width: 100px; white-space: nowrap; } /* วันที่ / เพิ่มเมื่อ */
+table th:last-child, table td:last-child { width: 90px; white-space: nowrap; } /* จัดการ */
+
+.av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:10px;padding:3px 8px;margin:2px;font-size:11px;font-weight:600}
+.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
 .cal .h{background:var(--soft);border-radius:12px;padding:10px;text-align:center;font-weight:600;font-size:13px}
 .cal .d{min-height:110px;border:1px solid var(--bd);border-radius:14px;padding:8px;font-weight:600;font-size:13px;display:flex;flex-direction:column;gap:4px}
@@ -250,7 +255,7 @@ function contracts(){
 
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
   ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${Number(ct.val||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</b></td><td style="color:var(--yw)">${Number(ct.cost||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td style="color:var(--gn);font-weight:700">${Number(ct.profit||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td><td><span class="pill s-done">${ct.status}</span></td><td><span class="pill s-run">${ct.pay}</span></td><td><button class="ib" onclick="openC('${ct.id}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${ct.id}')">🗑</button></td></tr>`).join('')}
   </tbody></table></div></div>`;
 }
