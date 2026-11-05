@@ -123,7 +123,7 @@ const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>
 const PR=['ปกติ','สำคัญ','ด่วน','ด่วนมาก'],TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
-let T=[],E=[],Contracts=[],Sales=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',db=null,edit=null,editC=null,editS=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -296,14 +296,19 @@ function sales(){
     return {year: y, val: yVal, pct: yPct, count: ySales.length};
   });
 
-  const filteredSales = (salesYear ? Sales.filter(x => (x.date || '').startsWith(salesYear)) : Sales)
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  // กรองตามปี, คำค้นหา (q) และสถานะ (s) พร้อมเรียงลำดับตามวันที่จากใหม่ไปเก่า
+  const filteredSales = Sales.filter(x => {
+    const matchYear = !salesYear || (x.date || '').startsWith(salesYear);
+    const matchQ = !salesFlt.q || (x.name + x.loc + (x.note||'')).toLowerCase().includes(salesFlt.q.toLowerCase());
+    const matchS = !salesFlt.s || x.status === salesFlt.s;
+    return matchYear && matchQ && matchS;
+  }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
   const totalVal = filteredSales.reduce((s,x)=>s+(+x.val||0),0);
   const totalCost = filteredSales.reduce((s,x)=>s+(+x.cost||0),0);
   const totalProfit = filteredSales.reduce((s,x)=>s+(+x.profit||0),0);
   
-  const currentYearPercent = (!salesYear) ? '100.0' : (grandTotalVal > 0 ? ((totalVal / grandTotalVal) * 100).toFixed(1) : '0.0');
+  const currentYearPercent = (!salesYear) ? '100.0' : (grandTotalVal > 0 ? ((filteredSales.reduce((s,x)=>s+(+x.val||0),0) / grandTotalVal) * 100).toFixed(1) : '0.0');
 
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<span>บาท</span></div></div>`;
 
@@ -315,7 +320,7 @@ function sales(){
       <option value="">-- ทุกปีทั้งหมด (รวมทุกปี) --</option>
       ${allYears.map(y=>`<option value="${y}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${y})</option>`).join('')}
     </select>
-    <div style="margin-left:auto;font-weight:600;color:var(--pri);font-size:13.5px">สัดส่วนยอดขาย: <span style="font-size:15px">${currentYearPercent}%</span> <small style="color:var(--mu);font-weight:400">(เทียบยอดรวม)</small></div>
+    <div style="margin-left:auto;font-weight:600;color:var(--pri);font-size:13.5px">สัดส่วนยอดขาย: <span style="font-size:15px">${currentYearPercent}%</span></div>
   </div>
 
   <div class="card" style="margin-top:12px;padding:10px 14px;background:var(--soft)">
@@ -330,6 +335,18 @@ function sales(){
         <div style="font-size:13px;font-weight:700;color:var(--pri);margin-top:1px">${ys.pct}% <span style="font-size:10px;color:var(--mu);font-weight:400">(${Number(ys.val).toLocaleString()} ฿)</span></div>
       </div>`).join('')}
     </div>
+  </div>
+
+  <!-- แผงเครื่องมือค้นหาและกรองข้อมูลงานขาย -->
+  <div class="card tools" style="margin-top:12px;padding:12px 16px">
+    🔍<input placeholder="ค้นหาชื่อโครงการ, สถานที่ หรือหมายเหตุ..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()">
+    <select onchange="salesFlt.s=this.value;render()" style="max-width:240px;padding:8px 10px;font-size:13px">
+      <option value="">-- ทุกสถานะใบเสนอราคา --</option>
+      <option value="วางบิลแล้ว" ${salesFlt.s==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option>
+      <option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${salesFlt.s==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option>
+      <option value="อยู่ระหว่างรอดำเนินการ" ${salesFlt.s==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option>
+    </select>
+    ${(salesFlt.q || salesFlt.s)?`<button class="btn" onclick="salesFlt={q:'',s:''};render()" style="padding:8px 12px;font-size:12px">ล้างตัวกรอง</button>`:''}
   </div>
 
   <div class="grid g3" style="margin-top:12px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
