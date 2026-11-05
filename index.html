@@ -277,28 +277,120 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
-// หน้า Dashboard สัญญาโครงการ
+// หน้า Dashboard สัญญาโครงการและรายได้ (อัปเดตใหม่พร้อมกราฟครบถ้วน)
 function contractsDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+  
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
   const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
   const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
-  const signedCount = Contracts.filter(c=>c.status==='เซ็นสัญญาแล้ว').length;
+  const totalContracts = Contracts.length;
+  
+  // รวบรวมข้อมูลแยกตามโรงพยาบาล/สถานที่
+  const locMap = {};
+  Contracts.forEach(c => {
+    const loc = c.loc || 'ไม่ระบุสถานที่';
+    if(!locMap[loc]) locMap[loc] = {val: 0, cost: 0, profit: 0, count: 0};
+    locMap[loc].val += (+c.val || 0);
+    locMap[loc].cost += (+c.cost || 0);
+    locMap[loc].profit += (+c.profit || 0);
+    locMap[loc].count += 1;
+  });
+  
+  const hospitalNames = Object.keys(locMap);
+  const totalHospitals = hospitalNames.length;
+
+  // คำนวณสีสำหรับพายชาร์ต (สัดส่วนมูลค่างานแต่ละโรงพยาบาล)
+  let cumulativePercent = 0;
+  const pieColors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#3b82f6'];
+  const pieSlices = hospitalNames.map((loc, idx) => {
+    const item = locMap[loc];
+    const pct = totalVal > 0 ? (item.val / totalVal) * 100 : 0;
+    const start = cumulativePercent;
+    cumulativePercent += pct;
+    const color = pieColors[idx % pieColors.length];
+    return {loc, val: item.val, pct: pct.toFixed(1), start, end: cumulativePercent, color};
+  });
+  const conicGradient = totalVal > 0 ? pieSlices.map(s => `${s.color} ${s.start}% ${s.end}%`).join(', ') : 'var(--bd) 0% 100%';
+
+  const maxLocVal = Math.max(...hospitalNames.map(l => locMap[l].val), 1);
+  const maxProfitCost = Math.max(...hospitalNames.map(l => Math.max(locMap[l].cost, locMap[l].profit)), 1);
+
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  return `<div class="card">
-    <b>📊 Dashboard สรุปสัญญาโครงการและรายได้</b>
-    <p style="color:var(--mu);font-size:13px">รายงานวิเคราะห์มูลค่าสัญญา ต้นทุน และกำไรสุทธิจากโครงการทั้งหมด</p>
-  </div>
+  return `<div class="card hd"><div><b style="font-size:18px">📊 Dashboard สรุปสัญญาโครงการและรายได้</b><p>วิเคราะห์ข้อมูลภาพรวมมูลค่า ต้นทุน กำไร และสัดส่วนสัญญาบริการแยกตามโรงพยาบาล</p></div></div>
+  
   <div class="grid g4" style="margin-top:16px">
     ${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}
     ${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}
     ${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}
-    <div class="card st"><small>สัญญาที่เซ็นแล้ว</small><div class="num" style="color:var(--bl)">${signedCount}<span>โครงการ</span></div></div>
+    <div class="card st"><small>สัญญาบริการทั้งหมด</small><div class="num" style="color:var(--bl)">${totalContracts}<span>สัญญา</span></div></div>
   </div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th></tr></thead><tbody>
-  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td></tr>`).join('')}
-  </tbody></table></div></div>`;
+
+  <div class="card st" style="margin-top:16px;background:var(--soft);padding:16px">
+    <div style="font-size:14px;font-weight:700;color:var(--pri);margin-bottom:4px">🏥 โรงพยาบาลที่ได้รับสัญญาบริการ</div>
+    <div style="font-size:28px;font-weight:800">${totalHospitals} <span style="font-size:14px;color:var(--mu);font-weight:400">แห่งทั่วประเทศ</span></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <!-- กราฟวงกลม สัดส่วนเปอร์เซ็นต์มูลค่างานแต่ละโรงพยาบาล -->
+    <div class="card">
+      <b>🔵 สัดส่วนมูลค่างานแยกตามโรงพยาบาล</b>
+      <p style="color:var(--mu);font-size:12.5px;margin-bottom:14px">แสดงเปอร์เซ็นต์มูลค่าสัญญาบริการของแต่ละโรงพยาบาลเทียบกับยอดรวม</p>
+      <div class="pie-container">
+        <div class="pie-chart" style="background: conic-gradient(${conicGradient});"></div>
+        <div class="pie-legend" style="max-height:140px;overflow-y:auto">
+          ${pieSlices.map(s=>`<div class="pie-item"><div class="pie-dot" style="background:${s.color}"></div><span style="font-size:12px">${s.loc} (${s.pct}%)</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- กราฟแท่งเปรียบเทียบสัญญาบริการในแต่ละโรงพยาบาล และแบ่งตามมูลค่า -->
+    <div class="card">
+      <b>📊 เปรียบเทียบมูลค่าสัญญาตามโรงพยาบาล</b>
+      <p style="color:var(--mu);font-size:12.5px;margin-bottom:14px">แสดงมูลค่างาน (Pre-VAT) แยกตามโรงพยาบาล</p>
+      <div style="display:flex;align-items:flex-end;gap:16px;height:160px;padding-top:20px;border-bottom:1px solid var(--bd);overflow-x:auto">
+        ${hospitalNames.map(loc => {
+          const val = locMap[loc].val;
+          const h = Math.round((val / maxLocVal) * 100);
+          return `<div style="flex:1;min-width:60px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+            <span style="font-size:9.5px;color:var(--mu);margin-bottom:4px">${kfmt(val)}</span>
+            <div style="width:100%;max-width:45px;height:${Math.max(h, 6)}%;background:var(--pri);border-radius:6px 6px 0 0" title="${loc}: ${val.toLocaleString()} บาท"></div>
+            <span style="font-size:11px;font-weight:600;margin-top:6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%">${loc}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- กราฟแท่งเปรียบเทียบต้นทุน และกำไร -->
+  <div class="card" style="margin-top:16px">
+    <b>📊 กราฟเปรียบเทียบต้นทุนและกำไรสุทธิแยกตามโรงพยาบาล</b>
+    <p style="color:var(--mu);font-size:12.5px;margin-bottom:16px">เปรียบเทียบสัดส่วนระหว่างต้นทุน (สีส้ม) และกำไรสุทธิ (สีเขียว)</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${hospitalNames.map(loc => {
+        const item = locMap[loc];
+        const costH = Math.round((item.cost / maxProfitCost) * 100);
+        const profitH = Math.round((item.profit / maxProfitCost) * 100);
+        return `<div style="background:var(--soft);padding:12px 16px;border-radius:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px">
+            <b>📍 ${loc}</b>
+            <span style="color:var(--mu)">สัญญา: ${item.count} โครงการ | มูลค่ารวม: <b>${money(item.val)}</b> บาท</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--yw);margin-bottom:3px"><span>ต้นทุนรวม</span><span>${money(item.cost)} ฿</span></div>
+              <div class="bar" style="height:7px"><i style="width:${costH}%;background:var(--yw)"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--gn);margin-bottom:3px"><span>กำไรสุทธิ</span><span>${money(item.profit)} ฿</span></div>
+              <div class="bar" style="height:7px"><i style="width:${profitH}%;background:var(--gn)"></i></div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 
 // หน้า Dashboard งานขาย
@@ -610,7 +702,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
