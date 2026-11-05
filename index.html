@@ -365,10 +365,10 @@ function sales(){
     </div>`).join('')}
   </div>
 
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
+  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:' সবকিছু'||'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
 
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>วันที่</th><th>โครงการ / รายละเอียด</th><th>สถานที่</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
-  ${filteredSales.map((s,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(s.date)}</span></td><td style="text-align:left"><b>${esc(s.name)}</b>${s.note&&s.note!=='-'?`<br><small style="color:var(--mu);font-size:11px">📝 ${esc(s.note)}</small>`:''}</td><td style="text-align:left">📍 ${esc(s.loc)}</td><td><b>${money(s.val)}</b></td><td style="color:var(--yw)">${money(s.cost)}</td><td style="color:var(--gn);font-weight:700">${money(s.profit)}</td><td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td><td><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td></tr>`).join('')}
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th style="width:50px">ลำดับ</th><th style="width:110px;white-space:nowrap">วันที่</th><th style="text-align:left">โครงการ / รายละเอียด</th><th style="text-align:left">สถานที่</th><th style="width:110px">มูลค่าก่อน VAT</th><th style="width:100px">ต้นทุน</th><th style="width:100px">กำไรสุทธิ</th><th style="width:130px">สถานะใบเสนอราคา</th><th style="width:80px">จัดการ</th></tr></thead><tbody>
+  ${filteredSales.map((s,i)=>`<tr><td style="text-align:center">${i+1}</td><td style="white-space:nowrap"><b>${esc(s.date)}</b></td><td style="text-align:left"><b>${esc(s.name)}</b>${s.note&&s.note!=='-'?`<br><small style="color:var(--mu);font-size:11px">📝 ${esc(s.note)}</small>`:''}</td><td style="text-align:left">📍 ${esc(s.loc)}</td><td><b>${money(s.val)}</b></td><td style="color:var(--yw)">${money(s.cost)}</td><td style="color:var(--gn);font-weight:700">${money(s.profit)}</td><td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td><td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td></tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
@@ -530,7 +530,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
 let privUnsubs=[];
 function watchPrivate(){
