@@ -41,10 +41,11 @@ input,select,textarea{font:14px Sarabun;border:1px solid var(--bd);border-radius
 table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
+table th:first-child, table td:first-child { width: 55px; white-space: nowrap; }
+table th:nth-child(2), table td:nth-child(2) { width: 100px; white-space: nowrap; }
+table th:last-child, table td:last-child { width: 90px; white-space: nowrap; }
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;max-width:180px;margin:0 auto}
-.assignee-chip{display:inline-flex;align-items:center;background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
-
+.av{display:inline-block;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:10px;padding:3px 8px;margin:2px;font-size:11px;font-weight:600}
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
 .cal .h{background:var(--soft);border-radius:12px;padding:10px;text-align:center;font-weight:600;font-size:13px}
@@ -158,6 +159,7 @@ function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<butt
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;ani=true;scrollTo(0,0);render()}};
 
 function render(){
+  // จำตำแหน่งโฟกัส (เฉพาะช่องที่มี id อยู่ในพื้นที่แสดงผล) เพื่อไม่ให้พิมพ์ค้นหาแล้วหลุด
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;
   let ps=null,pe=null;
@@ -180,6 +182,7 @@ function ov2(){
   const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
   const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
 
+  // ส่วนกราฟยอดขาย: แสดงเฉพาะหัวหน้างาน
   let salesBlock='';
   if(head){
     const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort();
@@ -398,40 +401,19 @@ function openS(id){
 const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); });
 
 function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
-
-function rows(){
-  return list().map((t,i)=>{
-    const l=left(t);
-    return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
-      <td style="width:50px;text-align:center">${i+1}</td>
-      <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
-      <td style="width:90px"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
-      <td style="width:100px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
-      <td style="width:120px;white-space:nowrap;font-size:11px;color:var(--mu)">${esc(t.start)}<br>➔ ${esc(t.end)}</td>
-      <td style="width:110px"><span class="pill ${sc(status(t))}">${status(t)}</span></td>
-      <td style="width:110px"><span class="pill ${l.c}">${l.x}</span></td>
-      <td style="width:120px"><b>${+t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${+t.progress}%"></i></div></td>
-      <td style="width:80px;white-space:nowrap;text-align:center">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
-}
-
+function rows(){return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer"><td data-label="ลำดับ">${i+1}</td><td data-label="เพิ่มเมื่อ">${esc(t.created)}</td><td><b>${esc(t.title)}</b></td><td data-label="ผู้รับผิดชอบ">${t.assignees.map(a=>`<span class="av">${esc(nm(a))}</span>`).join('')}</td><td data-label="ความสำคัญ"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td><td data-label="DEADLINE"><b>${esc(t.deadline)}</b></td><td data-label="เริ่มวันที่">${esc(t.start)}</td><td data-label="ถึงวันที่">${esc(t.end)}</td><td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td><td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td><td data-label="ความคืบหน้า"><b>${+t.progress}%</b><div class="bar"><i style="width:${+t.progress}%"></i></div></td><td data-label="จัดการ">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="12" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>'}
 function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>กำหนดส่ง (Deadline)</th><th>ระยะเวลา (เริ่ม ➔ สิ้นสุด)</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
-}
-
+ <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>เพิ่มเมื่อ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>DEADLINE</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ (AUTO)</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`}
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
  let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw">${['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
  for(let i=0;i<off;i++)h+='<div class="d e"></div>';
  for(let d=1;d<=n;d++){const s=ymd(new Date(y,m,d));h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`}
- return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
-}
+ return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`}
 const mine=id=>T.filter(t=>t.assignees.includes(id));
 function em(){return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้างในระบบ (รองรับ 1 งานหลายผู้รับผิดชอบ)</p></div>${head?'<button class="btn d" onclick="addE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div>${head?`<div><button class="ib" onclick="editE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></div>`:''}</div>
@@ -445,6 +427,7 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
 
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
 
+// คลิกพื้นหลังเพื่อปิดป๊อปอัป — ถ้าเป็นฟอร์มหลัก ให้คืน handler เดิมด้วย
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
@@ -474,7 +457,7 @@ function openProgress(id){
     const newProg = +f.get('progress');
     const targetTask = T.find(x => x.id === id);
     const old = targetTask ? targetTask.progress : 0;
-    if(targetTask) targetTask.progress = newProg;
+    if(targetTask) targetTask.progress = newProg;   // อัปเดตหน้าจอทันที (optimistic)
     closeMod();
     render();
     try {
@@ -483,7 +466,7 @@ function openProgress(id){
       toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
     } catch(err) {
       console.error(err);
-      if(targetTask) targetTask.progress = old;
+      if(targetTask) targetTask.progress = old;     // ย้อนค่ากลับถ้าบันทึกไม่สำเร็จ
       render();
       toast('❌ บันทึกไม่สำเร็จ (ไม่มีสิทธิ์หรือออฟไลน์)');
     }
@@ -531,9 +514,10 @@ $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset()}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
 
+// สมัครรับข้อมูลที่เป็นความลับ (สัญญา/งานขาย) เฉพาะตอนล็อกอินเป็นหัวหน้างานแล้ว
 let privUnsubs=[];
 function watchPrivate(){
-  privUnsubs.forEach(u=>{try{u&&u()}catch(_}{}});privUnsubs=[];
+  privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
   if(!head||!db)return;
   privUnsubs=[
     db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error),
@@ -602,7 +586,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",   // <-- แทนที่ด้วย API Key จริงของคุณ
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
