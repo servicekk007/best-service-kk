@@ -28,11 +28,15 @@ main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:
 .grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .st small{color:var(--mu);font-weight:600}.num{font-size:32px;font-weight:800;margin:10px 0 4px}.num span{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
 .big{font-size:56px;font-weight:800;color:var(--pri);text-align:center;margin:14px 0 4px}
-.bar{height:8px;border-radius:9px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981)}
+.bar{height:10px;border-radius:9px;background:var(--bd);overflow:hidden;display:flex;transition:transform .3s}
+.bar:hover{transform:scaleY(1.2)}
+.bar i{display:block;height:100%;transition:width .6s ease}
 .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:600;border:1px solid;white-space:nowrap}
 .p0{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.p1{color:#2563eb;background:#eff6ff;border-color:#bfdbfe}.p2{color:#d97706;background:#fffbeb;border-color:#fde68a}.p3{color:#e11d48;background:#fff1f2;border-color:#fecdd3}
 .s-run{color:#4f46e5;background:#eef2ff;border-color:#c7d2fe}.s-done{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.s-wait{color:#64748b;background:var(--soft);border-color:var(--bd)}.s-late{color:#e11d48;background:#fff1f2;border-color:#fecdd3}
-.pc{border:1px solid var(--bd);border-radius:16px;padding:12px;text-align:center}.pc b{display:block;font-size:24px;margin:6px 0 2px}.pc small{color:var(--mu)}
+.pc{border:1px solid var(--bd);border-radius:16px;padding:12px;text-align:center;transition:all .25s ease}
+.pc:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.06)}
+.pc b{display:block;font-size:24px;margin:6px 0 2px}.pc small{color:var(--mu)}
 .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 input,select,textarea{font:14px Sarabun;border:1px solid var(--bd);border-radius:14px;padding:10px 14px;background:var(--soft);color:var(--tx)}
 .tools input{flex:1;min-width:200px}
@@ -42,7 +46,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:10px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;max-width:180px;margin:0 auto}
+.assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-start;align-items:center;max-width:200px}
 .assignee-chip{display:inline-flex;align-items:center;background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
 
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px}
@@ -186,84 +190,106 @@ function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="marg
 function ov2(){
   const total = T.length, done = T.filter(t => t.progress >= 100).length, run = T.filter(t => t.progress > 0 && t.progress < 100).length, wait = T.filter(t => t.progress === 0).length, nr = T.filter(near).length, p = avg(T);
   const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
-  const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0;
+  const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0, pWait = total ? (wait / total) * 100 : 0;
   const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
-  const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
 
-  let salesBlock='';
-  if(head){
-    const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort();
-    const maxVal = allYears.length ? Math.max(...allYears.map(y => Sales.filter(x => (x.date || '').startsWith(y)).reduce((s,x)=>s+(+x.val||0),0)), 1) : 1;
-    const latestYear = allYears.length ? allYears[allYears.length - 1] : String(new Date().getFullYear());
-    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-    const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-    const monthVals = months.map(m => Sales.filter(x => (x.date || '').startsWith(latestYear + '-' + m)).reduce((s,x)=>s+(+x.val||0),0));
-    const maxMonthVal = Math.max(...monthVals, 1);
-    salesBlock=`<div class="card" style="margin-top:16px;background:var(--soft)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div>
-        <b style="font-size:16px">📈 กราฟวิเคราะห์และสรุปยอดขาย (Sales Analytics)</b>
-        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">แสดงเปรียบเทียบยอดขายรวม (Pre-VAT) แยกตามรายปีและรายเดือน</p>
-      </div>
-    </div>
-    <div class="grid g2" style="margin-top:10px">
-      <div class="card" style="background:var(--card);padding:16px">
-        <b style="font-size:13.5px;display:block;margin-bottom:12px">📅 สรุปยอดขายเปรียบเทียบรายปี</b>
-        ${allYears.length ? `<div style="display:flex;align-items:flex-end;gap:12px;height:140px;padding-top:20px;border-bottom:1px solid var(--bd)">
-          ${allYears.map(y => {
-            const val = Sales.filter(x => (x.date || '').startsWith(y)).reduce((s,x)=>s+(+x.val||0),0);
-            const h = Math.round((val / maxVal) * 100);
-            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
-              <span style="font-size:10px;color:var(--mu);margin-bottom:4px">${kfmt(val)}</span>
-              <div style="width:100%;max-width:40px;height:${Math.max(h, 6)}%;background:var(--pri);border-radius:6px 6px 0 0" title="${val.toLocaleString()} บาท"></div>
-              <span style="font-size:11px;font-weight:600;margin-top:6px">ปี ${+y+543}</span>
-            </div>`;
-          }).join('')}
-        </div>` : '<p style="color:var(--mu);font-size:13px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลยอดขายรายปี</p>'}
-      </div>
-      <div class="card" style="background:var(--card);padding:16px">
-        <b style="font-size:13.5px;display:block;margin-bottom:12px">📊 สรุปยอดขายรายเดือน (ปี ${+latestYear+543})</b>
-        <div style="display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:20px;border-bottom:1px solid var(--bd)">
-          ${monthVals.map((val, idx) => {
-            const h = Math.round((val / maxMonthVal) * 100);
-            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${monthNames[idx]}: ${val.toLocaleString()} บาท">
-              <div style="width:100%;height:${Math.max(h, 4)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
-              <span style="font-size:9.5px;color:var(--mu);margin-top:6px">${monthNames[idx]}</span>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-    </div>
-  </div>`;
-  }
+  // รายการความเคลื่อนไหวล่าสุด (Recent Activity Stream)
+  const recentTasks = [...T].sort((a,b)=>(b.created||'').localeCompare(a.created||'')).slice(0, 4);
 
-  return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
+  return `
+  <!-- ลูกเล่นแถบกระโดดลัดด่วน (Quick Navigation Shortcuts) -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="view='tb';render()">
+      <span style="font-size:16px">☰</span> ดูตารางงานทั้งหมด (${total})
+    </button>
+    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="subView='ov3';render()">
+      <span style="font-size:16px">💼</span> วิเคราะห์สัญญาโครงการ
+    </button>
+    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="subView='ov4';render()">
+      <span style="font-size:16px">📈</span> วิเคราะห์งานขาย
+    </button>
+  </div>
 
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:16px">
-    <div class="card">
-      <b>📊 สัดส่วนสถานะงานรวม</b>
-      <p style="color:var(--mu);font-size:13px;margin-bottom:14px">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
-      <div class="pie-container">
-        <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
-        <div class="pie-legend">
-          <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done} งาน)</span></div>
-          <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังดำเนินการ (${run} งาน)</span></div>
-          <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait} งาน)</span></div>
-        </div>
-      </div>
+  <!-- การ์ดสถิติตัวเลขพร้อมเอฟเฟกต์คลิกกรองด่วน -->
+  <div class="grid g4">
+    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='';render()" title="คลิกดูงานทั้งหมด">
+      <small>📌 งานทั้งหมดในระบบ</small>
+      <div class="num" style="color:var(--tx)">${total}<span>รายการ</span></div>
+      <small style="font-weight:400;color:var(--pri)">คลิกเพื่อดูรายการทั้งหมด →</small>
     </div>
-    <div class="card">
-      <b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b>
-      <p style="color:var(--mu);font-size:13px">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p>
-      <div class="big">${p}%</div>
-      <p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p>
-      <div class="bar"><i style="width:${p}%"></i></div>
+    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='เสร็จสิ้น';render()" title="คลิกดูงานที่เสร็จแล้ว">
+      <small>✅ งานที่เสร็จสมบูรณ์</small>
+      <div class="num" style="color:var(--gn)">${done}<span>รายการ</span></div>
+      <small style="font-weight:400;color:var(--gn)">สำเร็จ 100% แล้ว</small>
+    </div>
+    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='กำลังดำเนินการ';render()" title="คลิกดูงานที่กำลังทำ">
+      <small>⏳ งานที่กำลังทำค้างอยู่</small>
+      <div class="num" style="color:var(--yw)">${total-done}<span>รายการ</span></div>
+      <small style="font-weight:400;color:var(--yw)">รอสะสางหรือกำลังลุย</small>
+    </div>
+    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='';render()" title="คลิกดูงานด่วนเร่งด่วน">
+      <small>🔥 งานใกล้ DEADLINE</small>
+      <div class="num" style="color:var(--rd)">${nr}<span>รายการ</span></div>
+      <small style="font-weight:400;color:var(--rd)">ต้องเร่งมือภายใน 3 วันนี้</small>
     </div>
   </div>
 
-  ${salesBlock}
+  <!-- ส่วนกราฟวงกลม & แถบความคืบหน้ารวมแบบโต้ตอบ -->
+  <div class="grid g2" style="margin-top:4px">
+    <div class="card">
+      <b>📊 สัดส่วนสถานะงานรวมแบบโต้ตอบ</b>
+      <p style="color:var(--mu);font-size:13px;margin-bottom:14px">สัดส่วนความคืบหน้าภาพรวมของภารกิจทั้งหมดในองค์กร</p>
+      <div class="pie-container">
+        <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
+        <div class="pie-legend">
+          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='เสร็จสิ้น';render()"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done})</span></div>
+          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='กำลังดำเนินการ';render()"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังทำ (${run})</span></div>
+          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='รอเริ่ม';render()"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait})</span></div>
+        </div>
+      </div>
+    </div>
 
-  <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
+    <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+      <div>
+        <b>✦ สถานะความคืบหน้ารวมของทีม (Progress Spectrum)</b>
+        <p style="color:var(--mu);font-size:13px;margin-bottom:20px">แถบจำแนกสัดส่วนงานตามสถานะปัจจุบัน</p>
+        <div class="bar" style="height:18px;border-radius:12px;margin-bottom:16px">
+          <i style="width:${pDone}%;background:var(--gn)" title="เสร็จสิ้น ${pDone.toFixed(0)}%"></i>
+          <i style="width:${total ? (run/total)*100 : 0}%;background:var(--in)" title="กำลังทำ"></i>
+          <i style="width:${total ? (wait/total)*100 : 0}%;background:var(--bd)" title="รอเริ่ม"></i>
+        </div>
+      </div>
+      <div style="background:var(--soft);padding:14px 18px;border-radius:16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <span style="font-size:12px;color:var(--mu);display:block">คะแนนความสำเร็จเฉลี่ยทีม</span>
+          <b style="font-size:20px;color:var(--pri)">${p}% ดำเนินการอยู่</b>
+        </div>
+        <div style="font-size:28px">⚡</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- แผงกิจกรรมและความเคลื่อนไหวล่าสุด (Recent Activity Stream) -->
+  <div class="card" style="margin-top:4px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b>⚡ กิจกรรมและงานอัปเดตล่าสุดในระบบ</b>
+      <button class="btn" style="padding:4px 10px;font-size:12px" onclick="view='tb';render()">ดูทั้งหมด →</button>
+    </div>
+    <div class="grid g2" style="gap:10px">
+      ${recentTasks.map(t=>`
+        <div class="row" style="margin-top:0;cursor:pointer;background:var(--soft);border-radius:14px;padding:12px" onclick="showT('${esc(t.id)}')">
+          <div style="overflow:hidden">
+            <b style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.title)}</b>
+            <small style="color:var(--mu);font-size:11px">📅 Deadline: ${esc(t.deadline)}</small>
+          </div>
+          <span class="pill ${t.progress>=100?'s-done':'s-run'}" style="flex-shrink:0">${+t.progress}%</span>
+        </div>
+      `).join('') || '<p style="color:var(--mu);font-size:13px">ยังไม่มีกิจกรรมในระบบ</p>'}
+    </div>
+  </div>
+
+  <!-- สัดส่วนงานตามระดับความสำคัญ -->
+  <div class="card" style="margin-top:4px"><b>🔥 สัดส่วนงานตามระดับความสำคัญ (Priority breakdown)</b>
     <div class="grid g4f" style="margin-top:16px">
       ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
     </div>
@@ -277,10 +303,8 @@ function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
-// หน้า Dashboard สัญญาโครงการและรายได้ (พร้อมแสดง % กำไรเทียบต้นทุน)
+// หน้า Dashboard สัญญาโครงการและรายได้
 function contractsDash(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-  
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
   const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
   const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
@@ -396,10 +420,8 @@ function contractsDash(){
   </div>`;
 }
 
-// หน้า Dashboard สรุปงานขายและใบเสนอราคา (พร้อมแสดง % กำไรเทียบต้นทุน)
+// หน้า Dashboard สรุปงานขายและใบเสนอราคา
 function salesDash(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard งานขาย กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-  
   const totalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
   const totalCost = Sales.reduce((s,x)=>s+(+x.cost||0),0);
   const totalProfit = Sales.reduce((s,x)=>s+(+x.profit||0),0);
@@ -516,22 +538,22 @@ function salesDash(){
 }
 
 function contracts(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
   const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
   const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร ${head?'(จัดการได้เฉพาะหัวหน้างาน)':''}</p></div>${head?'<button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button>':''}</div>
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
-  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th>${head?'<th>จัดการ</th>':''}</tr></thead><tbody>
+  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td>${head?`<td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td>`:''}</tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
 function closeMod(){mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit}
 
 function openC(id){
+  if(!head) return;
   editC = Contracts.find(c => c.id === id) || null;
   const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
@@ -557,8 +579,6 @@ function openC(id){
 const delC = id => confirm('ลบสัญญาโครงการนี้?') && w(async()=>{ await db.doc('contracts/'+id).delete(); toast('🗑 ลบสัญญาโครงการแล้ว'); });
 
 function sales(){
-  if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลงานขายและใบเสนอราคา กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-
   const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort().reverse();
   const grandTotalVal = Sales.reduce((s,x)=>s+(+x.val||0),0);
 
@@ -584,7 +604,7 @@ function sales(){
 
   const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px;color:var(--mu)">${n}</small><div class="num" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย ${head?'':'(โหมดอ่านอย่างเดียว)'}</p></div>${head?'<button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button>':''}</div>
 
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
@@ -631,7 +651,7 @@ function sales(){
     <th style="width:100px">ต้นทุน</th>
     <th style="width:100px">กำไรสุทธิ</th>
     <th style="width:140px">สถานะใบเสนอราคา</th>
-    <th style="width:80px">จัดการ</th>
+    ${head?'<th style="width:80px">จัดการ</th>':''}
   </tr></thead><tbody>
   ${filteredSales.map((s,i)=>`<tr>
     <td style="text-align:center">${i+1}</td>
@@ -642,12 +662,13 @@ function sales(){
     <td style="color:var(--yw)">${money(s.cost)}</td>
     <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
     <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
-    <td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>
+    ${head?`<td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>`:''}
   </tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
 function openS(id){
+  if(!head) return;
   editS = Sales.find(x => x.id === id) || null;
   const s = editS || {date:TODAY, name:'', loc:'', val:'', cost:'', status:'วางบิลแล้ว', note:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
@@ -680,7 +701,7 @@ function rows(){
     return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
       <td style="width:50px;text-align:center">${i+1}</td>
       <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
+      <td style="text-align:left"><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
       <td style="width:90px"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
       <td style="width:110px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
       <td style="width:110px;white-space:nowrap">${esc(t.start)}</td>
@@ -699,7 +720,7 @@ function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${Strin
  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
+ <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th>ลำดับ</th><th>รายละเอียดงาน</th><th style="text-align:left">ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>เริ่มวันที่</th><th>ถึงวันที่</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
 function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
@@ -720,12 +741,14 @@ document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
 
-function showT(id){const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-<div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
-<div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
-<div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`;pm.classList.add('on')}
+function showT(id){
+  const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
+  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+  <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
+  <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
+  <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
+  <div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd);background:#fff1f2;border-color:#fecdd3" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on');
+}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
@@ -768,14 +791,17 @@ ${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.cla
 
 async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
- $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
- <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
- <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
- <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
- <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
- <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
- mod.classList.add('on');$('#f').onsubmit=mainFormSubmit}
+function openT(id,date){
+  if(!head) return;
+  edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
+  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
+  <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
+  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
+  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
+  <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
+  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+  mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
+}
 
 const mainFormSubmit = async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
