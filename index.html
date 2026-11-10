@@ -70,7 +70,6 @@ th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 
 .ic{margin-right:10px}.sh,.sw{display:none}
 
-/* โลจิกแอนิเมชันแจ้งเตือนเด้งดึ๋ง (Bounce Toast) */
 @keyframes bounceIn {
   0% { opacity: 0; transform: translate(-50%, 40px) scale(0.9); }
   60% { opacity: 1; transform: translate(-50%, -10px) scale(1.02); }
@@ -87,7 +86,6 @@ th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
 .card.st,.pc,.btn,nav button{transition:transform .2s,box-shadow .2s,background .2s}
 .card.st:hover,.pc:hover{transform:translateY(-2px);box-shadow:0 8px 20px #0001}.btn:hover{transform:translateY(-1px)}
 
-/* ปรับแต่ง Toast แจ้งเตือนด่วนพร้อมเสียงซาวด์ */
 #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);background:var(--dk);color:#fff;padding:13px 24px;border-radius:99px;opacity:0;transition:opacity .3s ease;z-index:99;pointer-events:none;font-weight:600;white-space:nowrap;box-shadow:0 10px 25px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1)}
 #toast.on{opacity:1;animation:bounceIn .35s ease forwards}
 
@@ -147,7 +145,6 @@ let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Da
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
-// ระบบเล่นเสียงแจ้งเตือนสังเคราะห์ (Web Audio API Chime)
 function playBeep(type = 'success') {
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -158,8 +155,8 @@ function playBeep(type = 'success') {
     
     osc.type = 'sine';
     if (type === 'success') {
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // โน้ต D5
-      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // โน้ต A5
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08);
     } else {
       osc.frequency.setValueAtTime(300, ctx.currentTime);
       osc.frequency.setValueAtTime(200, ctx.currentTime + 0.1);
@@ -173,9 +170,7 @@ function playBeep(type = 'success') {
     
     osc.start();
     osc.stop(ctx.currentTime + 0.3);
-  } catch(e) {
-    // ป้องกันกรณี Browser บล็อก Audio Context ก่อนมี User Interaction
-  }
+  } catch(e) {}
 }
 
 const status=t=>t.progress>=100?'เสร็จสิ้น':t.progress>0?'กำลังดำเนินการ':'รอเริ่ม';
@@ -313,14 +308,12 @@ function ov2(){
   </div>`;
 }
 
-// หน้า Dashboard พนักงาน
 function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px"><div class="emp"><div><div><b style="font-size:15px">${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
  <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
 
-// หน้า Dashboard สัญญาโครงการและรายได้ (พร้อมแสดง % กำไรเทียบต้นทุน)
 function contractsDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard สัญญาโครงการ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -439,7 +432,6 @@ function contractsDash(){
   </div>`;
 }
 
-// หน้า Dashboard สรุปงานขายและใบเสนอราคา (พร้อมแสดง % กำไรเทียบต้นทุน)
 function salesDash(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูล Dashboard งานขาย กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
   
@@ -589,7 +581,7 @@ function openC(id){
     const fd = new FormData(e.target);
     const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
     const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {code: fd.get('code').trim() || '-', name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), pay: fd.get('pay'].trim() || '-'};
+    const data = {code: fd.get('code').trim() || '-', name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), pay: fd.get('pay').trim() || '-'};
     await w(async()=>{
       if(editC) { await db.doc('contracts/'+editC.id).update(data); toast('✅ บันทึกการแก้ไขสัญญาแล้ว'); playBeep('success'); }
       else { await db.doc('contracts/'+uid()).set(data); toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว'); playBeep('success'); }
@@ -768,7 +760,7 @@ $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:1
 <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
 <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
 <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on')}
+<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`;pm.classList.add('on')}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
@@ -846,7 +838,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}};
 
 let privUnsubs=[];
 function watchPrivate(){
