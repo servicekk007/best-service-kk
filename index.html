@@ -176,7 +176,7 @@ function render(){
       <button class="btn ${subView==='ov2'?'d':''}" onclick="subView='ov2';render()">2. Dashboard พนักงาน</button>
       <button class="btn ${subView==='ov3'?'d':''}" onclick="subView='ov3';render()">3. Dashboard สัญญาโครงการ</button>
       <button class="btn ${subView==='ov4'?'d':''}" onclick="subView='ov4';render()">4. Dashboard งานขาย</button>
-    </div>`+({ov1:ov, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
+    </div>`+({ov1:overviewMain, ov2:dash, ov3:contractsDash, ov4:salesDash}[subView])();
   } else {
     v.innerHTML=({tb,cal,em,ct:contracts,sl:sales})[view]();
   }
@@ -186,65 +186,75 @@ function render(){
   if(aid){const n=document.getElementById(aid);if(n){n.focus();if(ps!=null){try{n.setSelectionRange(ps,pe)}catch(_){}}}}
 }
 
-function ov(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+ov2()}
-function ov2(){
+function overviewMain(){const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';return sd+overviewMainContent()}
+function overviewMainContent(){
   const total = T.length, done = T.filter(t => t.progress >= 100).length, run = T.filter(t => t.progress > 0 && t.progress < 100).length, wait = T.filter(t => t.progress === 0).length, nr = T.filter(near).length, p = avg(T);
   const pc = [0,1,2,3].map(i => T.filter(t => t.priority === i).length);
-  const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0, pWait = total ? (wait / total) * 100 : 0;
+  const pDone = total ? (done / total) * 100 : 0, pRun = total ? (run / total) * 100 : 0;
   const conicGrad = total ? `var(--gn) 0% ${pDone}%, var(--in) ${pDone}% ${pDone + pRun}%, var(--mu) ${pDone + pRun}% 100%` : 'var(--bd) 0% 100%';
+  const c = (n,v,sub,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${v}<span>รายการ</span></div><small style="font-weight:400">${sub}</small></div>`;
 
-  // รายการความเคลื่อนไหวล่าสุด (Recent Activity Stream)
+  let salesBlock='';
+  if(head){
+    const allYears = [...new Set(Sales.map(x => (x.date || '').slice(0,4)).filter(y => y))].sort();
+    const maxVal = allYears.length ? Math.max(...allYears.map(y => Sales.filter(x => (x.date || '').startsWith(y)).reduce((s,x)=>s+(+x.val||0),0)), 1) : 1;
+    const latestYear = allYears.length ? allYears[allYears.length - 1] : String(new Date().getFullYear());
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    const monthVals = months.map(m => Sales.filter(x => (x.date || '').startsWith(latestYear + '-' + m)).reduce((s,x)=>s+(+x.val||0),0));
+    const maxMonthVal = Math.max(...monthVals, 1);
+    salesBlock=`<div class="card" style="margin-top:16px;background:var(--soft)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <b style="font-size:16px">📈 กราฟวิเคราะห์และสรุปยอดขาย (Sales Analytics)</b>
+        <p style="color:var(--mu);font-size:12.5px;margin:2px 0 0">แสดงเปรียบเทียบยอดขายรวม (Pre-VAT) แยกตามรายปีและรายเดือน</p>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:10px">
+      <div class="card" style="background:var(--card);padding:16px">
+        <b style="font-size:13.5px;display:block;margin-bottom:12px">📅 สรุปยอดขายเปรียบเทียบรายปี</b>
+        ${allYears.length ? `<div style="display:flex;align-items:flex-end;gap:12px;height:140px;padding-top:20px;border-bottom:1px solid var(--bd)">
+          ${allYears.map(y => {
+            const val = Sales.filter(x => (x.date || '').startsWith(y)).reduce((s,x)=>s+(+x.val||0),0);
+            const h = Math.round((val / maxVal) * 100);
+            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+              <span style="font-size:10px;color:var(--mu);margin-bottom:4px">${kfmt(val)}</span>
+              <div style="width:100%;max-width:40px;height:${Math.max(h, 6)}%;background:var(--pri);border-radius:6px 6px 0 0" title="${val.toLocaleString()} บาท"></div>
+              <span style="font-size:11px;font-weight:600;margin-top:6px">ปี ${+y+543}</span>
+            </div>`;
+          }).join('')}
+        </div>` : '<p style="color:var(--mu);font-size:13px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลยอดขายรายปี</p>'}
+      </div>
+      <div class="card" style="background:var(--card);padding:16px">
+        <b style="font-size:13.5px;display:block;margin-bottom:12px">📊 สรุปยอดขายรายเดือน (ปี ${+latestYear+543})</b>
+        <div style="display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:20px;border-bottom:1px solid var(--bd)">
+          ${monthVals.map((val, idx) => {
+            const h = Math.round((val / maxMonthVal) * 100);
+            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${monthNames[idx]}: ${val.toLocaleString()} บาท">
+              <div style="width:100%;height:${Math.max(h, 4)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
+              <span style="font-size:9.5px;color:var(--mu);margin-top:6px">${monthNames[idx]}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+  }
+
   const recentTasks = [...T].sort((a,b)=>(b.created||'').localeCompare(a.created||'')).slice(0, 4);
 
-  return `
-  <!-- ลูกเล่นแถบกระโดดลัดด่วน (Quick Navigation Shortcuts) -->
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="view='tb';render()">
-      <span style="font-size:16px">☰</span> ดูตารางงานทั้งหมด (${total})
-    </button>
-    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="subView='ov3';render()">
-      <span style="font-size:16px">💼</span> วิเคราะห์สัญญาโครงการ
-    </button>
-    <button class="btn" style="flex:1;min-width:140px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px" onclick="subView='ov4';render()">
-      <span style="font-size:16px">📈</span> วิเคราะห์งานขาย
-    </button>
-  </div>
+  return `<div class="grid g4">${c('งานทั้งหมด',T.length,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
 
-  <!-- การ์ดสถิติตัวเลขพร้อมเอฟเฟกต์คลิกกรองด่วน -->
-  <div class="grid g4">
-    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='';render()" title="คลิกดูงานทั้งหมด">
-      <small>📌 งานทั้งหมดในระบบ</small>
-      <div class="num" style="color:var(--tx)">${total}<span>รายการ</span></div>
-      <small style="font-weight:400;color:var(--pri)">คลิกเพื่อดูรายการทั้งหมด →</small>
-    </div>
-    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='เสร็จสิ้น';render()" title="คลิกดูงานที่เสร็จแล้ว">
-      <small>✅ งานที่เสร็จสมบูรณ์</small>
-      <div class="num" style="color:var(--gn)">${done}<span>รายการ</span></div>
-      <small style="font-weight:400;color:var(--gn)">สำเร็จ 100% แล้ว</small>
-    </div>
-    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='กำลังดำเนินการ';render()" title="คลิกดูงานที่กำลังทำ">
-      <small>⏳ งานที่กำลังทำค้างอยู่</small>
-      <div class="num" style="color:var(--yw)">${total-done}<span>รายการ</span></div>
-      <small style="font-weight:400;color:var(--yw)">รอสะสางหรือกำลังลุย</small>
-    </div>
-    <div class="card st" style="cursor:pointer" onclick="view='tb';flt.s='';render()" title="คลิกดูงานด่วนเร่งด่วน">
-      <small>🔥 งานใกล้ DEADLINE</small>
-      <div class="num" style="color:var(--rd)">${nr}<span>รายการ</span></div>
-      <small style="font-weight:400;color:var(--rd)">ต้องเร่งมือภายใน 3 วันนี้</small>
-    </div>
-  </div>
-
-  <!-- ส่วนกราฟวงกลม & แถบความคืบหน้ารวมแบบโต้ตอบ -->
-  <div class="grid g2" style="margin-top:4px">
+  <div class="grid g2" style="margin-top:16px">
     <div class="card">
       <b>📊 สัดส่วนสถานะงานรวมแบบโต้ตอบ</b>
       <p style="color:var(--mu);font-size:13px;margin-bottom:14px">สัดส่วนความคืบหน้าภาพรวมของภารกิจทั้งหมดในองค์กร</p>
       <div class="pie-container">
         <div class="pie-chart" style="background: conic-gradient(${conicGrad});"></div>
         <div class="pie-legend">
-          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='เสร็จสิ้น';render()"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done})</span></div>
-          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='กำลังดำเนินการ';render()"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังทำ (${run})</span></div>
-          <div class="pie-item" style="cursor:pointer" onclick="view='tb';flt.s='รอเริ่ม';render()"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait})</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done})</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังทำ (${run})</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait})</span></div>
         </div>
       </div>
     </div>
@@ -269,11 +279,9 @@ function ov2(){
     </div>
   </div>
 
-  <!-- แผงกิจกรรมและความเคลื่อนไหวล่าสุด (Recent Activity Stream) -->
-  <div class="card" style="margin-top:4px">
+  <div class="card" style="margin-top:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <b>⚡ กิจกรรมและงานอัปเดตล่าสุดในระบบ</b>
-      <button class="btn" style="padding:4px 10px;font-size:12px" onclick="view='tb';render()">ดูทั้งหมด →</button>
     </div>
     <div class="grid g2" style="gap:10px">
       ${recentTasks.map(t=>`
@@ -288,8 +296,9 @@ function ov2(){
     </div>
   </div>
 
-  <!-- สัดส่วนงานตามระดับความสำคัญ -->
-  <div class="card" style="margin-top:4px"><b>🔥 สัดส่วนงานตามระดับความสำคัญ (Priority breakdown)</b>
+  ${salesBlock}
+
+  <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
     <div class="grid g4f" style="margin-top:16px">
       ${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}
     </div>
@@ -741,14 +750,12 @@ document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
 
-function showT(id){
-  const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-  <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
-  <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
-  <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-  <div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd);background:#fff1f2;border-color:#fecdd3" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on');
-}
+function showT(id){const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
+$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+<div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
+<div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
+<div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
+<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}</div>`;pm.classList.add('on')}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
@@ -791,17 +798,14 @@ ${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.cla
 
 async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function openT(id,date){
-  if(!head) return;
-  edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
-  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
-  <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
-  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
-  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
-  <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
-  mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
-}
+function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
+ $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
+ <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
+ <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
+ <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
+ <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
+ <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+ mod.classList.add('on');$('#f').onsubmit=mainFormSubmit}
 
 const mainFormSubmit = async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
