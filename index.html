@@ -625,7 +625,7 @@ function sales(){
 
   const filteredSales = Sales.filter(x => {
     const matchYear = !salesYear || (x.date || '').startsWith(salesYear);
-    const matchQ = !salesFlt.q || ((x.name||'') + (x.loc||'') + (x.note||'')).toLowerCase().includes(salesFlt.q.toLowerCase());
+    const matchQ = !salesFlt.q || ((x.name||'') + (x.loc||'') + (x.startDate||'') + (x.endDate||'')).toLowerCase().includes(salesFlt.q.toLowerCase());
     const matchS = !salesFlt.s || x.status === salesFlt.s;
     return matchYear && matchQ && matchS;
   }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -678,9 +678,10 @@ function sales(){
 
   <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
     <th style="width:50px">ลำดับ</th>
-    <th style="width:110px">วันที่</th>
+    <th style="width:110px">วันที่บันทึก</th>
     <th style="text-align:left">โครงการ / รายละเอียด</th>
     <th style="text-align:left">สถานที่</th>
+    <th style="width:150px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
     <th style="width:120px">มูลค่าก่อน VAT</th>
     <th style="width:100px">ต้นทุน</th>
     <th style="width:100px">กำไรสุทธิ</th>
@@ -690,8 +691,9 @@ function sales(){
   ${filteredSales.map((s,i)=>`<tr>
     <td style="text-align:center">${i+1}</td>
     <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-    <td style="text-align:left"><b>${esc(s.name)}</b>${s.note&&s.note!=='-'?`<br><small style="color:var(--mu);font-size:11px">📝 ${esc(s.note)}</small>`:''}</td>
+    <td style="text-align:left"><b>${esc(s.name)}</b></td>
     <td style="text-align:left">📍 ${esc(s.loc)}</td>
+    <td style="white-space:nowrap;font-size:11.5px">⏳ ${esc(s.startDate||'-')} <br>ถึง ${esc(s.endDate||'-')}</td>
     <td><b>${money(s.val)}</b></td>
     <td style="color:var(--yw)">${money(s.cost)}</td>
     <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
@@ -703,12 +705,13 @@ function sales(){
 
 function openS(id){
   editS = Sales.find(x => x.id === id) || null;
-  const s = editS || {date:TODAY, name:'', loc:'', val:'', cost:'', status:'วางบิลแล้ว', note:''};
+  const s = editS || {date:TODAY, name:'', loc:'', startDate:TODAY, endDate:TODAY, val:'', cost:'', status:'วางบิลแล้ว'};
   $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
-  <div class="two"><label>วันที่<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
+  <div class="two"><label>วันที่บันทึก<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
   <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
+  <div class="two"><label>วันที่เริ่มต้น<input type="date" name="startDate" required value="${esc(s.startDate||s.date)}"></label><label>วันที่สิ้นสุด<input type="date" name="endDate" required value="${esc(s.endDate||s.date)}"></label></div>
   <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" name="val" value="${s.val!==''&&s.val!=null?esc(s.val):''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${s.cost!==''&&s.cost!=null?esc(s.cost):''}"></label></div>
-  <div class="two"><label>สถานะใบเสนอราคา<select name="status"><option value="วางบิลแล้ว" ${s.status==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option><option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${s.status==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option><option value="อยู่ระหว่างรอดำเนินการ" ${s.status==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option></select></label><label>หมายเหตุ<input name="note" value="${esc(s.note)}"></label></div>
+  <label>สถานะใบเสนอราคา<select name="status"><option value="วางบิลแล้ว" ${s.status==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option><option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${s.status==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option><option value="อยู่ระหว่างรอดำเนินการ" ${s.status==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option></select></label>
   <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกงานขาย</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit = async (e) => {
@@ -716,7 +719,17 @@ function openS(id){
     const fd = new FormData(e.target);
     const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
     const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {date: fd.get('date'), name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), note: fd.get('note').trim()};
+    const data = {
+      date: fd.get('date'), 
+      name: fd.get('name').trim(), 
+      loc: fd.get('loc').trim(), 
+      startDate: fd.get('startDate'), 
+      endDate: fd.get('endDate'), 
+      val: val, 
+      cost: cost, 
+      profit: Number((val - cost).toFixed(2)), 
+      status: fd.get('status')
+    };
     await w(async()=>{
       if(editS) { await db.doc('sales/'+editS.id).update(data); toast('✅ บันทึกการแก้ไขงานขายแล้ว'); playBeep('success'); }
       else { await db.doc('sales/'+uid()).set(data); toast('✅ เพิ่มรายการงานขายใหม่แล้ว'); playBeep('success'); }
