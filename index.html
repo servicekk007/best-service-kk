@@ -679,8 +679,7 @@ function sales(){
   <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
     <th style="width:50px">ลำดับ</th>
     <th style="width:110px">วันที่บันทึก</th>
-    <th style="text-align:left">โครงการ / รายละเอียด</th>
-    <th style="text-align:left">สถานที่</th>
+    <th style="text-align:left">โครงการ / สถานที่</th>
     <th style="width:150px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
     <th style="width:120px">มูลค่าก่อน VAT</th>
     <th style="width:100px">ต้นทุน</th>
@@ -691,8 +690,7 @@ function sales(){
   ${filteredSales.map((s,i)=>`<tr>
     <td style="text-align:center">${i+1}</td>
     <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-    <td style="text-align:left"><b>${esc(s.name)}</b></td>
-    <td style="text-align:left">📍 ${esc(s.loc)}</td>
+    <td style="text-align:left"><b>${esc(s.name)}</b><br><small style="color:var(--mu);font-size:11px">📍 ${esc(s.loc)}</small></td>
     <td style="white-space:nowrap;font-size:11.5px">⏳ ${esc(s.startDate||'-')} <br>ถึง ${esc(s.endDate||'-')}</td>
     <td><b>${money(s.val)}</b></td>
     <td style="color:var(--yw)">${money(s.cost)}</td>
