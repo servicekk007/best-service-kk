@@ -755,12 +755,18 @@ document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
 
-function showT(id){const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-<div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
-<div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
-<div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-<div class="tools" style="justify-content:space-between;margin-top:18px"><button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`;pm.classList.add('on')}
+function showT(id){
+  const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
+  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+  <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
+  <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
+  <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
+  <div class="tools" style="justify-content:${head?'space-between':'flex-end'};margin-top:18px">
+    <button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>
+    ${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd);background:#fff1f2;border-color:#fecdd3" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}
+  </div>`;
+  pm.classList.add('on');
+}
 
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
@@ -805,14 +811,17 @@ ${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.cla
 
 async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function openT(id,date){edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
- $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
- <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
- <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
- <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
- <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
- <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
- mod.classList.add('on');$('#f').onsubmit=mainFormSubmit}
+function openT(id,date){
+  if(!head) return;
+  edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
+  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
+  <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
+  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
+  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
+  <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
+  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+  mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
+}
 
 const mainFormSubmit = async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
@@ -838,7 +847,7 @@ function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name
 $('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
 $('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}};
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}catch(x){console.error(x);$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}};
 
 let privUnsubs=[];
 function watchPrivate(){
