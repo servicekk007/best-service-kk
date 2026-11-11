@@ -141,7 +141,7 @@ const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+Stri
 const TODAY=ymd(new Date()),dd=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
 const kfmt=v=>v>=1000?(v/1000).toFixed(v>=100000?0:1).replace(/\.0$/,'')+'k':String(Math.round(v));
 const money=v=>Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -571,15 +571,40 @@ function salesDash(){
 
 function contracts(){
   if(!head) return `<div class="card" style="text-align:center;padding:50px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึงข้อมูลสัญญาโครงการและรายได้ กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
-  const totalVal = Contracts.reduce((s,c)=>s+(+c.val||0),0);
-  const totalCost = Contracts.reduce((s,c)=>s+(+c.cost||0),0);
-  const totalProfit = Contracts.reduce((s,c)=>s+(+c.profit||0),0);
+  
+  const filteredContracts = Contracts.filter(ct => {
+    const matchQ = !contractFlt.q || ((ct.name||'') + (ct.code||'') + (ct.loc||'')).toLowerCase().includes(contractFlt.q.toLowerCase());
+    const matchS = !contractFlt.s || ct.status === contractFlt.s;
+    return matchQ && matchS;
+  });
+
+  const totalVal = filteredContracts.reduce((s,c)=>s+(+c.val||0),0);
+  const totalCost = filteredContracts.reduce((s,c)=>s+(+c.cost||0),0);
+  const totalProfit = filteredContracts.reduce((s,c)=>s+(+c.profit||0),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
+
+  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+      <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองสัญญาโครงการ</b>
+    </div>
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
+      <select onchange="contractFlt.s=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
+        <option value="">📌 ทุกสถานะสัญญา</option>
+        <option value="เซ็นสัญญาแล้ว" ${contractFlt.s==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option>
+        <option value="รอดำเนินการ" ${contractFlt.s==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option>
+      </select>
+      <div style="display:flex;gap:6px;width:100%">
+        <input id="cq" placeholder="ค้นหาเลขที่ใบเสนอราคา, ชื่อโครงการ, สถานที่..." value="${esc(contractFlt.q)}" oninput="contractFlt.q=this.value;render()" style="padding:7px 10px;font-size:12.5px;flex:1">
+        ${(contractFlt.q || contractFlt.s)?`<button class="btn" onclick="contractFlt={q:'',s:''};render()" style="padding:7px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
+      </div>
+    </div>
+  </div>
+
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
   <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
-  ${Contracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill s-done">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
+  ${filteredContracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill ${ct.status==='เซ็นสัญญาแล้ว'?'s-done':'p2'}">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
   </tbody></table></div></div>`;
 }
 
@@ -891,7 +916,7 @@ function watchPrivate(){
 window.setUser=u=>{
   head=!!u;
   $('#rH').className=head?'on':'';$('#rE').className=head?'':'on';
-  if(!head){Contracts=[];Sales=[];salesYear='';salesFlt={q:'',s:''}}
+  if(!head){Contracts=[];Sales=[];salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
   watchPrivate();render();
 };
 
