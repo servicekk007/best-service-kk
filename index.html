@@ -603,8 +603,23 @@ function contracts(){
   </div>
 
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
-  ${filteredContracts.map((ct,i)=>`<tr><td>${i+1}</td><td><span class="code">${esc(ct.code)}</span></td><td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td><td><b>${money(ct.val)}</b></td><td style="color:var(--yw)">${money(ct.cost)}</td><td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td><td><span class="pill ${ct.status==='เซ็นสัญญาแล้ว'?'s-done':'p2'}">${esc(ct.status)}</span></td><td><span class="pill s-run">${esc(ct.pay)}</span></td><td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td></tr>`).join('')}
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>Deadline</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  ${filteredContracts.map((ct,i)=>{
+    const dLine = ct.deadline || '-';
+    const dlInfo = dLine !== '-' ? (n => n < 0 ? `<span class="pill s-late">เลย ${-n} วัน</span>` : `<span class="pill s-wait">เหลือ ${n} วัน</span>`)(dd(dLine, TODAY)) : '-';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><span class="code">${esc(ct.code)}</span></td>
+      <td style="text-align:left"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td>
+      <td style="white-space:nowrap"><b>${esc(dLine)}</b><br>${dlInfo}</td>
+      <td><b>${money(ct.val)}</b></td>
+      <td style="color:var(--yw)">${money(ct.cost)}</td>
+      <td style="color:var(--gn);font-weight:700">${money(ct.profit)}</td>
+      <td><span class="pill ${ct.status==='เซ็นสัญญาแล้ว'?'s-done':'p2'}">${esc(ct.status)}</span></td>
+      <td><span class="pill s-run">${esc(ct.pay)}</span></td>
+      <td><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></td>
+    </tr>`;
+  }).join('')}
   </tbody></table></div></div>`;
 }
 
@@ -612,12 +627,13 @@ function closeMod(){mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit}
 
 function openC(id){
   editC = Contracts.find(c => c.id === id) || null;
-  const c = editC || {code:'', name:'', loc:'', val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
+  const c = editC || {code:'', name:'', loc:'', deadline:TODAY, val:'', cost:'', status:'เซ็นสัญญาแล้ว', pay:''};
   $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
   <div class="two"><label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label></div>
   <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
+  <div class="two"><label>Deadline (กำหนดส่งมอบ)<input type="date" name="deadline" required value="${esc(c.deadline||TODAY)}"></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
   <div class="two"><label>มูลค่างาน (Pre-VAT)<input type="number" step="any" name="val" value="${c.val!==''&&c.val!=null?esc(c.val):''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${c.cost!==''&&c.cost!=null?esc(c.cost):''}"></label></div>
-  <div class="two"><label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
+  <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
   <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกสัญญา</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit = async (e) => {
@@ -625,7 +641,17 @@ function openC(id){
     const fd = new FormData(e.target);
     const val = fd.get('val') !== '' ? parseFloat(fd.get('val')) : 0;
     const cost = fd.get('cost') !== '' ? parseFloat(fd.get('cost')) : 0;
-    const data = {code: fd.get('code').trim() || '-', name: fd.get('name').trim(), loc: fd.get('loc').trim(), val: val, cost: cost, profit: Number((val - cost).toFixed(2)), status: fd.get('status'), pay: fd.get('pay').trim() || '-'};
+    const data = {
+      code: fd.get('code').trim() || '-', 
+      name: fd.get('name').trim(), 
+      loc: fd.get('loc').trim(), 
+      deadline: fd.get('deadline'), 
+      val: val, 
+      cost: cost, 
+      profit: Number((val - cost).toFixed(2)), 
+      status: fd.get('status'), 
+      pay: fd.get('pay').trim() || '-'
+    };
     await w(async()=>{
       if(editC) { await db.doc('contracts/'+editC.id).update(data); toast('✅ บันทึกการแก้ไขสัญญาแล้ว'); playBeep('success'); }
       else { await db.doc('contracts/'+uid()).set(data); toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว'); playBeep('success'); }
@@ -962,8 +988,8 @@ window.seed=()=>w(async()=>{
   const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
   for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
 
-  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์',18000,6000,12000,'เซ็นสัญญาแล้ว','-%']];
-  for(const [id,code,name,loc,val,cost,profit,status,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,val,cost,profit,status,pay});
+  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-%']];
+  for(const [id,code,name,loc,deadline,val,cost,profit,status,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,deadline,val,cost,profit,status,pay});
 
   const sl=[
     ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'เสนอให้กับทางโรงพยาบาลแล้ว','-'],
