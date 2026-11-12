@@ -31,7 +31,7 @@ main{flex:1;padding:24px;min-width:0;max-width:100%;display:flex;flex-direction:
 .grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .st small{color:var(--mu);font-weight:600}.num{font-size:32px;font-weight:800;margin:10px 0 4px;display:flex;justify-content:space-between;align-items:flex-end}.num span{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
 .big{font-size:56px;font-weight:800;color:var(--pri);text-align:center;margin:14px 0 4px}
-.bar{height:8px;border-radius:9px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981)}
+.bar{height:8px;border-radius:9px;background:var(--soft);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981);box-shadow:0 0 10px rgba(99,102,241,0.5)}
 .pill{display:inline-block;padding:4px 12px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.02)}
 .p0{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.p1{color:#2563eb;background:#eff6ff;border-color:#bfdbfe}.p2{color:#d97706;background:#fffbeb;border-color:#fde68a}.p3{color:#e11d48;background:#fff1f2;border-color:#fecdd3}
 .s-run{color:#4f46e5;background:#eef2ff;border-color:#c7d2fe}.s-done{color:#059669;background:#ecfdf5;border-color:#a7f3d0}.s-wait{color:#64748b;background:var(--soft);border-color:var(--bd)}.s-late{color:#e11d48;background:#fff1f2;border-color:#fecdd3;animation: pulseGlow 1.5s infinite}
@@ -56,20 +56,21 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .f-pill:hover{border-color:var(--pri);transform:translateY(-1px)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 12px rgba(99,102,241,0.3)}
 
-/* Spotlight Table Hover */
+/* Enhanced Table Style with Vibrant Colors & Zebra Striping */
 .tw{width:100%;max-width:100%;overflow-x:auto;border-radius:18px}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-th,td{padding:12px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
-th{background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap}
-tbody tr{transition:all .2s ease}
-tbody:hover tr:not(:hover){opacity:0.45;filter:blur(0.4px)}
-tbody tr:hover{background:color-mix(in srgb, var(--pri) 6%, transparent);transform:scale(1.002);box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
+th{padding:14px 12px;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd)}
+td{padding:12px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
+tbody tr{transition:all .25s cubic-bezier(0.4,0,0.2,1);background:var(--card)}
+tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 55%, transparent)}
+tbody:hover tr:not(:hover){opacity:0.4;filter:blur(0.3px)}
+tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));transform:scale(1.003);box-shadow:0 6px 20px rgba(99,102,241,0.08);border-left:4px solid var(--pri)}
 
 .assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;max-width:180px;margin:0 auto}
-.assignee-chip{display:inline-flex;align-items:center;background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
+.assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.02)}
 
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:2px;font-size:11.5px;transition:all .2s}
-.ib:hover{background:var(--pri);color:#fff;border-color:var(--pri);transform:scale(1.08)}
+.ib:hover{background:var(--pri);color:#fff;border-color:var(--pri);transform:scale(1.1)}
 
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
 .cal .h{background:var(--soft);border-radius:12px;padding:10px;text-align:center;font-weight:600;font-size:13px}
@@ -608,23 +609,22 @@ function contracts(){
   const totalProfit = filteredContracts.reduce((s,c)=>s+(+c.profit||0),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
 
-  const statuses = ['', 'เซ็นสัญญาแล้ว', 'รอดำเนินการ'];
-  const statusLabels = { '': 'ทั้งหมด', 'เซ็นสัญญาแล้ว': 'เซ็นสัญญาแล้ว', 'รอดำเนินการ': 'รอดำเนินการ' };
-
   return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
 
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
       <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองสัญญาโครงการ</b>
     </div>
-    
-    <div class="filter-pill-bar">
-      ${statuses.map(st=>`<button class="f-pill ${contractFlt.s===st?'active':''}" onclick="contractFlt.s='${st}';render()">${statusLabels[st]}</button>`).join('')}
-    </div>
-
-    <div style="display:flex;gap:6px;width:100%">
-      <input id="cq" placeholder="ค้นหาเลขที่ใบเสนอราคา, ชื่อโครงการ, สถานที่..." value="${esc(contractFlt.q)}" oninput="contractFlt.q=this.value;render()" style="padding:8px 12px;font-size:12.5px;flex:1">
-      ${(contractFlt.q || contractFlt.s)?`<button class="btn" onclick="contractFlt={q:'',s:''};render()" style="padding:8px 12px;font-size:11.5px">✕ ล้าง</button>`:''}
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
+      <select onchange="contractFlt.s=this.value;render()" style="padding:7px 10px;font-size:12.5px;width:100%">
+        <option value="">📌 ทุกสถานะสัญญา</option>
+        <option value="เซ็นสัญญาแล้ว" ${contractFlt.s==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option>
+        <option value="รอดำเนินการ" ${contractFlt.s==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option>
+      </select>
+      <div style="display:flex;gap:6px;width:100%">
+        <input id="cq" placeholder="ค้นหาเลขที่ใบเสนอราคา, ชื่อโครงการ, สถานที่..." value="${esc(contractFlt.q)}" oninput="contractFlt.q=this.value;render()" style="padding:7px 10px;font-size:12.5px;flex:1">
+        ${(contractFlt.q || contractFlt.s)?`<button class="btn" onclick="contractFlt={q:'',s:''};render()" style="padding:7px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
+      </div>
     </div>
   </div>
 
