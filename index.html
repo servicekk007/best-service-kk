@@ -59,18 +59,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .f-pill:hover{border-color:var(--pri)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 12px rgba(99,102,241,0.3)}
 
-.tw{width:100%;max-width:100%;overflow-x:hidden!important;border-radius:18px}
-table{width:100%;table-layout:auto;border-collapse:separate;border-spacing:0;font-size:12px}
-th{padding:12px 6px;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd)}
-td{padding:10px 6px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
+.tw{width:100%!important;max-width:100%!important;overflow-x:hidden!important;border-radius:18px}
+table{width:100%!important;table-layout:fixed!important;border-collapse:separate;border-spacing:0;font-size:11.5px}
+th{padding:10px 4px!important;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd);overflow:hidden;text-overflow:ellipsis}
+td{padding:10px 4px!important;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;overflow:hidden;text-overflow:ellipsis}
 tbody tr{transition:all .2s ease;background:var(--card)}
 tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 55%, transparent)}
-tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));transform:scale(1.001);box-shadow:0 4px 12px rgba(99,102,241,0.06);border-left:4px solid var(--pri)}
+tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));box-shadow:0 4px 12px rgba(99,102,241,0.06);border-left:4px solid var(--pri)}
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;max-width:130px;margin:0 auto}
-.assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap}
+.assignee-chip-container{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;max-width:100%;margin:0 auto}
+.assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:2px 5px;font-size:9.5px;font-weight:700;white-space:nowrap}
 
-.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 7px;cursor:pointer;margin-right:2px;font-size:11px;transition:all .2s}
+.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 6px;cursor:pointer;margin-right:2px;font-size:10.5px;transition:all .2s}
 .ib:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
 
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
@@ -108,7 +108,7 @@ tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));transfo
 @keyframes bounceIn {
   0% { opacity: 0; transform: translate(-50%, 50px) scale(0.85); }
   60% { opacity: 1; transform: translate(-50%, -12px) scale(1.04); }
-  80% { transform: translate(-50%, 6px) scale(0.97); }
+  80% { opacity: 1; transform: translate(-50%, 6px) scale(0.97); }
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
@@ -348,7 +348,7 @@ function overviewMainContent(){
 }
 
 function dash(){const p=avg(T);return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
- <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px"><div class="emp"><div><div><b style="font-size:15px">${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
+ <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
  <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
  <div class="grid g3" style="margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${statusTxt(t)==='เสร็จสิ้น'?'s-done':statusTxt(t)==='กำลังดำเนินการ'?'s-run':'s-wait'}" style="padding:2px 8px;font-size:11px">${statusTxt(t)} (${+t.progress}%)</span></div>`).join('')}</div>`}).join('')}</div>`}
@@ -624,7 +624,18 @@ function contracts(){
   </div>
 
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>Deadline</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
+    <th style="width:40px">ลำดับ</th>
+    <th style="width:90px">เลขที่ใบเสนอราคา</th>
+    <th style="text-align:left">ชื่อโครงการ / สถานที่</th>
+    <th style="width:90px">Deadline</th>
+    <th style="width:90px">มูลค่างาน</th>
+    <th style="width:80px">ต้นทุน</th>
+    <th style="width:90px">กำไรสุทธิ</th>
+    <th style="width:90px">สถานะ</th>
+    <th style="width:90px">การชำระเงิน</th>
+    <th style="width:70px">จัดการ</th>
+  </tr></thead><tbody>
   ${filteredContracts.map((ct,i)=>{
     const dLine = ct.deadline && ct.deadline !== '' ? ct.deadline : '-';
     const dlInfo = dLine !== '-' ? (n => n < 0 ? `<span class="pill s-late">เลย ${-n} วัน</span>` : n <= 3 ? `<span class="pill s-late" style="background:#fffbeb;color:#d97706;border-color:#fde68a">ใกล้ถึงกำหนด (${n} วัน)</span>` : `<span class="pill s-wait">เหลือ ${n} วัน</span>`)(dd(dLine, TODAY)) : '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
@@ -754,11 +765,11 @@ function sales(){
     <th style="width:40px">ลำดับ</th>
     <th style="width:90px">วันที่บันทึก</th>
     <th style="text-align:left">โครงการ / สถานที่</th>
-    <th style="width:130px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
-    <th style="width:100px">มูลค่าก่อน VAT</th>
+    <th style="width:120px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
+    <th style="width:90px">มูลค่าก่อน VAT</th>
     <th style="width:80px">ต้นทุน</th>
     <th style="width:90px">กำไรสุทธิ</th>
-    <th style="width:130px">สถานะใบเสนอราคา</th>
+    <th style="width:110px">สถานะใบเสนอราคา</th>
     <th style="width:70px">จัดการ</th>
   </tr></thead><tbody>
   ${filteredSales.map((s,i)=>{
@@ -834,192 +845,6 @@ function openS(id){
   };
 }
 const delS = id => confirm('ลบรายการงานขายนี้?') && w(async()=>{ await db.doc('sales/'+id).delete(); toast('🗑 ลบรายการงานขายแล้ว'); playBeep('error'); });
-
-function list(){return T.filter(t=>(!flt.q||(t.title+t.code+t.assignees.map(nm).join(' ')).toLowerCase().includes(flt.q.toLowerCase()))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority==+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>a.created>b.created?1:-1)}
-
-function rows(){
-  return list().map((t,i)=>{
-    const l=left(t);
-    return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
-      <td style="width:40px;text-align:center">${i+1}</td>
-      <td style="text-align:left"><b>${esc(t.title)}</b></td>
-      <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
-      <td style="width:80px"><span class="pill p${+t.priority}">${PR[t.priority]}</span></td>
-      <td style="width:90px;white-space:nowrap"><b>${esc(t.deadline)}</b></td>
-      <td style="width:90px;white-space:nowrap">${esc(t.start)}</td>
-      <td style="width:90px;white-space:nowrap">${esc(t.end)}</td>
-      <td style="width:90px"><span class="pill ${sc(status(t))}">${status(t)}</span></td>
-      <td style="width:90px"><span class="pill ${l.c}">${l.x}</span></td>
-      <td style="width:90px"><b>${+t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${+t.progress}%"></i></div></td>
-      <td style="width:70px;white-space:nowrap;text-align:center">${head?`<span><button class="ib" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="11" style="text-align:center;color:var(--mu)">ไม่พบงาน</td></tr>';
-}
-
-function tb(){const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
- return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
- <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
- <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
- <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
- <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
- <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr><th style="width:40px">ลำดับ</th><th>รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th style="width:80px">ความสำคัญ</th><th style="width:90px">Deadline</th><th style="width:90px">เริ่มวันที่</th><th style="width:90px">ถึงวันที่</th><th style="width:90px">สถานะ</th><th style="width:90px">วันคงเหลือ</th><th style="width:90px">ความคืบหน้า</th><th style="width:70px">จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
-}
-
-function cal(){const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate();
- let h=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'].map((d,i)=>`<div class="h" style="${i==5?'color:var(--in)':i==6?'color:var(--rd)':''}"><span class="fw">วัน${d}</span><span class="sw कुलकर्णी">${['จ','อ','พ','พฤ','ศ','ส','อา'][i]}</span></div>`).join('');
- for(let i=0;i<off;i++)h+='<div class="d e"></div>';
- for(let d=1;d<=n;d++){const s=ymd(new Date(y,m,d));h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`}
- return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด แก้ไข หรือลบ':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
-}
-const mine=id=>T.filter(t=>t.assignees.includes(id));
-function em(){return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้างในระบบ (รองรับ 1 งานหลายผู้รับผิดชอบ)</p></div>${head?'<button class="btn d" onclick="addE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
- <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div></div>${head?`<div><button class="ib" onclick="editE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></div>`:''}</div>
- <div class="row s"><span style="color:var(--tx);font-weight:400">ภารกิจที่รับผิดชอบทั้งหมด:</span><span>${m.length} งาน (เสร็จแล้ว ${m.filter(t=>t.progress>=100).length})</span></div><p style="font-size:12px;color:var(--mu);margin:14px 0 0">งานที่กำลังรับผิดชอบ:</p>
- ${m.map(t=>`<div class="row"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${+t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`}
-
-let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
-
-document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
-  if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
-}));
-
-function showT(id){
-  const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0 0 4px">${esc(t.title)}</h3></div><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-  <div style="margin:14px 0"><span class="pill p${+t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
-  <div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>
-  <div style="margin:14px 0 6px;font-weight:600">ความคืบหน้า ${+t.progress}%</div><div class="bar"><i style="width:${+t.progress}%"></i></div>
-  <div class="tools" style="justify-content:${head?'space-between':'flex-end'};margin-top:18px">
-    <button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้างาน</button>
-    ${head?`<div><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd);background:#fff1f2;border-color:#fecdd3" onclick="pm.classList.remove('on');delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}
-  </div>`;
-  pm.classList.add('on');
-}
-
-function openProgress(id){
-  const t=T.find(x=>x.id===id);if(!t)return;
-  pm.classList.remove('on');
-  $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้างาน</h3>
-  <p style="margin:4px 0 12px;color:var(--mu);font-size:13px">${esc(t.title)}</p>
-  <label>ความคืบหน้าปัจจุบัน: <span id="pv2">${+t.progress}</span>%
-  <input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv2.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">
-    <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button>
-    <button class="btn d">บันทึกความคืบหน้า</button>
-  </div>`;
-  mod.classList.add('on');
-  $('#f').onsubmit = async (e) => {
-    e.preventDefault();
-    const f = new FormData(e.target);
-    const newProg = +f.get('progress');
-    const targetTask = T.find(x => x.id === id);
-    const old = targetTask ? targetTask.progress : 0;
-    if(targetTask) targetTask.progress = newProg;
-    closeMod();
-    render();
-    try {
-      if(!db) throw new Error('no db');
-      await db.doc('tasks/'+id).update({progress: newProg});
-      toast(newProg>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+newProg+'% แล้ว');
-      playBeep('success');
-    } catch(err) {
-      console.error(err);
-      if(targetTask) targetTask.progress = old;
-      render();
-      toast('❌ บันทึกไม่สำเร็จ (ไม่มีสิทธิ์หรือออฟไลน์)');
-      playBeep('error');
-    }
-  };
-}
-
-function showDay(s){const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
-$('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${+t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}
-${head?`<button class="btn d" style="width:100%;margin-top:16px" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;pm.classList.add('on')}
-
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและ Security Rules')}}
-const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function openT(id,date){
-  if(!head) return;
-  edit=T.find(t=>t.id===id)||null;const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
-  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
-  <div class="fl">ผู้รับผิดชอบ (เลือกได้หลายคน)<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
-  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority==i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
-  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
-  <label>ความคืบหน้า: <span id="pv">${+t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${+t.progress}" oninput="pv.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
-  mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
-}
-
-const mainFormSubmit = async e=>{e.preventDefault();const f=new FormData(e.target),as=f.getAll('as');if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
- const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
- if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
- await w(async()=>{
-  if(edit)await db.doc('tasks/'+edit.id).update(o);
-  else{
-   const n=Math.max(0,...T.map(t=>parseInt(String(t.code||'').split('-')[1])||0))+1;
-   await db.doc('tasks/'+uid()).set({...o,created:TODAY,code:'TSK-'+String(n).padStart(3,'0')+'-'+Math.random().toString(36).slice(2,4).toUpperCase()});
-  }
-  toast(o.progress>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':edit?'✅ บันทึกการแก้ไขแล้ว':'✅ เพิ่มงานใหม่แล้ว');
-  playBeep('success');
-  mod.classList.remove('on');
- })};
-$('#f').onsubmit = mainFormSubmit;
-
-const delT=id=>confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
-const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
-  for(const t of T.filter(t=>t.assignees.includes(id))) await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
-  await db.doc('employees/'+id).delete(); toast('🗑 ลบพนักงานแล้ว'); playBeep('error');
-});
-function addE(){const name=prompt('ชื่อ-นามสกุล');if(!name)return;const role=prompt('ตำแหน่ง')||'Staff';w(()=>db.doc('employees/'+uid()).set({name,role}))}
-$('#nt').onclick=()=>E.length?openT():alert('กรุณาเพิ่มพนักงานก่อน');
-$('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
-$('#rE').onclick=()=>{if(head&&window.logout)logout()};
-$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}};
-
-let privUnsubs=[];
-function watchPrivate(){
-  privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
-  if(!head||!db)return;
-  privUnsubs=[
-    db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error),
-    db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error)
-  ];
-}
-window.setUser=u=>{
-  head=!!u;
-  $('#rH').className=head?'on':'';$('#rE').className=head?'':'on';
-  if(!head){Contracts=[];Sales=[];salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
-  watchPrivate();render();
-};
-
-function editE(id){
-  const emp = E.find(e => e.id === id); if(!emp) return;
-  const newName = prompt('แก้ไขชื่อ-นามสกุล:', emp.name); if(newName === null) return;
-  const newRole = prompt('แก้ไขตำแหน่ง:', emp.role); if(newRole === null) return;
-  if(!newName.trim()) return alert('กรุณาระบุชื่อพนักงาน');
-  w(async()=>{ await db.doc('employees/'+id).update({ name: newName.trim(), role: newRole.trim() || 'Staff' }); toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว'); playBeep('success'); });
-}
-
-const applyTheme = t => {
-  document.documentElement.setAttribute('data-theme', t);
-  $('#dm').textContent = t === 'dark' ? '☀️' : '🌙';
-};
-const hour = new Date().getHours();
-const autoTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
-let currentTheme = localStorage.getItem('theme');
-if (!currentTheme) { currentTheme = autoTheme; localStorage.setItem('theme', currentTheme); }
-applyTheme(currentTheme);
-$('#dm').onclick = () => {
-  const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('theme', nextTheme);
-  applyTheme(nextTheme);
-};
-
-$('#ex').onclick=async()=>{const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
- const q=v=>'"'+String(v).replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
- const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)};
 
 window.initDb=d=>{
   db=d;
