@@ -443,25 +443,25 @@ function contractsDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:24px;height:210px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:24px;height:240px;padding-top:36px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
         const profitH = Math.round((item.profit / maxCostProfit) * 100);
         const profitPctOfCost = item.cost > 0 ? ((item.profit / item.cost) * 100).toFixed(1) : '0.0';
-        return `<div style="flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
-          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
+        return `<div style="flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px;white-space:nowrap" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
-              <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.cost)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.cost)}</span>
               <div style="width:100%;max-width:32px;height:${Math.max(costH, 6)}%;background:var(--yw);border-radius:4px 4px 0 0"></div>
             </div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="กำไรสุทธิ: ${item.profit.toLocaleString()} บาท">
-              <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.profit)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.profit)}</span>
               <div style="width:100%;max-width:32px;height:${Math.max(profitH, 6)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
             </div>
           </div>
-          <span style="font-size:11px;font-weight:700;margin-top:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%">${loc}</span>
+          <span style="font-size:11px;font-weight:700;margin-top:10px;text-align:center;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100%" title="${loc}">${loc}</span>
         </div>`;
       }).join('')}
     </div>
@@ -561,25 +561,25 @@ function salesDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:24px;height:210px;padding-top:24px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:24px;height:240px;padding-top:36px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
         const profitH = Math.round((item.profit / maxCostProfit) * 100);
         const profitPctOfCost = item.cost > 0 ? ((item.profit / item.cost) * 100).toFixed(1) : '0.0';
-        return `<div style="flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
-          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
+        return `<div style="flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px;white-space:nowrap" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
-              <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.cost)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.cost)}</span>
               <div style="width:100%;max-width:32px;height:${Math.max(costH, 6)}%;background:var(--yw);border-radius:4px 4px 0 0"></div>
             </div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="กำไรสุทธิ: ${item.profit.toLocaleString()} บาท">
-              <span style="font-size:8.5px;color:var(--mu);margin-bottom:2px">${kfmt(item.profit)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.profit)}</span>
               <div style="width:100%;max-width:32px;height:${Math.max(profitH, 6)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
             </div>
           </div>
-          <span style="font-size:11px;font-weight:700;margin-top:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%">${loc}</span>
+          <span style="font-size:11px;font-weight:700;margin-top:10px;text-align:center;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100%" title="${loc}">${loc}</span>
         </div>`;
       }).join('')}
     </div>
@@ -623,7 +623,7 @@ function contracts(){
   <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th>ชื่อโครงการ / สถานที่</th><th>Deadline</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
   ${filteredContracts.map((ct,i)=>{
     const dLine = ct.deadline && ct.deadline !== '' ? ct.deadline : '-';
-    const dlInfo = dLine !== '-' ? (n => n < 0 ? `<span class="pill s-late">เลย ${-n} วัน</span>` : `<span class="pill s-wait">เหลือ ${n} วัน</span>`)(dd(dLine, TODAY)) : '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
+    const dlInfo = dLine !== '-' ? (n => n < 0 ? `<span class="pill s-late">เลย ${-n} วัน</span>` : n <= 3 ? `<span class="pill s-late" style="background:#fffbeb;color:#d97706;border-color:#fde68a">ใกล้ถึงกำหนด (${n} วัน)</span>` : `<span class="pill s-wait">เหลือ ${n} วัน</span>`)(dd(dLine, TODAY)) : '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
     return `<tr>
       <td>${i+1}</td>
       <td><span class="code">${esc(ct.code)}</span></td>
@@ -755,27 +755,44 @@ function sales(){
     <th style="width:140px">สถานะใบเสนอราคา</th>
     <th style="width:80px">จัดการ</th>
   </tr></thead><tbody>
-  ${filteredSales.map((s,i)=>`<tr>
-    <td style="text-align:center">${i+1}</td>
-    <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-    <td style="text-align:left"><b>${esc(s.name)}</b><br><small style="color:var(--mu);font-size:11px">📍 ${esc(s.loc)}</small></td>
-    <td style="white-space:nowrap;font-size:11.5px">⏳ ${esc(s.startDate||'-')} <br>ถึง ${esc(s.endDate||'-')}</td>
-    <td><b>${money(s.val)}</b></td>
-    <td style="color:var(--yw)">${money(s.cost)}</td>
-    <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
-    <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
-    <td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>
-  </tr>`).join('')}
+  ${filteredSales.map((s,i)=>{
+    const sDate = s.startDate && s.startDate !== '' ? s.startDate : null;
+    const eDate = s.endDate && s.endDate !== '' ? s.endDate : null;
+    let timeBadge = '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
+    if(sDate || eDate) {
+      const activeEnd = eDate || sDate;
+      const daysLeft = dd(activeEnd, TODAY);
+      const isLate = daysLeft < 0;
+      const isNear = !isLate && daysLeft <= 3;
+      
+      const badgeStyle = isLate ? 's-late' : (isNear ? 'p2' : 's-wait');
+      const badgeText = isLate ? `เลย ${-daysLeft} วัน` : (isNear ? `ใกล้ครบกำหนด (${daysLeft} วัน)` : `เหลือ ${daysLeft} วัน`);
+      
+      timeBadge = `⏳ ${sDate||'-'} <br>ถึง ${eDate||'-'}<br><span class="pill ${badgeStyle}" style="font-size:10px;margin-top:3px;padding:2px 6px">${badgeText}</span>`;
+    }
+
+    return `<tr>
+      <td style="text-align:center">${i+1}</td>
+      <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
+      <td style="text-align:left"><b>${esc(s.name)}</b><br><small style="color:var(--mu);font-size:11px">📍 ${esc(s.loc)}</small></td>
+      <td style="white-space:nowrap;font-size:11.5px">${timeBadge}</td>
+      <td><b>${money(s.val)}</b></td>
+      <td style="color:var(--yw)">${money(s.cost)}</td>
+      <td style="color:var(--gn);font-weight:700">${money(s.profit)}</td>
+      <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
+      <td style="white-space:nowrap;text-align:center"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></td>
+    </tr>`;
+  }).join('')}
   </tbody></table></div></div>`;
 }
 
 function openS(id){
   editS = Sales.find(x => x.id === id) || null;
-  const s = editS || {date:TODAY, name:'', loc:'', startDate:TODAY, endDate:TODAY, val:'', cost:'', status:'วางบิลแล้ว'};
+  const s = editS || {date:TODAY, name:'', loc:'', startDate:'', endDate:'', val:'', cost:'', status:'วางบิลแล้ว'};
   $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
   <div class="two"><label>วันที่บันทึก<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
   <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
-  <div class="two"><label>วันที่เริ่มต้น<input type="date" name="startDate" required value="${esc(s.startDate||s.date)}"></label><label>วันที่สิ้นสุด<input type="date" name="endDate" required value="${esc(s.endDate||s.date)}"></label></div>
+  <div class="two"><label>วันที่เริ่มต้น <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="startDate" value="${esc(s.startDate||'')}"></label><label>วันที่สิ้นสุด <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="endDate" value="${esc(s.endDate||'')}"></label></div>
   <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" name="val" value="${s.val!==''&&s.val!=null?esc(s.val):''}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" name="cost" value="${s.cost!==''&&s.cost!=null?esc(s.cost):''}"></label></div>
   <label>สถานะใบเสนอราคา<select name="status"><option value="วางบิลแล้ว" ${s.status==='วางบิลแล้ว'?'selected':''}>วางบิลแล้ว</option><option value="เสนอให้กับทางโรงพยาบาลแล้ว" ${s.status==='เสนอให้กับทางโรงพยาบาลแล้ว'?'selected':''}>เสนอให้กับทางโรงพยาบาลแล้ว</option><option value="อยู่ระหว่างรอดำเนินการ" ${s.status==='อยู่ระหว่างรอดำเนินการ'?'selected':''}>อยู่ระหว่างรอดำเนินการ</option></select></label>
   <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกงานขาย</button></div>`;
@@ -789,8 +806,8 @@ function openS(id){
       date: fd.get('date'), 
       name: fd.get('name').trim(), 
       loc: fd.get('loc').trim(), 
-      startDate: fd.get('startDate'), 
-      endDate: fd.get('endDate'), 
+      startDate: fd.get('startDate').trim(), 
+      endDate: fd.get('endDate').trim(), 
       val: val, 
       cost: cost, 
       profit: Number((val - cost).toFixed(2)), 
