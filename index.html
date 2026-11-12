@@ -443,7 +443,7 @@ function contractsDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:20px;height:280px;padding-top:45px;padding-bottom:28px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:20px;height:300px;padding-top:50px;padding-bottom:35px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
@@ -453,15 +453,15 @@ function contractsDash(){
           <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px;white-space:nowrap" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
-              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.cost)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:4px;white-space:nowrap">${kfmt(item.cost)}</span>
               <div style="width:100%;max-width:30px;height:${Math.max(costH, 6)}%;background:var(--yw);border-radius:4px 4px 0 0"></div>
             </div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="กำไรสุทธิ: ${item.profit.toLocaleString()} บาท">
-              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.profit)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:4px;white-space:nowrap">${kfmt(item.profit)}</span>
               <div style="width:100%;max-width:30px;height:${Math.max(profitH, 6)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
             </div>
           </div>
-          <div style="position:absolute;bottom:-24px;left:0;right:0;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${loc}">${loc}</div>
+          <div style="position:absolute;bottom:-30px;left:0;right:0;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${loc}">${loc}</div>
         </div>`;
       }).join('')}
     </div>
@@ -561,7 +561,7 @@ function salesDash(){
       </div>
     </div>
 
-    <div style="display:flex;align-items:flex-end;gap:20px;height:280px;padding-top:45px;padding-bottom:28px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
+    <div style="display:flex;align-items:flex-end;gap:20px;height:300px;padding-top:50px;padding-bottom:35px;border-bottom:2px solid var(--bd);overflow-x:auto;margin-top:16px">
       ${hospitalNames.map(loc => {
         const item = locMap[loc];
         const costH = Math.round((item.cost / maxCostProfit) * 100);
@@ -571,15 +571,15 @@ function salesDash(){
           <div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:6px;background:color-mix(in srgb,var(--gn) 12%,transparent);padding:2px 6px;border-radius:6px;white-space:nowrap" title="กำไรคิดเป็น ${profitPctOfCost}% ของต้นทุน">กำไร ${profitPctOfCost}%</div>
           <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:100%">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ต้นทุน: ${item.cost.toLocaleString()} บาท">
-              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.cost)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:4px;white-space:nowrap">${kfmt(item.cost)}</span>
               <div style="width:100%;max-width:30px;height:${Math.max(costH, 6)}%;background:var(--yw);border-radius:4px 4px 0 0"></div>
             </div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="กำไรสุทธิ: ${item.profit.toLocaleString()} บาท">
-              <span style="font-size:9px;color:var(--mu);margin-bottom:3px;white-space:nowrap">${kfmt(item.profit)}</span>
+              <span style="font-size:9px;color:var(--mu);margin-bottom:4px;white-space:nowrap">${kfmt(item.profit)}</span>
               <div style="width:100%;max-width:30px;height:${Math.max(profitH, 6)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
             </div>
           </div>
-          <div style="position:absolute;bottom:-24px;left:0;right:0;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${loc}">${loc}</div>
+          <div style="position:absolute;bottom:-30px;left:0;right:0;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${loc}">${loc}</div>
         </div>`;
       }).join('')}
     </div>
