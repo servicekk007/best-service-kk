@@ -109,7 +109,7 @@ tbody tr:hover{background:color-mix(in srgb, var(--pri) 6%, var(--card))}
 @keyframes bounceIn {
   0% { opacity: 0; transform: translate(-50%, 50px) scale(0.85); }
   60% { opacity: 1; transform: translate(-50%, -12px) scale(1.04); }
-  80% { opacity: 1; transform: translate(-50%, 6px) scale(0.97); }
+  80% { transform: translate(-50%, 6px) scale(0.97); }
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
@@ -625,7 +625,7 @@ function contracts(){
   </div>
 
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
     <th style="width:40px">ลำดับ</th>
     <th style="width:90px">เลขที่ใบเสนอราคา</th>
     <th style="text-align:left">ชื่อโครงการ / สถานที่</th>
@@ -874,7 +874,7 @@ render();
 </script>
 <script type="module">
 const FB = {
- apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+  apiKey: "AIzaSyD-DummyKeyForEnvironmentSafety-12345",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
