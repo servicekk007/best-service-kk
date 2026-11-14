@@ -59,19 +59,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .f-pill:hover{border-color:var(--pri)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 12px rgba(99,102,241,0.3)}
 
-/* Fixed Table Style without Horizontal Scrollbar & Smooth Hover */
 .tw{width:100%!important;max-width:100%!important;overflow-x:hidden!important;border-radius:18px}
 table{width:100%!important;table-layout:auto!important;border-collapse:separate;border-spacing:0;font-size:12px}
 th{padding:12px 8px!important;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd)}
 td{padding:10px 8px!important;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;word-break:break-word}
-tbody tr{transition:background-color 0.15s ease;background:var(--card)}
-tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 40%, transparent)}
-tbody tr:hover{background:color-mix(in srgb, var(--pri) 6%, var(--card))}
+tbody tr{transition:all .2s ease;background:var(--card)}
+tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 55%, transparent)}
+tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));box-shadow:0 4px 12px rgba(99,102,241,0.06);border-left:4px solid var(--pri)}
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;max-width:100%;margin:0 auto}
-.assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:2px 6px;font-size:10px;font-weight:700;white-space:nowrap}
+.assignee-chip-container{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;max-width:130px;margin:0 auto}
+.assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:2px 5px;font-size:9.5px;font-weight:700;white-space:nowrap}
 
-.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;margin-right:2px;font-size:11px;transition:all .2s}
+.ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 6px;cursor:pointer;margin-right:2px;font-size:10.5px;transition:all .2s}
 .ib:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
 
 .cal{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:8px;overflow-x:auto}
@@ -214,7 +213,7 @@ const SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิ�
 
 let ani=true;
 function nav(){ $('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${k==='tb'?' ('+T.length+')':k==='em'?' ('+E.length+')':k==='ct'?' ('+Contracts.length+')':k==='sl'?' ('+Sales.length+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
-$('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';ani=true;scrollTo(0,0);render()}};
+$('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k!=='ov')subView='ov1';ani=true;scrollTo(0,0);render()}};
 
 function render(){
   const a=document.activeElement,v=$('#v');
@@ -874,7 +873,7 @@ render();
 </script>
 <script type="module">
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
+ apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
