@@ -16,6 +16,9 @@ aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;d
 .logo b{color:var(--pri);font-size:17px}
 .box{border:1px solid var(--bd);border-radius:18px;padding:12px;background:var(--soft)}
 .box small{font-weight:600;display:block;margin-bottom:8px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;border:0;border-radius:99px;padding:7px;font:600 12px Sarabun,sans-serif;background:var(--bd);color:var(--tx);cursor:pointer}
+.seg button.on{background:var(--pri);color:#fff}
 nav{display:flex;flex-direction:column;gap:6px}
 nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun,sans-serif;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
 nav button:hover{background:var(--soft);color:var(--tx)}
@@ -63,7 +66,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .ychip{min-width:100px;padding:6px 10px;border-radius:10px;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd);text-align:center}
 .ychip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .ychip div:first-child{font-size:10px;opacity:.85}.ychip div:last-child{font-size:12px;font-weight:700;margin-top:1px}
-.note{border:1px solid color-mix(in srgb,var(--yw) 40%,transparent);background:color-mix(in srgb,var(--yw) 10%,transparent);color:var(--tx);border-radius:16px;padding:12px 16px;font-size:13px}
 
 /* ตาราง: พอดีจอ ไม่มีแถบเลื่อนซ้ายขวา */
 .tw{width:100%;container-type:inline-size}
@@ -75,10 +77,9 @@ td.l{text-align:left;overflow-wrap:break-word}
 td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
 tbody tr{transition:background .15s}
 tbody tr:hover{background:color-mix(in srgb,var(--pri) 6%,transparent)}
-tr.mine{background:color-mix(in srgb,var(--gn) 6%,transparent)}
 td.empty{color:var(--mu);padding:24px}
 .acts{display:inline-flex;gap:4px}
-.ib{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11.5px;white-space:nowrap;transition:background .15s,color .15s}
+.ib{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11.5px;transition:background .15s,color .15s}
 .ib:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
 .assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
 .assignee-chip{background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
@@ -151,7 +152,6 @@ td.empty{color:var(--mu);padding:24px}
  aside{width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:12px;gap:10px;border-right:0;border-bottom:1px solid var(--bd);overflow:visible}
  aside>div[style="flex:1"],aside .box:last-child,aside .box small{display:none}
  aside .box{padding:8px;flex:1}.logo img{width:38px;height:38px}.logo b{font-size:15px;white-space:nowrap}
- #ubox .btn{padding:8px;font-size:12px}
  nav{position:fixed;left:0;right:0;bottom:0;z-index:40;flex-direction:row;background:var(--card);border-top:1px solid var(--bd);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));gap:2px}
  nav button{flex:1;min-width:0;padding:6px 2px;text-align:center;font-size:11px;border-radius:12px}
  .ic{display:block;margin:0 0 2px;font-size:19px}.lb{display:none}.sh{display:block}.sw{display:inline}.fw{display:none}
@@ -168,7 +168,7 @@ td.empty{color:var(--mu);padding:24px}
 </style></head><body>
 <aside>
  <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"><div><b>BEST SERVICE KK</b></div></div>
- <div class="box" id="ubox"></div>
+ <div class="box"><small>🛡 สิทธิ์ผู้ใช้งาน:</small><div class="seg"><button id="rH">👑 หัวหน้างาน</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
  <div class="box"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>สถานะระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:12px monospace;color:var(--pri);margin-top:8px"></div></div>
@@ -178,7 +178,7 @@ td.empty{color:var(--mu);padding:24px}
   <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ ส่งออก CSV</button><button class="btn d" id="nt">＋ คีย์งานใหม่</button></div></div>
  <div id="v"></div>
 </main>
-<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">🔑 เข้าสู่ระบบ</h3><p style="margin:0;color:var(--mu);font-size:13px">ใช้อีเมลและรหัสผ่านที่หัวหน้างานสร้างให้</p><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
+<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
 <div class="mod" id="pm"><div class="pbox" id="pb"></div></div>
 <div id="toast"></div>
 <div class="mod" id="mod"><form id="f"></form></div>
@@ -192,7 +192,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',role='guest',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
 
@@ -216,22 +216,8 @@ const nm=id=>(E.find(e=>e.id===id)||{name:'(ไม่พบ)'}).name;
 const sc=s=>s==='เสร็จสิ้น'?'s-done':s==='รอเริ่ม'?'s-wait':'s-run';
 const avg=a=>a.length?Math.round(a.reduce((s,t)=>s+t.progress,0)/a.length):0;
 const mine=id=>T.filter(t=>t.assignees.includes(id));
-const lock=what=>`<div class="card" style="text-align:center;padding:50px 20px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึง${what}</p></div>`;
+const lock=what=>`<div class="card" style="text-align:center;padding:50px 20px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึง${what} กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
 const dueBadge=d=>{if(!d)return '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';const n=dd(d,TODAY);return n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">ใกล้ถึงกำหนด (${n} วัน)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`};
-
-/* ---------- สิทธิ์ผู้ใช้ ---------- */
-const myEmp=()=>authEmail?E.find(e=>(e.email||'').toLowerCase()===authEmail.toLowerCase()):null;
-const canProg=t=>head||(role==='staff'&&!!myEmp()&&t.assignees.includes(myEmp().id));
-const emailsFor=ids=>[...new Set(ids.map(id=>((E.find(e=>e.id===id)||{}).email||'').toLowerCase()).filter(Boolean))].sort();
-const openLogin=()=>{$('#le').textContent='';lm.classList.add('on')};
-const doLogout=()=>{if(window.logout&&confirm('ออกจากระบบ?'))logout()};
-
-function renderUser(){
-  const me=myEmp();
-  $('#ubox').innerHTML=role==='guest'
-    ?`<small>🛡 สถานะผู้ใช้งาน: ยังไม่ได้เข้าสู่ระบบ</small><button class="btn d" style="width:100%" onclick="openLogin()">🔑 เข้าสู่ระบบ</button>`
-    :`<small>${role==='manager'?'👑 หัวหน้างาน':'👤 พนักงาน'}${me?' · '+esc(me.name):''}<br><span style="font-weight:400;color:var(--mu);word-break:break-all">${esc(authEmail)}</span></small><button class="btn" style="width:100%" onclick="doLogout()">ออกจากระบบ</button>`;
-}
 
 const VIEWS={
   ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],
@@ -245,23 +231,17 @@ const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',ct:'💼',sl:'📈'};
 const SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
 const CNT={tb:()=>T.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
 
-function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${CNT[k]&&role!=='guest'?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
+function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${CNT[k]?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
-
-function guestCard(){
-  return `<div class="card" style="text-align:center;padding:60px 20px"><div style="font-size:42px">🔒</div><h3 style="margin:10px 0 6px">กรุณาเข้าสู่ระบบ</h3><p style="color:var(--mu);margin:0 0 18px">ทั้งหัวหน้างานและพนักงานต้องเข้าสู่ระบบด้วยบัญชีของตัวเองก่อนดูข้อมูล</p><button class="btn d" onclick="openLogin()">🔑 เข้าสู่ระบบ</button></div>`;
-}
 
 function render(){
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
-  nav();renderUser();
+  nav();
   $('#ttl').textContent=VIEWS[view][0];
-  $('#sub').textContent=role==='manager'?'👑 โหมดหัวหน้างาน: เพิ่ม แก้ไข และลบข้อมูลได้ทั้งหมด':role==='staff'?'👤 โหมดพนักงาน: ดูข้อมูลได้ และอัปเดตความคืบหน้าได้เฉพาะงานของตัวเอง':'🔒 กรุณาเข้าสู่ระบบเพื่อดูข้อมูล';
+  $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูลได้อย่างเดียว (หัวหน้างานกดปุ่มด้านซ้ายเพื่อเข้าสู่ระบบ)';
   $('#nt').classList.toggle('hide',!head||view==='ct'||view==='sl');
-  $('#ex').classList.toggle('hide',role==='guest');
-  if(role==='guest'){v.innerHTML=guestCard();return}
   if(view==='ov'){
     const tabs=[['ov1','1. หน้าภาพรวมรายงาน'],['ov2','2. Dashboard พนักงาน'],['ov3','3. Dashboard สัญญาโครงการ'],['ov4','4. Dashboard งานขาย']];
     v.innerHTML=`<div class="tabs">${tabs.map(([k,l])=>`<button class="btn ${subView===k?'d':''}" onclick="subView='${k}';render()">${l}</button>`).join('')}</div>`+({ov1:overviewMain,ov2:dash,ov3:contractsDash,ov4:salesDash}[subView])();
@@ -270,11 +250,9 @@ function render(){
   if(aid){const n=document.getElementById(aid);if(n){n.focus();if(ps!=null){try{n.setSelectionRange(ps,pe)}catch(_){}}}}
 }
 
-const staffNote=()=>role==='staff'&&eLoaded&&!myEmp()?`<div class="note" style="margin-bottom:16px">⚠️ บัญชี <b>${esc(authEmail)}</b> ยังไม่ได้ผูกกับรายชื่อพนักงาน จึงยังอัปเดตความคืบหน้าไม่ได้ — แจ้งหัวหน้างานให้ใส่อีเมลนี้ในข้อมูลพนักงานของคุณ</div>`:'';
-
 /* ---------- ภาพรวม ---------- */
 function overviewMain(){
-  const sd=head&&tLoaded&&eLoaded&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';
+  const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';
   const total=T.length,done=T.filter(t=>t.progress>=100).length,run=T.filter(t=>t.progress>0&&t.progress<100).length,wait=T.filter(t=>t.progress===0).length,nr=T.filter(near).length,p=avg(T);
   const pc=[0,1,2,3].map(i=>T.filter(t=>t.priority===i).length);
   const pD=total?done/total*100:0,pR=total?run/total*100:0;
@@ -312,7 +290,7 @@ function overviewMain(){
       </div></div>`;
   }
   const recent=[...T].sort((a,b)=>(b.created||'').localeCompare(a.created||'')).slice(0,4);
-  return sd+staffNote()+`<div class="grid g4">${c('งานทั้งหมด',total,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
+  return sd+`<div class="grid g4">${c('งานทั้งหมด',total,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
   <div class="grid g2" style="margin-top:16px">
     <div class="card"><b>📊 สัดส่วนสถานะงานรวม</b><p class="sub">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
       <div class="pie-container"><div class="pie-chart" style="background:conic-gradient(${grad})"></div>
@@ -343,11 +321,11 @@ function dash(){
     <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
     <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
     <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>
-    ${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px;cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}
+    ${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}
   </div>`}).join('')}</div>`;
 }
 
-/* ---------- Dashboard การเงิน ---------- */
+/* ---------- Dashboard การเงิน (ใช้ร่วมกันทั้งสัญญาและงานขาย) ---------- */
 const COLORS=['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#3b82f6','#14b8a6','#f97316','#84cc16'];
 const EMPTY='<p style="color:var(--mu);font-size:13px;text-align:center;padding:30px 0">ยังไม่มีข้อมูล</p>';
 function groupByLoc(arr){
@@ -453,7 +431,7 @@ function openC(id){
     });
   };
 }
-const delC=id=>head&&confirm('ลบสัญญาโครงการนี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบสัญญาโครงการแล้ว');playBeep('error')});
+const delC=id=>confirm('ลบสัญญาโครงการนี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบสัญญาโครงการแล้ว');playBeep('error')});
 
 /* ---------- งานขาย ---------- */
 const filteredSales=()=>{const q=salesFlt.q.trim().toLowerCase();return Sales.filter(x=>(!salesYear||(x.date||'').startsWith(salesYear))&&(!q||[x.name,x.loc,x.startDate,x.endDate].join(' ').toLowerCase().includes(q))&&(!salesFlt.s||x.status===salesFlt.s)).sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
@@ -535,18 +513,13 @@ function openS(id){
     });
   };
 }
-const delS=id=>head&&confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error')});
+const delS=id=>confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error')});
 
 /* ---------- ตารางงาน ---------- */
 function list(){const q=flt.q.trim().toLowerCase();return T.filter(t=>(!q||(t.title+' '+(t.code||'')+' '+t.assignees.map(nm).join(' ')).toLowerCase().includes(q))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority===+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>(a.created||'').localeCompare(b.created||''))}
 
 function rows(){
-  return list().map((t,i)=>{
-    const l=left(t),id=esc(t.id);
-    const act=head
-      ?`<span class="acts"><button class="ib" title="อัปเดตความคืบหน้า" onclick="event.stopPropagation();openProgress('${id}')">📊</button><button class="ib" title="แก้ไข" onclick="event.stopPropagation();openT('${id}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="event.stopPropagation();delT('${id}')">🗑</button></span>`
-      :canProg(t)?`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button>`:'-';
-    return `<tr onclick="showT('${id}')" style="cursor:pointer" class="${role==='staff'&&canProg(t)?'mine':''}">
+  return list().map((t,i)=>{const l=left(t);return `<tr onclick="showT('${esc(t.id)}')" style="cursor:pointer">
     <td class="idx">${i+1}</td>
     <td class="l main"><b>${esc(t.title)}</b>${t.code?`<br><small style="color:var(--mu)">${esc(t.code)}</small>`:''}</td>
     <td data-label="ผู้รับผิดชอบ"><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
@@ -556,13 +529,13 @@ function rows(){
     <td data-label="สถานะ"><span class="pill ${sc(status(t))}">${status(t)}</span></td>
     <td data-label="วันคงเหลือ"><span class="pill ${l.c}">${l.x}</span></td>
     <td data-label="ความคืบหน้า"><div style="min-width:70px"><b>${t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${t.progress}%"></i></div></div></td>
-    <td data-label="จัดการ">${act}</td>
+    <td data-label="จัดการ">${head?`<span class="acts"><button class="ib" title="แก้ไข" onclick="event.stopPropagation();openT('${esc(t.id)}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="event.stopPropagation();delT('${esc(t.id)}')">🗑</button></span>`:'-'}</td>
   </tr>`}).join('')||'<tr><td colspan="10" class="empty">ไม่พบงาน</td></tr>';
 }
 
 function tb(){
   const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
-  return staffNote()+`<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
+  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
   <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
   <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
   <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
@@ -579,38 +552,16 @@ function cal(){
     const s=ymd(new Date(y,m,d));
     h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span class="dn">${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
   }
-  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์) • คลิกชื่องานเพื่อดูรายละเอียด</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
+  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์)${head?' • คลิกวันที่เพื่อดู/เพิ่มงาน คลิกชื่องานเพื่อดูรายละเอียด':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
 }
 
 /* ---------- พนักงาน ---------- */
 function em(){
-  return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>${head?'ใส่อีเมลของพนักงานให้ตรงกับบัญชีเข้าสู่ระบบ เพื่อให้พนักงานอัปเดตความคืบหน้างานของตัวเองได้':'ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้าง'}</p></div>${head?'<button class="btn d" onclick="openE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
-  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small>${head?`<br><small style="color:${e.email?'var(--gn)':'var(--yw)'}">${e.email?'✉ '+esc(e.email):'⚠ ยังไม่ได้ใส่อีเมลเข้าสู่ระบบ'}</small>`:''}</div>${head?`<span class="acts"><button class="ib" onclick="openE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></span>`:''}</div>
+  return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b><p>ตรวจสอบว่าพนักงานแต่ละคนกำลังรับผิดชอบงานชิ้นไหนบ้าง (รองรับ 1 งานหลายผู้รับผิดชอบ)</p></div>${head?'<button class="btn d" onclick="addE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
+  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div>${head?`<span class="acts"><button class="ib" onclick="editE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></span>`:''}</div>
   <div class="row s"><span style="color:var(--tx);font-weight:400">ภารกิจที่รับผิดชอบทั้งหมด:</span><span>${m.length} งาน (เสร็จแล้ว ${m.filter(t=>t.progress>=100).length})</span></div>
   <p style="font-size:12px;color:var(--mu);margin:14px 0 0">งานที่กำลังรับผิดชอบ:</p>
-  ${m.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`;
-}
-
-function openE(id){
-  if(!head)return;
-  const e=E.find(x=>x.id===id)||null,o=e||{name:'',role:'',email:''};
-  $('#f').innerHTML=`<h3 style="margin:0">${e?'แก้ไขข้อมูลพนักงาน':'เพิ่มพนักงานใหม่'}</h3>
-  <label>ชื่อ-นามสกุล<input name="name" required value="${esc(o.name)}"></label>
-  <label>ตำแหน่ง<input name="role" value="${esc(o.role)}" placeholder="Staff"></label>
-  <label>อีเมลสำหรับเข้าสู่ระบบ <small style="color:var(--mu);font-weight:400">(ต้องตรงกับบัญชีใน Firebase Authentication)</small><input type="email" name="email" value="${esc(o.email||'')}" placeholder="staff@example.com"></label>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
-  mod.classList.add('on');
-  $('#f').onsubmit=async ev=>{
-    ev.preventDefault();
-    const fd=new FormData(ev.target);
-    const data={name:fd.get('name').trim(),role:fd.get('role').trim()||'Staff',email:fd.get('email').trim().toLowerCase()};
-    if(!data.name)return alert('กรุณาระบุชื่อพนักงาน');
-    if(data.email&&E.some(x=>(x.email||'').toLowerCase()===data.email&&(!e||x.id!==e.id)))return alert('อีเมลนี้ถูกใช้กับพนักงานคนอื่นแล้ว');
-    await w(async()=>{
-      if(e)await db.doc('employees/'+e.id).update(data);else await db.doc('employees/'+uid()).set(data);
-      toast(e?'✅ บันทึกข้อมูลพนักงานแล้ว':'✅ เพิ่มพนักงานแล้ว');playBeep('success');closeMod();
-    });
-  };
+  ${m.map(t=>`<div class="row"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`;
 }
 
 let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
@@ -622,20 +573,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 
 function showT(id){
   const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
-  const by=t.progressBy?`<div class="row"><span>อัปเดตล่าสุดโดย</span><span>${esc(t.progressBy)}${t.progressAt?' • '+esc(String(t.progressAt).slice(0,10)):''}</span></div>`:'';
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><h3 style="margin:0 0 4px">${esc(t.title)}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div><span class="pill p${t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
-  <div><div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')||'-'}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>${by}</div>
+  <div><div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')||'-'}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div></div>
   <div><div style="margin-bottom:6px;font-weight:600">ความคืบหน้า ${t.progress}%</div><div class="bar"><i style="width:${t.progress}%"></i></div></div>
-  <div class="tools" style="justify-content:space-between">
-    ${canProg(t)?`<button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้า</button>`:(role==='staff'?'<small style="color:var(--mu)">อัปเดตได้เฉพาะงานที่คุณรับผิดชอบ</small>':'<span></span>')}
-    ${head?`<div class="tools"><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}
-  </div>`;
+  ${head?`<div class="tools" style="justify-content:space-between">
+    <button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้า</button>
+    <div class="tools"><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="delT('${esc(t.id)}')">🗑 ลบ</button></div>
+  </div>`:''}`;
   pm.classList.add('on');
 }
 
 function openProgress(id){
-  const t=T.find(x=>x.id===id);if(!t||!canProg(t))return;
+  if(!head)return;
+  const t=T.find(x=>x.id===id);if(!t)return;
   pm.classList.remove('on');
   $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้างาน</h3>
   <p style="margin:0;color:var(--mu);font-size:13px">${esc(t.title)}</p>
@@ -645,9 +596,9 @@ function openProgress(id){
   mod.classList.add('on');
   $('#f').onsubmit=async e=>{
     e.preventDefault();
-    const np=Math.round(+new FormData(e.target).get('progress'));
+    const np=+new FormData(e.target).get('progress');
     await w(async()=>{
-      await db.doc('tasks/'+id).update({progress:np,progressBy:authEmail,progressAt:new Date().toISOString()});
+      await db.doc('tasks/'+id).update({progress:np});
       toast(np>=100?'🎉 ยินดีด้วย งานเสร็จสมบูรณ์!':'✅ อัปเดตความคืบหน้าเป็น '+np+'% แล้ว');
       playBeep('success');closeMod();
     });
@@ -662,7 +613,7 @@ function showDay(s){
   pm.classList.add('on');
 }
 
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert(e&&e.code==='permission-denied'?'บันทึกไม่สำเร็จ: บัญชีนี้ไม่มีสิทธิ์ทำรายการนี้':'บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบ อินเทอร์เน็ต และ Security Rules')}}
+async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบ อินเทอร์เน็ต และ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 function openT(id,date){
@@ -681,10 +632,9 @@ function openT(id,date){
 
 const mainFormSubmit=async e=>{
   e.preventDefault();
-  if(!head)return;
   const f=new FormData(e.target),as=f.getAll('as');
   if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
-  const o={title:f.get('title').trim(),assignees:as,assigneeEmails:emailsFor(as),priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:Math.round(+f.get('progress'))};
+  const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
   if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
   await w(async()=>{
     if(edit)await db.doc('tasks/'+edit.id).update(o);
@@ -698,58 +648,45 @@ const mainFormSubmit=async e=>{
 };
 $('#f').onsubmit=mainFormSubmit;
 
-const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
-const delE=id=>head&&confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
-  for(const t of T.filter(t=>t.assignees.includes(id))){const as=t.assignees.filter(a=>a!==id);await db.doc('tasks/'+t.id).update({assignees:as,assigneeEmails:emailsFor(as)})}
+const delT=id=>confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
+const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
+  for(const t of T.filter(t=>t.assignees.includes(id)))await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
   await db.doc('employees/'+id).delete();toast('🗑 ลบพนักงานแล้ว');playBeep('error');
 });
+function addE(){const name=(prompt('ชื่อ-นามสกุล')||'').trim();if(!name)return;const role=(prompt('ตำแหน่ง')||'').trim()||'Staff';w(async()=>{await db.doc('employees/'+uid()).set({name,role});toast('✅ เพิ่มพนักงานแล้ว');playBeep('success')})}
+function editE(id){
+  const emp=E.find(e=>e.id===id);if(!emp)return;
+  const nn=prompt('แก้ไขชื่อ-นามสกุล:',emp.name);if(nn===null)return;
+  const nr=prompt('แก้ไขตำแหน่ง:',emp.role);if(nr===null)return;
+  if(!nn.trim())return alert('กรุณาระบุชื่อพนักงาน');
+  w(async()=>{await db.doc('employees/'+id).update({name:nn.trim(),role:nr.trim()||'Staff'});toast('✅ บันทึกข้อมูลพนักงานเรียบร้อยแล้ว');playBeep('success')});
+}
 
 $('#nt').onclick=()=>openT();
+$('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
+$('#rE').onclick=()=>{if(head&&window.logout&&confirm('ออกจากระบบหัวหน้างาน?'))logout()};
 $('#lf').onsubmit=async e=>{
   e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';
-  if(!window.login){$('#le').textContent='ยังเชื่อมต่อ Firebase ไม่ได้ (ตรวจสอบ API Key)';return}
-  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
+  if(!window.login){$('#le').textContent='ยังเชื่อมต่อ Firebase ไม่ได้';return}
+  try{await login(f.get('em'),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
   catch(x){console.error(x);$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
 };
 
-/* ---------- เชื่อมข้อมูลแบบเรียลไทม์ ---------- */
-let unsubs=[],tLoaded=false,eLoaded=false,syncTimer=null,syncing=false;
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],assigneeEmails:Array.isArray(d.assigneeEmails)?d.assigneeEmails:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
-
-/* หัวหน้างานเปิดเว็บเมื่อไร ระบบจะเติมอีเมลผู้รับผิดชอบให้งานเดิมทุกงานอัตโนมัติ */
-async function syncEmails(){
-  if(!head||!db||syncing||!tLoaded||!eLoaded||!E.length)return;
-  syncing=true;
-  try{
-    for(const t of T){
-      const want=emailsFor(t.assignees);
-      if(want.join('|')!==[...t.assigneeEmails].sort().join('|'))await db.doc('tasks/'+t.id).update({assigneeEmails:want});
-    }
-  }catch(e){console.error('sync emails',e)}
-  syncing=false;
+let privUnsubs=[];
+function watchPrivate(){
+  privUnsubs.forEach(u=>{try{u&&u()}catch(_){}});privUnsubs=[];
+  if(!head||!db)return;
+  privUnsubs=[
+    db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error),
+    db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},console.error)
+  ];
 }
-const scheduleSync=()=>{clearTimeout(syncTimer);syncTimer=setTimeout(syncEmails,1500)};
-
-function watchAll(){
-  unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];tLoaded=eLoaded=false;
-  if(!head){Contracts=[];Sales=[]}
-  if(!db||role==='guest'){T=[];E=[];return}
-  const err=e=>{console.error(e);if(e&&e.code==='permission-denied')toast('⚠️ ไม่มีสิทธิ์อ่านข้อมูลบางส่วน (ตรวจสอบ Security Rules)')};
-  unsubs.push(db.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);tLoaded=true;render();scheduleSync()},err));
-  unsubs.push(db.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',email:'',...k.data()}));eLoaded=true;render();scheduleSync()},err));
-  if(head){
-    unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
-    unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
-  }
-}
-window.setUser=info=>{
-  role=!info?'guest':info.manager?'manager':'staff';
-  head=role==='manager';authEmail=info?info.email:'';
-  if(!head){salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
-  document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
-  watchAll();render();
+window.setUser=isManager=>{
+  head=isManager===true;
+  $('#rH').className=head?'on':'';$('#rE').className=head?'':'on';
+  if(!head){Contracts=[];Sales=[];salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''};document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'))}
+  watchPrivate();render();
 };
-window.initDb=d=>{db=d;watchAll()};
 
 /* ธีม */
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);$('#dm').textContent=t==='dark'?'☀️':'🌙'};
@@ -766,25 +703,25 @@ function downloadCSV(name,h,r){
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 $('#ex').onclick=()=>{
-  if(role==='guest')return;
   if(head&&view==='ct')return downloadCSV('contracts',['ลำดับ','เลขที่ใบเสนอราคา','ชื่อโครงการ','สถานที่','Deadline','มูลค่างาน','ต้นทุน','กำไรสุทธิ','สถานะ','การชำระเงิน'],filteredContracts().map((c,i)=>[i+1,c.code,c.name,c.loc,c.deadline||'',num(c.val),num(c.cost),profitOf(c),c.status,c.pay]));
   if(head&&view==='sl')return downloadCSV('sales',['ลำดับ','วันที่บันทึก','โครงการ','สถานที่','วันที่เริ่ม','วันที่สิ้นสุด','มูลค่าก่อน VAT','ต้นทุน','กำไรสุทธิ','สถานะ'],filteredSales().map((s,i)=>[i+1,s.date,s.name,s.loc,s.startDate||'',s.endDate||'',num(s.val),num(s.cost),profitOf(s),s.status]));
-  downloadCSV('workschedule',['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)','อัปเดตล่าสุดโดย'],list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress,t.progressBy||'']));
+  downloadCSV('workschedule',['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'],list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]));
 };
 
-/* ข้อมูลตัวอย่าง (แสดงปุ่มเฉพาะตอนฐานข้อมูลว่าง) */
-window.seed=()=>head&&w(async()=>{
+/* โหลดข้อมูล + จัดรูปแบบข้อมูลให้ปลอดภัย */
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+window.initDb=d=>{
+  db=d;
+  d.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);render()},console.error);
+  d.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',...k.data()}));render()},console.error);
+  watchPrivate();
+};
+
+window.seed=()=>w(async()=>{
   const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
-  for(const [id,name,role_] of em)await db.doc('employees/'+id).set({name,role:role_,email:''});
-  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
-  for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,assigneeEmails:[],title});
-  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-']];
-  for(const [id,code,name,loc,deadline,val,cost,profit,status_,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,deadline,val,cost,profit,status:status_,pay});
-  const sl=[
-    ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'รอวางบิล'],
-    ['s2','2026-09-01','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว']
-  ];
-  for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
+  for(const [id,name,role] of em)await db.doc('employees/'+id).set({name,role});
+  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway']];
+  for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
   toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
 });
 render();
@@ -792,15 +729,14 @@ render();
 <script type="module">
 /* ===== ตั้งค่า Firebase ===== */
 const FB = {
-  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",   // <-- วาง API Key จริงตรงนี้ (คัดลอกจากไฟล์เดิมที่ใช้งานได้)
+  apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",   // <-- วาง API Key จริงตรงนี้
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
   projectId: "best-service-kk-17ccf",
   storageBucket: "best-service-kk-17ccf.firebasestorage.app",
   messagingSenderId: "593763757538",
   appId: "1:593763757538:web:54ac8e4928036a2623ddbb"
 };
-/* อีเมลหัวหน้างาน (ใส่ได้หลายคน) เช่น ['boss@gmail.com'] — บัญชีอื่นที่ล็อกอินได้จะเป็น "พนักงาน"
-   ⚠ ถ้าเว้นว่าง ทุกบัญชีจะเป็นหัวหน้างาน */
+/* อีเมลที่เป็นหัวหน้างาน (ตัวพิมพ์เล็ก) เช่น ['boss@gmail.com'] — ถ้าเว้นว่าง ทุกบัญชีที่ล็อกอินได้ถือเป็นหัวหน้างาน */
 const MANAGER_EMAILS = ['watakarn.palmmax@gmail.com'];
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -808,7 +744,7 @@ import {getFirestore,collection,doc,onSnapshot,setDoc,updateDoc,deleteDoc} from 
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,getIdTokenResult} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 if(FB.apiKey.startsWith("YOUR_")||FB.apiKey.includes("*")){
-  document.querySelector("main").insertAdjacentHTML("afterbegin",'<div class="card" style="border-color:#e11d48;color:#e11d48">⚠️ ยังไม่ได้ตั้งค่า Firebase จึงยังไม่แสดงข้อมูล: เปิดไฟล์ index.html แล้ววาง API Key ตรงส่วน const FB</div>');
+  document.querySelector("main").insertAdjacentHTML("afterbegin",'<div class="card" style="border-color:#e11d48;color:#e11d48">ยังไม่ได้ตั้งค่า Firebase: เปิดไฟล์ index.html แล้ววาง API Key ตรงส่วน const FB</div>');
 }else{
   const app=initializeApp(FB),fs=getFirestore(app),au=getAuth(app);
   window.login=(e,p)=>signInWithEmailAndPassword(au,e,p);
@@ -818,12 +754,13 @@ if(FB.apiKey.startsWith("YOUR_")||FB.apiKey.includes("*")){
     doc:p=>({set:d=>setDoc(doc(fs,p),d),update:d=>updateDoc(doc(fs,p),d),delete:()=>deleteDoc(doc(fs,p))})
   });
   onAuthStateChanged(au,async u=>{
-    if(!u){window.setUser(null);return}
-    let mgr=false;
-    try{const tk=await getIdTokenResult(u);mgr=tk.claims.role==='manager'}catch(e){console.error(e)}
+    if(!u){window.setUser(false);return}
+    let ok=false;
+    try{const tk=await getIdTokenResult(u,true);ok=tk.claims.role==='manager'}catch(e){console.error(e)}
     const email=(u.email||'').toLowerCase();
-    if(!mgr)mgr=MANAGER_EMAILS.length===0||MANAGER_EMAILS.map(x=>x.toLowerCase()).includes(email);
-    window.setUser({email:u.email||'',manager:mgr});
+    if(!ok)ok=MANAGER_EMAILS.length===0||MANAGER_EMAILS.map(x=>x.toLowerCase()).includes(email);
+    if(!ok){alert('บัญชีนี้ไม่มีสิทธิ์หัวหน้างาน');await signOut(au);return}
+    window.setUser(true);
   });
 }
 </script>
