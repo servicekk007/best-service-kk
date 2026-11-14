@@ -321,7 +321,7 @@ function dash(){
     <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
     <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
     <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>
-    ${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px;cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}
+    ${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}
   </div>`}).join('')}</div>`;
 }
 
@@ -513,7 +513,7 @@ function openS(id){
     });
   };
 }
-const delS=id=>confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error')});
+const delS=id=>confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error');});
 
 /* ---------- ตารางงาน ---------- */
 function list(){const q=flt.q.trim().toLowerCase();return T.filter(t=>(!q||(t.title+' '+(t.code||'')+' '+t.assignees.map(nm).join(' ')).toLowerCase().includes(q))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority===+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>(a.created||'').localeCompare(b.created||''))}
@@ -610,7 +610,7 @@ function showDay(s){
   pm.classList.add('on');
 }
 
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบสิทธิ์การใช้งาน')}}
+async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบ อินเทอร์เน็ต และ Security Rules')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 function openT(id,date){
@@ -628,7 +628,7 @@ function openT(id,date){
 }
 
 const mainFormSubmit=async e=>{
-  e.preventDefault();if(!head)return;
+  e.preventDefault();
   const f=new FormData(e.target),as=f.getAll('as');
   if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
   const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:+f.get('progress')};
@@ -645,19 +645,13 @@ const mainFormSubmit=async e=>{
 };
 $('#f').onsubmit=mainFormSubmit;
 
-const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
-const delE=id=>head&&confirm('ลบพนักงานคนนี้?')&&w(async()=>{
+const delT=id=>confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
+const delE=id=>confirm('ลบพนักงานคนนี้? (จะถูกนำออกจากงานที่รับผิดชอบด้วย)')&&w(async()=>{
   for(const t of T.filter(t=>t.assignees.includes(id)))await db.doc('tasks/'+t.id).update({assignees:t.assignees.filter(a=>a!==id)});
   await db.doc('employees/'+id).delete();toast('🗑 ลบพนักงานแล้ว');playBeep('error');
 });
-function addE(){
-  if(!head)return;
-  const name=(prompt('ชื่อ-นามสกุล')||'').trim();if(!name)return;
-  const role=(prompt('ตำแหน่ง')||'').trim()||'Staff';
-  w(async()=>{await db.doc('employees/'+uid()).set({name,role});toast('✅ เพิ่มพนักงานแล้ว');playBeep('success')})
-}
+function addE(){const name=(prompt('ชื่อ-นามสกุล')||'').trim();if(!name)return;const role=(prompt('ตำแหน่ง')||'').trim()||'Staff';w(async()=>{await db.doc('employees/'+uid()).set({name,role});toast('✅ เพิ่มพนักงานแล้ว');playBeep('success')})}
 function editE(id){
-  if(!head)return;
   const emp=E.find(e=>e.id===id);if(!emp)return;
   const nn=prompt('แก้ไขชื่อ-นามสกุล:',emp.name);if(nn===null)return;
   const nr=prompt('แก้ไขตำแหน่ง:',emp.role);if(nr===null)return;
@@ -712,7 +706,7 @@ $('#ex').onclick=()=>{
 };
 
 /* โหลดข้อมูล + จัดรูปแบบข้อมูลให้ปลอดภัย */
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress)))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
 window.initDb=d=>{
   db=d;
   d.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);render()},console.error);
@@ -720,7 +714,7 @@ window.initDb=d=>{
   watchPrivate();
 };
 
-window.seed=()=>head&&w(async()=>{
+window.seed=()=>w(async()=>{
   const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
   for(const [id,name,role] of em)await db.doc('employees/'+id).set({name,role});
   const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway']];
