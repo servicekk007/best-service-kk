@@ -59,15 +59,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .f-pill:hover{border-color:var(--pri)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 12px rgba(99,102,241,0.3)}
 
-.tw{width:100%!important;max-width:100%!important;overflow-x:hidden!important;border-radius:18px}
-table{width:100%!important;table-layout:auto!important;border-collapse:separate;border-spacing:0;font-size:12px}
-th{padding:12px 8px!important;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd)}
-td{padding:10px 8px!important;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;word-break:break-word}
-tbody tr{transition:all .2s ease;background:var(--card)}
-tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 55%, transparent)}
-tbody tr:hover{background:color-mix(in srgb, var(--pri) 8%, var(--card));box-shadow:0 4px 12px rgba(99,102,241,0.06);border-left:4px solid var(--pri)}
+/* Strict No-Scroll Table Layout */
+.tw{width:100%!important;max-width:100%!important;overflow:hidden!important;border-radius:18px}
+table{width:100%!important;table-layout:fixed!important;border-collapse:separate;border-spacing:0;font-size:11.5px}
+th{padding:10px 4px!important;background:var(--soft);font-weight:700;color:var(--mu);white-space:nowrap;border-bottom:2px solid var(--bd);overflow:hidden;text-overflow:ellipsis}
+td{padding:8px 4px!important;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;word-break:break-word;overflow:hidden;text-overflow:ellipsis}
+tbody tr{transition:background-color 0.15s ease;background:var(--card)}
+tbody tr:nth-child(even){background:color-mix(in srgb, var(--soft) 40%, transparent)}
+tbody tr:hover{background:color-mix(in srgb, var(--pri) 6%, var(--card))}
 
-.assignee-chip-container{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;max-width:130px;margin:0 auto}
+.assignee-chip-container{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;max-width:100%;margin:0 auto}
 .assignee-chip{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--pri) 12%, var(--soft));color:var(--pri);border:1px solid color-mix(in srgb, var(--pri) 30%, var(--bd));border-radius:99px;padding:2px 5px;font-size:9.5px;font-weight:700;white-space:nowrap}
 
 .ib{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:4px 6px;cursor:pointer;margin-right:2px;font-size:10.5px;transition:all .2s}
@@ -624,17 +625,17 @@ function contracts(){
   </div>
 
   <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)', totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
-    <th style="width:45px">ลำดับ</th>
-    <th style="width:110px">เลขที่ใบเสนอราคา</th>
+  <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table><thead><tr>
+    <th style="width:40px">ลำดับ</th>
+    <th style="width:90px">เลขที่ใบเสนอราคา</th>
     <th style="text-align:left">ชื่อโครงการ / สถานที่</th>
-    <th style="width:110px">Deadline</th>
-    <th style="width:110px">มูลค่างาน</th>
-    <th style="width:100px">ต้นทุน</th>
-    <th style="width:110px">กำไรสุทธิ</th>
-    <th style="width:110px">สถานะ</th>
-    <th style="width:100px">การชำระเงิน</th>
-    <th style="width:80px">จัดการ</th>
+    <th style="width:95px">Deadline</th>
+    <th style="width:95px">มูลค่างาน</th>
+    <th style="width:85px">ต้นทุน</th>
+    <th style="width:95px">กำไรสุทธิ</th>
+    <th style="width:95px">สถานะ</th>
+    <th style="width:85px">การชำระเงิน</th>
+    <th style="width:70px">จัดการ</th>
   </tr></thead><tbody>
   ${filteredContracts.map((ct,i)=>{
     const dLine = ct.deadline && ct.deadline !== '' ? ct.deadline : '-';
@@ -762,15 +763,15 @@ function sales(){
   <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวมปี '+(salesYear?+salesYear+543:'ทั้งหมด'), totalVal, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', totalCost, 'var(--yw)')}${c('กำไรรวมสุทธิ', totalProfit, 'var(--gn)')}</div>
 
   <div class="tw" style="margin-top:16px"><div class="card" style="padding:0"><table class="sales-table"><thead><tr>
-    <th style="width:45px">ลำดับ</th>
-    <th style="width:100px">วันที่บันทึก</th>
+    <th style="width:40px">ลำดับ</th>
+    <th style="width:95px">วันที่บันทึก</th>
     <th style="text-align:left">โครงการ / สถานที่</th>
-    <th style="width:130px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
-    <th style="width:100px">มูลค่าก่อน VAT</th>
-    <th style="width:90px">ต้นทุน</th>
-    <th style="width:100px">กำไรสุทธิ</th>
-    <th style="width:120px">สถานะใบเสนอราคา</th>
-    <th style="width:80px">จัดการ</th>
+    <th style="width:120px">ช่วงเวลา (เริ่ม - สิ้นสุด)</th>
+    <th style="width:95px">มูลค่าก่อน VAT</th>
+    <th style="width:85px">ต้นทุน</th>
+    <th style="width:95px">กำไรสุทธิ</th>
+    <th style="width:110px">สถานะใบเสนอราคา</th>
+    <th style="width:75px">จัดการ</th>
   </tr></thead><tbody>
   ${filteredSales.map((s,i)=>{
     const sDate = s.startDate && s.startDate !== '' ? s.startDate : null;
