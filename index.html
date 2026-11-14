@@ -55,6 +55,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .tools input{flex:1;min-width:200px}.tools select{flex:1;min-width:130px}
 .filter-pill-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .f-pill{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:6px 14px;border-radius:99px;font:600 12.5px Sarabun,sans-serif;cursor:pointer}
+.f-pill:hover{border-color:var(--pri)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri)}
 .ychips{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
 .ychip{min-width:100px;padding:6px 10px;border-radius:10px;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd);text-align:center}
@@ -115,19 +116,19 @@ td.empty{color:var(--mu);padding:24px}
  aside .box{padding:8px;flex:1}.logo img{width:38px;height:38px}.logo b{font-size:15px;white-space:nowrap}
  nav{position:fixed;left:0;right:0;bottom:0;z-index:40;flex-direction:row;background:var(--card);border-top:1px solid var(--bd);padding:6px;gap:2px}
  nav button{flex:1;padding:6px 2px;text-align:center;font-size:11px;border-radius:12px}
- .ic{display:block;margin:0 0 2px;font-size:19px}.lb{display:none}.sh{display:block}.sw{display:inline}.fw{display:none}
+ .ic{display:block;margin:0 0 2px;font-size:19px}.lb,.sh{display:inline}.fw{display:none}
  main{padding:12px;gap:12px}.card{padding:16px;border-radius:20px}.hd h1{font-size:18px}
 }
 </style></head><body>
 <aside>
  <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"><div><b>BEST SERVICE KK</b></div></div>
- <div class="box" id="ubox"><small>🛡 สถานะผู้ใช้งาน:</small><button class="btn d" style="width:100%" onclick="openLogin()">🔑 เข้าสู่ระบบ</button></div>
+ <div class="box" id="ubox"><small>🛡 สถานะผู้ใช้งาน:</small><button class="btn d" style="width:100%;margin-top:6px" onclick="openLogin()">🔑 เข้าสู่ระบบ</button></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
  <div class="box"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>สถานะระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:12px monospace;color:var(--pri);margin-top:8px"></div></div>
 </aside>
 <main>
- <div class="card hd"><div><h1 id="ttl">กำลังโหลด...</h1><p id="sub">โปรดอสักครู่...</p></div>
+ <div class="card hd"><div><h1 id="ttl"></h1><p id="sub"></p></div>
   <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ ส่งออก CSV</button><button class="btn d" id="nt">＋ คีย์งานใหม่</button></div></div>
  <div id="v"></div>
 </main>
@@ -145,7 +146,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',role='guest',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
+let T=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',role='staff',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editC=null,editS=null,myId='';
 $('#today').textContent=TODAY;
 
 function playBeep(type='success'){
@@ -170,43 +171,30 @@ const mine=id=>T.filter(t=>t.assignees.includes(id));
 const lock=what=>`<div class="card" style="text-align:center;padding:50px 20px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึง${what}</p></div>`;
 const dueBadge=d=>{if(!d)return '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';const n=dd(d,TODAY);return n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">ใกล้ถึงกำหนด (${n} วัน)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`};
 
-const openLogin=()=>{$('#le').textContent='';lm.classList.add('on')};
+const openLogin=()=>{$('#le'].textContent='';lm.classList.add('on')};
 const doLogout=()=>{if(window.logout&&confirm('ออกจากระบบ?'))logout()};
 
 function renderUser(){
   const me=authEmail?E.find(e=>(e.email||'').toLowerCase()===authEmail.toLowerCase()):null;
-  $('#ubox').innerHTML=role==='guest'
-    ?`<small>🛡 สถานะผู้ใช้งาน: ยังไม่ได้เข้าสู่ระบบ</small><button class="btn d" style="width:100%;margin-top:6px" onclick="openLogin()">🔑 เข้าสู่ระบบ</button>`
-    :`<small>${role==='manager'?'👑 หัวหน้างาน':'👤 พนักงาน'}${me?' · '+esc(me.name):''}<br><span style="font-weight:400;color:var(--mu);word-break:break-all">${esc(authEmail)}</span></small><button class="btn" style="width:100%;margin-top:6px" onclick="doLogout()">ออกจากระบบ</button>`;
+  $('#ubox').innerHTML=!authEmail
+    ?`<small>🛡 สถานะ: พนักงาน (ทั่วไป)</small><button class="btn d" style="width:100%;margin-top:6px;font-size:12px;padding:8px" onclick="openLogin()">🔑 เข้าสู่ระบบหัวหน้างาน</button>`
+    :`<small>${role==='manager'?'👑 หัวหน้างาน':'👤 พนักงาน'}${me?' · '+esc(me.name):''}<br><span style="font-weight:400;color:var(--mu);word-break:break-all">${esc(authEmail)}</span></small><button class="btn" style="width:100%;margin-top:6px;font-size:12px;padding:8px" onclick="doLogout()">ออกจากระบบ</button>`;
 }
 
-const VIEWS={
-  ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],
-  tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],
-  cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
-  em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
-  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ'],
-  sl:['งานขายและติดตามใบเสนอราคา','งานขาย']
-};
-const IC={ov:'📊',tb:'☰',cal:'📅',em:'👥',ct:'💼',sl:'📈'};
-const SH={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
-const CNT={tb:()=>T.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
-
-function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${CNT[k]&&role!=='guest'?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
+const LABELS={ov:'ภาพรวม',tb:'ตารางงาน',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
+function nav(){
+  $('#nav').innerHTML=Object.entries(LABELS).map(([k,l])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${CNT[k]&&CNT[k]()?' ('+CNT[k]()+')':''}</span></button>`).join('');
+}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
 
 function render(){
   try{
     nav();renderUser();
     $('#ttl').textContent=VIEWS[view][0];
-    $('#sub').textContent=role==='manager'?'👑 โหมดหัวหน้างาน: จัดการข้อมูลได้ทั้งหมด':role==='staff'?'👤 โหมดพนักงาน: ดูข้อมูล และอัปเดตความคืบหน้าของงานได้':'🔒 กรุณาเข้าสู่ระบบก่อนใช้งาน';
+    $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: จัดการข้อมูลได้ทั้งหมด':'👤 โหมดพนักงาน: ดูข้อมูล และกดอัปเดตความคืบหน้าของงานได้';
     $('#nt').classList.toggle('hide',!head||view==='ct'||view==='sl');
-    $('#ex').classList.toggle('hide',role==='guest');
+    $('#ex').classList.remove('hide');
     const v=$('#v');
-    if(role==='guest'){
-      v.innerHTML=`<div class="card" style="text-align:center;padding:60px 20px"><div style="font-size:42px">🔒</div><h3 style="margin:10px 0 6px">กรุณาเข้าสู่ระบบ</h3><p style="color:var(--mu);margin:0 0 18px">ทั้งหัวหน้างานและพนักงานต้องเข้าสู่ระบบก่อนใช้งาน</p><button class="btn d" onclick="openLogin()">🔑 เข้าสู่ระบบ</button></div>`;
-      return;
-    }
     if(view==='ov'){
       const tabs=[['ov1','1. หน้าภาพรวมรายงาน'],['ov2','2. Dashboard พนักงาน'],['ov3','3. Dashboard สัญญาโครงการ'],['ov4','4. Dashboard งานขาย']];
       v.innerHTML=`<div class="tabs">${tabs.map(([k,l])=>`<button class="btn ${subView===k?'d':''}" onclick="subView='${k}';render()">${l}</button>`).join('')}</div>`+({ov1:overviewMain,ov2:dash,ov3:contractsDash,ov4:salesDash}[subView])();
@@ -609,18 +597,17 @@ const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignee
 
 function watchAll(){
   unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];
-  if(!head){Contracts=[];Sales=[]}
-  if(!db||role==='guest'){T=[];E=[];render();return}
+  if(!db)return;
   const err=e=>console.error(e);
   unsubs.push(db.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);render()},err));
   unsubs.push(db.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',...k.data()}));render()},err));
   if(head){
     unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
     unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
-  }
+  }else{Contracts=[];Sales=[]}
 }
 window.setUser=info=>{
-  role=!info?'guest':info.manager?'manager':'staff';
+  role=!info?'staff':info.manager?'manager':'staff';
   head=role==='manager';authEmail=info?info.email:'';
   if(!head){salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
   document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
@@ -635,16 +622,31 @@ applyTheme(theme);
 $('#dm').onclick=()=>{const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';localStorage.setItem('theme',n);applyTheme(n)};
 
 $('#ex').onclick=()=>{
-  if(role==='guest')return;
   const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
   const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';
   document.body.appendChild(a);a.click();a.remove();
 };
+
+window.seed=()=>head&&w(async()=>{
+  const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
+  for(const [id,name,role_] of em)await db.doc('employees/'+id).set({name,role:role_});
+  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
+  for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
+  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-']];
+  for(const [id,code,name,loc,deadline,val,cost,profit,status_,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,deadline,val,cost,profit,status:status_,pay});
+  const sl=[
+    ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'รอวางบิล'],
+    ['s2','2026-09-01','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว']
+  ];
+  for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
+  toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
+});
 render();
 </script>
 <script type="module">
+/* ===== ตั้งค่า Firebase ===== */
 const FB = {
   apiKey: "AIzaSyCiQmftYQ7BYaKq2OaK2cC1pMcu-O1GruY",   // <-- วาง API Key ที่นี่
   authDomain: "best-service-kk-17ccf.firebaseapp.com",
