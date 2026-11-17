@@ -16,6 +16,9 @@ aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;d
 .logo b{color:var(--pri);font-size:17px}
 .box{border:1px solid var(--bd);border-radius:18px;padding:12px;background:var(--soft)}
 .box small{font-weight:600;display:block;margin-bottom:8px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;border:0;border-radius:99px;padding:7px;font:600 12px Sarabun,sans-serif;background:var(--bd);color:var(--tx);cursor:pointer}
+.seg button.on{background:var(--pri);color:#fff}
 nav{display:flex;flex-direction:column;gap:6px}
 nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun,sans-serif;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
 nav button:hover{background:var(--soft);color:var(--tx)}
@@ -154,7 +157,7 @@ td.empty{color:var(--mu);padding:24px}
 </style></head><body>
 <aside>
  <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"><div><b>BEST SERVICE KK</b></div></div>
- <div class="box" id="ubox"><small>🛡 สถานะผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--tx);margin-top:4px">👤 พนักงาน (ทั่วไป)</div><button class="btn d" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="openLogin()">🔑 เข้าสู่ระบบหัวหน้างาน</button></div>
+ <div class="box"><small>🛡 สิทธิ์ผู้ใช้งาน:</small><div class="seg"><button id="rH">👑 หัวหน้างาน</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
  <div class="box"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>สถานะระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:12px monospace;color:var(--pri);margin-top:6px"></div></div>
@@ -164,7 +167,7 @@ td.empty{color:var(--mu);padding:24px}
   <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ ส่งออก CSV</button><button class="btn d" id="nt">＋ คีย์งานใหม่</button></div></div>
  <div id="v"></div>
 </main>
-<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">🔑 เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
+<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
 <div class="mod" id="pm"><div class="pbox" id="pb"></div></div>
 <div id="toast"></div>
 <div class="mod" id="mod"><form id="f"></form></div>
@@ -178,7 +181,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
+let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
 let loaded={t:false,pm:false,e:false};
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
@@ -221,6 +224,8 @@ const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.len
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
 function nav(){
+  // พนักงานเห็น: ภาพรวม, ตารางงาน, PM, ปฏิทิน, พนักงาน (ซ่อน สัญญา/งานขาย)
+  // หัวหน้างานเห็น: ครบทุกเมนู
   const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
   $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
 }
@@ -230,19 +235,18 @@ function render(){
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
-  
+
   if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
-  const me=authEmail?E.find(e=>(e.email||'').toLowerCase()===authEmail.toLowerCase()):null;
-  $('#ubox').innerHTML=head
-    ?`<small>🛡 สิทธิ์ผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--pri);margin-top:4px">👑 หัวหน้างาน${me?' · '+esc(me.name):''}</div><div style="font-size:11px;color:var(--mu);word-break:break-all;margin-top:2px">${esc(authEmail)}</div><button class="btn" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="doLogout()">ออกจากระบบ</button>`
-    :`<small>🛡 สิทธิ์ผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--tx);margin-top:4px">👤 พนักงาน (ทั่วไป)</div><button class="btn d" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="openLogin()">🔑 เข้าสู่ระบบหัวหน้างาน</button>`;
+  $('#rH').className=head?'on':'';
+  $('#rE').className=head?'':'on';
 
   $('#ttl').textContent=VIEWS[view][0];
-  $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
+  $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์จัดการและเพิ่ม/แก้ไข/ลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='tb'||view==='pm'||view==='em')&&(!( !head && (view==='tb'||view==='em') ));
+  // ปุ่มคีย์งานใหม่แสดงเฉพาะหน้าตารางงาน/PM (สำหรับหัวหน้า) หรือหน้า PM (สำหรับพนักงาน)
+  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
   $('#nt').classList.toggle('hide',!canNew);
 
   if(view==='ov'){
@@ -555,7 +559,7 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้ทั้งหมด) ---------- */
+/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
 const pmStatus=p=>p>=100?'เสร็จสิ้น':p>0?'กำลังดำเนินการ':'รอเริ่ม';
 const pmLeft=p=>p>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:{x:'ดำเนินการ',c:'s-run'};
 const filteredPM=()=>{const q=pmFlt.q.trim().toLowerCase();return PM.filter(x=>(!q||[x.title,x.note,x.filterType].join(' ').toLowerCase().includes(q))&&(!pmFlt.s||pmStatus(x.progress)===pmFlt.s)).sort((a,b)=>(b.created||'').localeCompare(a.created||''))};
@@ -705,7 +709,7 @@ function openProgress(id){
     e.preventDefault();
     const np=Math.round(+new FormData(e.target).get('progress'));
     await w(async()=>{
-      await db.doc('tasks/'+id).update({progress:np,progressBy:authEmail||'พนักงาน'});
+      await db.doc('tasks/'+id).update({progress:np,progressBy:head?'หัวหน้างาน':'พนักงาน'});
       toast('✅ อัปเดตความคืบหน้าเป็น '+np+'% แล้ว');playBeep('success');closeMod();
     });
   };
@@ -715,11 +719,11 @@ function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;
   pm.classList.add('on');
 }
 
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและสิทธิ์การใช้งาน')}}
+async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบสิทธิ์การใช้งาน')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 function openT(id,date){
@@ -763,16 +767,19 @@ $('#nt').onclick=()=> {
   else openT();
 };
 
-function openLogin(){$('#le'].textContent='';lm.classList.add('on')}
-function doLogout(){if(window.logout)window.logout()}
+$('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
+$('#rE').onclick=()=>{if(head){window.setUser(false);toast('สลับเป็นโหมดพนักงานแล้ว')}};
 $('#lf').onsubmit=async e=>{
-  e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';
-  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
-  catch(x){$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
+  e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';
+  if(!window.login){$('#le').textContent='ยังไม่ได้เชื่อมต่อ Firebase Auth';return}
+  try{
+    await login(f.get('em').trim(),f.get('pw'));
+    lm.classList.remove('on');e.target.reset();playBeep('success');
+  }catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
 };
 
 let unsubs=[];
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress)))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
 
 function watchAll(){
   unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];
@@ -788,29 +795,17 @@ function watchAll(){
   }else{Contracts=[];Sales=[]}
 }
 
+window.setUser=isMgr=>{
+  head=isMgr===true;
+  if(!head){salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
+  document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
+  watchAll();render();
+};
+
 window.initDb=d=>{
   db=d;
   watchAll();
-  const au=window._firebaseAuth;
-  if(au){
-    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(({onAuthStateChanged, getIdTokenResult})=>{
-      onAuthStateChanged(au,async u=>{
-        if(!u){
-          head=false; authEmail='';
-          document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
-          watchAll(); render();
-          return;
-        }
-        let mgr=false;
-        try{const tk=await getIdTokenResult(u);mgr=tk.claims.role==='manager'}catch(e){}
-        const email=(u.email||'').toLowerCase();
-        if(!mgr)mgr=window._managerEmails.length===0||window._managerEmails.map(x=>x.toLowerCase()).includes(email);
-        head=mgr; authEmail=u.email||'';
-        document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
-        watchAll(); render();
-      });
-    });
-  }
+  render();
 };
 
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);$('#dm').textContent=t==='dark'?'☀️':'🌙'};
@@ -864,20 +859,25 @@ const FB = {
 };
 const MANAGER_EMAILS = ['watakarn.palmmax@gmail.com']; // <-- ใส่อีเมลหัวหน้างานของคุณ
 
-window._managerEmails = MANAGER_EMAILS;
-
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,doc,onSnapshot,setDoc,updateDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,getIdTokenResult} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,signInWithEmailAndPassword,signOut,getIdTokenResult} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 if(FB.apiKey.startsWith("YOUR_")||FB.apiKey.includes("*")){
   document.querySelector("main").insertAdjacentHTML("afterbegin",'<div class="card" style="border-color:#e11d48;color:#e11d48">⚠️ ยังไม่ได้ตั้งค่า Firebase API Key: เปิดไฟล์ index.html แล้ววาง API Key ตรงส่วน const FB</div>');
 }else{
   try{
     const app=initializeApp(FB),fs=getFirestore(app),au=getAuth(app);
-    window._firebaseAuth = au;
-    window.login=(e,p)=>signInWithEmailAndPassword(au,e,p);
-    window.logout=()=>signOut(au);
+    window.login=async(e,p)=>{
+      const cred=await signInWithEmailAndPassword(au,e,p);
+      const u=cred.user;
+      let mgr=false;
+      try{const tk=await getIdTokenResult(u);mgr=tk.claims.role==='manager'}catch(err){}
+      const email=(u.email||'').toLowerCase();
+      if(!mgr)mgr=MANAGER_EMAILS.length===0||MANAGER_EMAILS.map(x=>x.toLowerCase()).includes(email);
+      window.setUser(mgr);
+    };
+    window.logout=()=>signOut(au).then(()=>window.setUser(false));
     window.initDb({
       collection:n=>({onSnapshot:(ok,er)=>onSnapshot(collection(fs,n),s=>ok({docs:s.docs}),er)}),
       doc:p=>({set:d=>setDoc(doc(fs,p),d),update:d=>updateDoc(doc(fs,p),d),delete:()=>deleteDoc(doc(fs,p))})
