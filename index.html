@@ -459,10 +459,10 @@ const filteredSales = () => {
     const matchStatus = !salesFlt.s || x.status === salesFlt.s;
     return matchYear && matchQuery && matchStatus;
   }).sort((a, b) => {
-    // เรียงรายการล่าสุดขึ้นบนสุดเสมอ โดยเช็คจากรหัส CCS หรือลำดับเวลาสร้าง
+    // เรียงจากใหม่ไปเก่า (รายการใหม่หรือเลขที่สูงกว่าอยู่บนสุด)
     const ccsA = a.ccs || a.date || '';
     const ccsB = b.ccs || b.date || '';
-    return ccsB.localeCompare(ccsA, undefined, { numeric: true, sensitivity: 'base' });
+    return ccsA.localeCompare(ccsB, undefined, { numeric: true, sensitivity: 'base' }) * -1;
   });
 };
 
@@ -789,7 +789,7 @@ function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;
   pm.classList.add('on');
 }
 
