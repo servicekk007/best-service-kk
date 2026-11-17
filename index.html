@@ -120,7 +120,6 @@ td.empty{color:var(--mu);padding:24px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hide{display:none!important}
 
-/* สไตล์กล่องผู้รับผิดชอบแบบ Card Chip สวยงาม */
 .staff-selector{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:2px}
 .staff-chip{position:relative;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--bd);border-radius:14px;background:var(--card);cursor:pointer;user-select:none;transition:all .15s ease}
 .staff-chip:hover{border-color:var(--pri);background:var(--soft)}
@@ -130,8 +129,6 @@ td.empty{color:var(--mu);padding:24px}
 .staff-chip input:checked ~ .cbox::after{content:'✓'}
 .staff-chip:has(input:checked){border-color:var(--pri);background:var(--pri-light)}
 .staff-chip .s-name{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.25;white-space:normal;word-break:break-word}
-
-/* สไตล์กล่องแสดง % ความคืบหน้าแบบ Badge */
 .prog-badge{background:var(--pri);color:#fff;border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:700}
 
 .pie-container{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px 0}
@@ -456,12 +453,12 @@ function openC(id){
 const delC=id=>head&&confirm('ลบสัญญาโครงการนี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบสัญญาโครงการแล้ว');playBeep('error')});
 
 /* ---------- งานขาย ---------- */
-const filteredSales=()=>{const q=salesFlt.q.trim().toLowerCase();return Sales.filter(x=>(!salesYear||(x.date||'').startsWith(salesYear))&&(!q||[x.name,x.loc,x.startDate,x.endDate].join(' ').toLowerCase().includes(q))&&(!salesFlt.s||x.status===salesFlt.s)).sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
+const filteredSales=()=>{const q=salesFlt.q.trim().toLowerCase();return Sales.filter(x=>(!salesYear||(x.ccs||x.date||'').slice(0,4).includes(salesYear))&&(!q||[x.name,x.loc,x.ccs,x.startDate,x.endDate].join(' ').toLowerCase().includes(q))&&(!salesFlt.s||x.status===salesFlt.s)).sort((a,b)=>(b.ccs||b.date||'').localeCompare(a.ccs||a.date||''))};
 function sales(){
   if(!head)return lock('ข้อมูลงานขายและใบเสนอราคา');
-  const years=[...new Set(Sales.map(x=>(x.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
+  const years=[...new Set(Sales.map(x=>(x.ccs||x.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
   const grand=Sales.reduce((s,x)=>s+num(x.val),0);
-  const ys=years.map(y=>{const a=Sales.filter(x=>(x.date||'').startsWith(y)),v=a.reduce((s,x)=>s+num(x.val),0);return {y,v,count:a.length,pct:grand>0?(v/grand*100).toFixed(1):'0.0'}});
+  const ys=years.map(y=>{const a=Sales.filter(x=>(x.ccs||x.date||'').startsWith(y)),v=a.reduce((s,x)=>s+num(x.val),0);return {y,v,count:a.length,pct:grand>0?(v/grand*100).toFixed(1):'0.0'}});
   const list=filteredSales();
   const tv=list.reduce((s,x)=>s+num(x.val),0),tc=list.reduce((s,x)=>s+num(x.cost),0),tp=list.reduce((s,x)=>s+profitOf(x),0);
   const share=grand>0?(tv/grand*100).toFixed(1):'0.0';
@@ -477,28 +474,28 @@ function sales(){
     <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
       <select onchange="salesYear=this.value;render()" style="padding:8px 10px;font-size:12.5px;width:100%">
         <option value="">📅 ทุกปีทั้งหมด</option>
-        ${years.map(y=>`<option value="${esc(y)}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${esc(y)})</option>`).join('')}
+        ${years.map(y=>`<option value="${esc(y)}" ${salesYear===y?'selected':''}>ปี ${y} (${esc(y)})</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
-        <input id="sq" placeholder="ค้นหาชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
+        <input id="sq" placeholder="ค้นหาเลขที่ CCS, ชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
         ${(salesFlt.q||salesFlt.s||salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:8px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
       </div>
     </div>
   </div>
   <div class="ychips">
     <div class="ychip ${salesYear===''?'on':''}" onclick="salesYear='';render()"><div>ยอดรวมทุกปี</div><div>100%</div></div>
-    ${ys.map(o=>`<div class="ychip ${salesYear===o.y?'on':''}" onclick="salesYear='${esc(o.y)}';render()"><div>ปี ${+o.y+543} (${o.count})</div><div>${o.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(o.v)})</span></div></div>`).join('')}
+    ${ys.map(o=>`<div class="ychip ${salesYear===o.y?'on':''}" onclick="salesYear='${esc(o.y)}';render()"><div>ปี ${o.y} (${o.count})</div><div>${o.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(o.v)})</span></div></div>`).join('')}
   </div>
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม '+(salesYear?'ปี '+(+salesYear+543):'ทุกปี'),tv,'var(--tx)')}${c('ต้นทุนรวมทั้งหมด',tc,'var(--yw)')}${c('กำไรรวมสุทธิ',tp,'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>วันที่บันทึก</th><th style="text-align:left">โครงการ / สถานที่</th><th>ช่วงเวลา</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม '+(salesYear?'ปี '+salesYear:'ทุกปี'),tv,'var(--tx)')}${c('ต้นทุนรวมทั้งหมด',tc,'var(--yw)')}${c('กำไรรวมสุทธิ',tp,'var(--gn)')}</div>
+  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>เลขที่ CCS</th><th style="text-align:left">โครงการ / สถานที่</th><th>ช่วงเวลา</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
   ${list.map((s,i)=>{
     const sD=s.startDate||'',eD=s.endDate||'';
     const period=(sD||eD)?`<div>⏳ ${esc(sD||'-')} → ${esc(eD||'-')}<br>${dueBadge(eD||sD)}</div>`:'<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
     const stc=s.status==='วางบิลแล้ว'?'s-done':s.status==='รอวางบิล'?'p2':'s-run';
     return `<tr>
       <td>${i+1}</td>
-      <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-      <td class="l"><b>${esc(s.name)}</b><br><small style="color:var(--mu);font-size:11px">📍 ${esc(s.loc)}</small></td>
+      <td style="white-space:nowrap"><b>${esc(s.ccs||s.date)}</b></td>
+      <td class="l"><b>${esc(s.name)}</b><br><small style="color:var(--mu)">📍 ${esc(s.loc)}</small></td>
       <td style="white-space:nowrap;font-size:11.5px">${period}</td>
       <td style="white-space:nowrap"><b>${money(s.val)}</b></td>
       <td style="white-space:nowrap;color:var(--yw)">${money(s.cost)}</td>
@@ -512,11 +509,11 @@ function sales(){
 function openS(id){
   if(!head)return;
   editS=Sales.find(x=>x.id===id)||null;
-  const s=editS||{date:TODAY,name:'',loc:'',startDate:'',endDate:'',val:'',cost:'',status:'รอวางบิล'};
+  const s=editS||{ccs:'KX',name:'',loc:'',startDate:'',endDate:'',val:'',cost:'',status:'รอวางบิล'};
   const nv=v=>v!==''&&v!=null?esc(v):'';
   const opts=['รอวางบิล','วางบิลแล้ว','เสนอให้กับทางโรงพยาบาลแล้ว','อยู่ระหว่างรอดำเนินการ'];
   $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
-  <div class="two"><label>วันที่บันทึก<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
+  <div class="two"><label>เลขที่ CCS <small style="color:var(--mu);font-weight:400">(เช่น KX15/69)</small><input name="ccs" required value="${esc(s.ccs||s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
   <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
   <div class="two"><label>วันที่เริ่มต้น <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="startDate" value="${esc(s.startDate||'')}"></label><label>วันที่สิ้นสุด <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="endDate" value="${esc(s.endDate||'')}"></label></div>
   <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" min="0" name="val" value="${nv(s.val)}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" min="0" name="cost" value="${nv(s.cost)}"></label></div>
@@ -526,7 +523,7 @@ function openS(id){
   $('#f').onsubmit=async e=>{
     e.preventDefault();
     const fd=new FormData(e.target),val=num(fd.get('val')),cost=num(fd.get('cost'));
-    const data={date:fd.get('date'),name:fd.get('name').trim(),loc:fd.get('loc').trim(),startDate:fd.get('startDate').trim(),endDate:fd.get('endDate').trim(),val,cost,profit:Number((val-cost).toFixed(2)),status:fd.get('status')};
+    const data={ccs:fd.get('ccs').trim(),date:fd.get('ccs').trim(),name:fd.get('name').trim(),loc:fd.get('loc').trim(),startDate:fd.get('startDate').trim(),endDate:fd.get('endDate').trim(),val,cost,profit:Number((val-cost).toFixed(2)),status:fd.get('status')};
     if(data.startDate&&data.endDate&&data.endDate<data.startDate)return alert('"วันที่สิ้นสุด" ต้องไม่ก่อน "วันที่เริ่มต้น"');
     await w(async()=>{
       if(editS){await db.doc('sales/'+editS.id).update(data);toast('✅ บันทึกการแก้ไขงานขายแล้ว')}
@@ -570,7 +567,7 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
+/* ---------- หน้า PM Maintenance ---------- */
 const PM_FILTER_TYPES = [
   'PRE (24"x24"x2")', 'PRE (24"x12"x2")',
   'CARBON (24"x24"x2")', 'CARBON (24"x12"x2")',
@@ -782,7 +779,6 @@ function openT(id,date){
   edit=T.find(t=>t.id===id)||null;
   const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
   
-  // ปรับการเลือกผู้รับผิดชอบเป็น Card Chip พร้อมช่องติ๊กถูก ป้องกันชื่อตกบรรทัด
   const staffChips=E.map(e=>{
     const checked=t.assignees.includes(e.id)?'checked':'';
     return `<label class="staff-chip">
@@ -908,6 +904,14 @@ $('#ex').onclick=()=>{
     document.body.appendChild(a);a.click();a.remove();
     return;
   }
+  if(view==='sl'){
+    const h=['ลำดับ','เลขที่ CCS','โครงการ / สถานที่','ช่วงเวลาเริ่มต้น','ช่วงเวลาสิ้นสุด','มูลค่าก่อน VAT','ต้นทุน','กำไรสุทธิ','สถานะใบเสนอราคา'];
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredSales().map((s,i)=>[i+1,s.ccs||s.date,s.name,s.startDate||'',s.endDate||'',s.val,s.cost,profitOf(s),s.status]);
+    const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='sales-'+TODAY+'.csv';
+    document.body.appendChild(a);a.click();a.remove();
+    return;
+  }
   const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
   const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
@@ -923,10 +927,10 @@ window.seed=()=>head&&w(async()=>{
   const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-']];
   for(const [id,code,name,loc,deadline,val,cost,profit,status_,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,deadline,val,cost,profit,status:status_,pay});
   const sl=[
-    ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'รอวางบิล'],
-    ['s2','2026-09-01','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว']
+    ['s1','KX001/69','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'รอวางบิล'],
+    ['s2','KX002/69','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว']
   ];
-  for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
+  for(const [id,ccs,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({ccs,date:ccs,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
   toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
 });
 render();
