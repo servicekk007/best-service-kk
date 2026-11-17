@@ -78,7 +78,7 @@ th,td{padding:12px 10px;border-top:1px solid var(--bd);vertical-align:middle;tex
 th{background:var(--soft);font-weight:700;color:var(--mu);border-top:0;font-size:12px}
 td.l{text-align:left}
 
-/* ปรับฟอนต์และจัดตำแหน่งคอลัมน์ลำดับให้ตรงกึ่งกลางสวยงาม */
+/* จัดลำดับให้อยู่กึ่งกลางสวยงาม */
 td:first-child, th:first-child {
   text-align: center;
   font-weight: 700;
@@ -257,7 +257,7 @@ const VIEWS={
 const IC={ov:'📊',tb:'☰',pm:'🔧',cal:'📅',em:'👥',ct:'💼',sl:'📈'};
 const SH={ov:'ภาพรวม',tb:'ตารางงาน',pm:'PM',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
 const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
-const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
+const showCnt=k=>CNT[k];
 
 function nav(){
   const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
@@ -279,8 +279,8 @@ function render(){
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
-  $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
+  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'||view==='ct'||view==='sl'));
+  $('#nt').classList.toggle('hide',!canNew);
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
@@ -915,7 +915,7 @@ function openT(id,date){
   </div>
 
   <div class="tools" style="justify-content:flex-end;margin-top:6px">
-    ${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>':''}
+    ${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}
     <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button>
     <button class="btn d">บันทึกข้อมูล</button>
   </div>`;
@@ -947,6 +947,8 @@ const delE=id=>head&&confirm('ลบพนักงานคนนี้?')&&w(a
 
 $('#nt').onclick=()=> {
   if(view==='pm') openPM();
+  else if(view==='ct') openC();
+  else if(view==='sl') openS();
   else openT();
 };
 
