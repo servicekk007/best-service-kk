@@ -77,6 +77,16 @@ table{width:100%;border-collapse:collapse;font-size:12.5px}
 th,td{padding:12px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center;word-break:break-word}
 th{background:var(--soft);font-weight:700;color:var(--mu);border-top:0;font-size:12px}
 td.l{text-align:left}
+
+/* ปรับฟอนต์และจัดตำแหน่งคอลัมน์ลำดับให้ตรงกึ่งกลางสวยงาม */
+td:first-child, th:first-child {
+  text-align: center;
+  font-weight: 700;
+  font-family: Sarabun, system-ui, sans-serif;
+  font-size: 13px;
+  width: 60px;
+}
+
 tbody tr{transition:all .15s}
 tbody tr:hover{background:color-mix(in srgb,var(--pri) 6%,transparent);transform:scale(1.002)}
 td.empty{color:var(--mu);padding:28px}
@@ -604,16 +614,15 @@ function rows(){
       :`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button>`;
     return `<tr onclick="showT('${id}')" style="cursor:pointer">
     <td>${i+1}</td>
-    <td class="l"><b>${esc(t.title)}</b>${t.code?`<br><small style="color:var(--mu)">${esc(t.code)}</small>`:''}</td>
+    <td class="l"><b>${esc(t.title)}</b></td>
     <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
     <td><span class="pill p${t.priority}">${PR[t.priority]}</span></td>
     <td style="white-space:nowrap"><b>${esc(t.deadline)}</b></td>
-    <td style="white-space:nowrap;font-size:11.5px"><div>${esc(t.start)}<br>ถึง ${esc(t.end)}</div></td>
     <td><span class="pill ${sc(status(t))}">${status(t)}</span></td>
     <td><span class="pill ${l.c}">${l.x}</span></td>
     <td><div style="min-width:70px"><b>${t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${t.progress}%"></i></div></div></td>
     <td>${act}</td>
-  </tr>`}).join('')||'<tr><td colspan="10" class="empty">ไม่พบงาน</td></tr>';
+  </tr>`}).join('')||'<tr><td colspan="9" class="empty">ไม่พบงาน</td></tr>';
 }
 
 function tb(){
@@ -624,7 +633,7 @@ function tb(){
   <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
   <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
   <div class="tw" style="margin-top:16px">
-    <div class="tcard"><table class="desktop-view"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
+    <div class="tcard"><table class="desktop-view"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
     <div class="mobile-view" id="m-cards">${renderMobileCards()}</div>
   </div>`;
 }
@@ -906,7 +915,7 @@ function openT(id,date){
   </div>
 
   <div class="tools" style="justify-content:flex-end;margin-top:6px">
-    ${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}
+    ${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>':''}
     <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button>
     <button class="btn d">บันทึกข้อมูล</button>
   </div>`;
