@@ -16,9 +16,6 @@ aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;d
 .logo b{color:var(--pri);font-size:17px}
 .box{border:1px solid var(--bd);border-radius:18px;padding:12px;background:var(--soft)}
 .box small{font-weight:600;display:block;margin-bottom:8px}
-.seg{display:flex;gap:6px}
-.seg button{flex:1;border:0;border-radius:99px;padding:7px;font:600 12px Sarabun,sans-serif;background:var(--bd);color:var(--tx);cursor:pointer}
-.seg button.on{background:var(--pri);color:#fff}
 nav{display:flex;flex-direction:column;gap:6px}
 nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun,sans-serif;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
 nav button:hover{background:var(--soft);color:var(--tx)}
@@ -157,7 +154,7 @@ td.empty{color:var(--mu);padding:24px}
 </style></head><body>
 <aside>
  <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"><div><b>BEST SERVICE KK</b></div></div>
- <div class="box"><small>🛡 สิทธิ์ผู้ใช้งาน:</small><div class="seg"><button id="rH">👑 หัวหน้างาน</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
+ <div class="box" id="ubox"><small>🛡 สถานะผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--pri);margin-top:4px" id="ustatus">👤 พนักงาน (ทั่วไป)</div><button class="btn d" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="openLogin()">🔑 เข้าสู่ระบบหัวหน้างาน</button></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
  <div class="box"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>สถานะระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:12px monospace;color:var(--pri);margin-top:6px"></div></div>
@@ -167,7 +164,7 @@ td.empty{color:var(--mu);padding:24px}
   <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ ส่งออก CSV</button><button class="btn d" id="nt">＋ คีย์งานใหม่</button></div></div>
  <div id="v"></div>
 </main>
-<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
+<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">🔑 เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
 <div class="mod" id="pm"><div class="pbox" id="pb"></div></div>
 <div id="toast"></div>
 <div class="mod" id="mod"><form id="f"></form></div>
@@ -181,7 +178,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
+let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
 let loaded={t:false,pm:false,e:false};
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
@@ -223,28 +220,26 @@ const SH={ov:'ภาพรวม',tb:'ตารางงาน',pm:'PM',cal:'ป
 const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
-function nav(){
-  const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
-  $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
-}
+function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${showCnt(k)?' ('+CNT[k]()+')':''}${(k==='ct'||k==='sl')&&!head?' 🔒':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
 
 function render(){
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
-
-  if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
-  $('#rH').className=head?'on':'';
-  $('#rE').className=head?'':'on';
+  // อัปเดตกล่องแสดงสถานะผู้ใช้ด้านซ้ายบน
+  const me=authEmail?E.find(e=>(e.email||'').toLowerCase()===authEmail.toLowerCase()):null;
+  $('#ubox').innerHTML=head
+    ?`<small>🛡 สิทธิ์ผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--pri);margin-top:4px">👑 หัวหน้างาน${me?' · '+esc(me.name):''}</div><div style="font-size:11px;color:var(--mu);word-break:break-all;margin-top:2px">${esc(authEmail)}</div><button class="btn" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="doLogout()">ออกจากระบบ</button>`
+    :`<small>🛡 สิทธิ์ผู้ใช้งาน:</small><div style="font-size:13px;font-weight:700;color:var(--tx);margin-top:4px">👤 พนักงาน (ทั่วไป)</div><button class="btn d" style="width:100%;margin-top:8px;font-size:12px;padding:8px" onclick="openLogin()">🔑 เข้าสู่ระบบหัวหน้างาน</button>`;
 
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
-  $('#nt').classList.toggle('hide',!canNew);
+  const canNew=(view==='tb'||view==='pm')||head;
+  $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
@@ -260,7 +255,7 @@ function render(){
 
 /* ---------- ภาพรวม ---------- */
 function overviewMain(){
-  const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';
+  const sd=(head||!T.length)&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';
   const total=T.length,done=T.filter(t=>t.progress>=100).length,run=T.filter(t=>t.progress>0&&t.progress<100).length,wait=T.filter(t=>t.progress===0).length,nr=T.filter(near).length,p=avg(T);
   const pc=[0,1,2,3].map(i=>T.filter(t=>t.priority===i).length);
   const pD=total?done/total*100:0,pR=total?run/total*100:0;
@@ -556,7 +551,7 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
+/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้ทั้งหมด) ---------- */
 const pmStatus=p=>p>=100?'เสร็จสิ้น':p>0?'กำลังดำเนินการ':'รอเริ่ม';
 const pmLeft=p=>p>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:{x:'ดำเนินการ',c:'s-run'};
 const filteredPM=()=>{const q=pmFlt.q.trim().toLowerCase();return PM.filter(x=>(!q||[x.title,x.note,x.filterType].join(' ').toLowerCase().includes(q))&&(!pmFlt.s||pmStatus(x.progress)===pmFlt.s)).sort((a,b)=>(b.created||'').localeCompare(a.created||''))};
@@ -641,9 +636,9 @@ function cal(){
   for(let i=0;i<off;i++)h+='<div class="d e"></div>';
   for(let d=1;d<=n;d++){
     const s=ymd(new Date(y,m,d));
-    h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span class="dn">${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
+    h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
   }
-  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์) • คลิกชื่องานเพื่อดูรายละเอียด${head?' • คลิกวันที่เพื่อเพิ่มงาน':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
+  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
 }
 
 function em(){
@@ -678,7 +673,6 @@ let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));$('#f').onsubmit=mainFormSubmit}});
 
 function showT(id){
   const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
@@ -707,7 +701,7 @@ function openProgress(id){
     e.preventDefault();
     const np=Math.round(+new FormData(e.target).get('progress'));
     await w(async()=>{
-      await db.doc('tasks/'+id).update({progress:np,progressBy:head?'หัวหน้างาน':'พนักงาน'});
+      await db.doc('tasks/'+id).update({progress:np,progressBy:authEmail||'พนักงาน'});
       toast('✅ อัปเดตความคืบหน้าเป็น '+np+'% แล้ว');playBeep('success');closeMod();
     });
   };
@@ -765,19 +759,14 @@ $('#nt').onclick=()=> {
   else openT();
 };
 
-$('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
-$('#rE').onclick=()=>{if(head){window.setUser(false);toast('สลับเป็นโหมดพนักงานแล้ว')}};
 $('#lf').onsubmit=async e=>{
   e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';
-  if(!window.login){$('#le').textContent='ยังไม่ได้เชื่อมต่อ Firebase Auth';return}
-  try{
-    await login(f.get('em').trim(),f.get('pw'));
-    lm.classList.remove('on');e.target.reset();playBeep('success');
-  }catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
+  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
+  catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
 };
 
 let unsubs=[];
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress)))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
 
 function watchAll(){
   unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];
@@ -786,25 +775,19 @@ function watchAll(){
   unsubs.push(db.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);render()},err));
   unsubs.push(db.collection('pm_tasks').onSnapshot(x=>{PM=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
   unsubs.push(db.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',...k.data()}));render()},err));
-  
   if(head){
     unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
     unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
   }else{Contracts=[];Sales=[]}
 }
-
-window.setUser=isMgr=>{
-  head=isMgr===true;
+window.setUser=info=>{
+  role=!info?'staff':info.manager?'manager':'staff';
+  head=role==='manager';authEmail=info?info.email:'';
   if(!head){salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
   document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
   watchAll();render();
 };
-
-window.initDb=d=>{
-  db=d;
-  watchAll();
-  render();
-};
+window.initDb=d=>{db=d;watchAll();render()};
 
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);$('#dm').textContent=t==='dark'?'☀️':'🌙'};
 let theme=localStorage.getItem('theme');
@@ -842,7 +825,6 @@ window.seed=()=>head&&w(async()=>{
   for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
   toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
 });
-
 render();
 </script>
 <script type="module">
@@ -855,30 +837,30 @@ const FB = {
   messagingSenderId: "593763757538",
   appId: "1:593763757538:web:54ac8e4928036a2623ddbb"
 };
-const MANAGER_EMAILS = ['watakarn.palmmax@gmail.com']; // <-- ใส่อีเมลหัวหน้างานของคุณ
+const MANAGER_EMAILS = ['watakar.palmmax@gmail.com']; // <-- ใส่อีเมลหัวหน้างานของคุณ
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,doc,onSnapshot,setDoc,updateDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {getAuth,signInWithEmailAndPassword,signOut,getIdTokenResult} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,getIdTokenResult} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 if(FB.apiKey.startsWith("YOUR_")||FB.apiKey.includes("*")){
   document.querySelector("main").insertAdjacentHTML("afterbegin",'<div class="card" style="border-color:#e11d48;color:#e11d48">⚠️ ยังไม่ได้ตั้งค่า Firebase API Key: เปิดไฟล์ index.html แล้ววาง API Key ตรงส่วน const FB</div>');
 }else{
   try{
     const app=initializeApp(FB),fs=getFirestore(app),au=getAuth(app);
-    window.login=async(e,p)=>{
-      const cred=await signInWithEmailAndPassword(au,e,p);
-      const u=cred.user;
-      let mgr=false;
-      try{const tk=await getIdTokenResult(u);mgr=tk.claims.role==='manager'}catch(err){}
-      const email=(u.email||'').toLowerCase();
-      if(!mgr)mgr=MANAGER_EMAILS.length===0||MANAGER_EMAILS.map(x=>x.toLowerCase()).includes(email);
-      window.setUser(mgr);
-    };
-    window.logout=()=>signOut(au).then(()=>window.setUser(false));
+    window.login=(e,p)=>signInWithEmailAndPassword(au,e,p);
+    window.logout=()=>signOut(au);
     window.initDb({
       collection:n=>({onSnapshot:(ok,er)=>onSnapshot(collection(fs,n),s=>ok({docs:s.docs}),er)}),
       doc:p=>({set:d=>setDoc(doc(fs,p),d),update:d=>updateDoc(doc(fs,p),d),delete:()=>deleteDoc(doc(fs,p))})
+    });
+    onAuthStateChanged(au,async u=>{
+      if(!u){window.setUser(null);return}
+      let mgr=false;
+      try{const tk=await getIdTokenResult(u);mgr=tk.claims.role==='manager'}catch(e){}
+      const email=(u.email||'').toLowerCase();
+      if(!mgr)mgr=MANAGER_EMAILS.length===0||MANAGER_EMAILS.map(x=>x.toLowerCase()).includes(email);
+      window.setUser({email:u.email||'',manager:mgr});
     });
   }catch(err){console.error('Firebase init error:',err)}
 }
