@@ -280,32 +280,20 @@ function overviewMain(){
 
   let salesBlock='';
   if(head){
-    const years=[...new Set(Sales.map(x=>(x.date||'').slice(0,4)).filter(Boolean))].sort();
-    const yv=y=>Sales.filter(x=>(x.date||'').startsWith(y)).reduce((s,x)=>s+num(x.val),0);
+    const getYear=x=>(x.ccs||x.date||'').includes('/')?(x.ccs||x.date||'').split('/')[1]:(x.ccs||x.date||'').slice(2,4);
+    const years=[...new Set(Sales.map(getYear).filter(Boolean))].sort().reverse();
+    const yv=y=>Sales.filter(x=>getYear(x)===y).reduce((s,x)=>s+num(x.val),0);
     const maxY=Math.max(1,...years.map(yv));
-    const ly=years.length?years[years.length-1]:String(new Date().getFullYear());
-    const mn=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-    const mv=mn.map((_,i)=>Sales.filter(x=>(x.date||'').startsWith(ly+'-'+String(i+1).padStart(2,'0'))).reduce((s,x)=>s+num(x.val),0));
-    const maxM=Math.max(1,...mv);
     salesBlock=`<div class="card" style="margin-top:16px;background:var(--soft)">
       <b style="font-size:16px">📈 กราฟวิเคราะห์และสรุปยอดขาย (Sales Analytics)</b>
-      <p class="sub">แสดงเปรียบเทียบยอดขายรวม (Pre-VAT) แยกตามรายปีและรายเดือน</p>
-      <div class="grid g2">
-        <div class="card" style="padding:16px"><b style="font-size:13.5px;display:block;margin-bottom:12px">📅 สรุปยอดขายเปรียบเทียบรายปี</b>
-          ${years.length?`<div style="display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:20px;border-bottom:1px solid var(--bd)">
-            ${years.slice(-8).map(y=>{const v=yv(y);return `<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${money(v)} บาท">
-              <span style="font-size:10px;color:var(--mu);margin-bottom:4px">${kfmt(v)}</span>
-              <div style="width:100%;max-width:40px;height:${Math.max(pctW(v,maxY),4)}%;background:var(--pri);border-radius:6px 6px 0 0"></div>
-              <span style="font-size:11px;font-weight:600;margin-top:6px">${+y+543}</span></div>`}).join('')}
-          </div>`:'<p style="color:var(--mu);font-size:13px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลยอดขายรายปี</p>'}
-        </div>
-        <div class="card" style="padding:16px"><b style="font-size:13.5px;display:block;margin-bottom:12px">📊 สรุปยอดขายรายเดือน (ปี ${+ly+543})</b>
-          <div style="display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:20px;border-bottom:1px solid var(--bd)">
-            ${mv.map((v,i)=>`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${mn[i]}: ${money(v)} บาท">
-              <div style="width:100%;height:${Math.max(pctW(v,maxM),3)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
-              <span style="font-size:9px;color:var(--mu);margin-top:6px;white-space:nowrap">${mn[i]}</span></div>`).join('')}
-          </div>
-        </div>
+      <p class="sub">แสดงเปรียบเทียบยอดขายรวม (Pre-VAT) แยกตามปีที่ลงท้ายในเลขที่ CCS</p>
+      <div class="card" style="padding:16px"><b style="font-size:13.5px;display:block;margin-bottom:12px">📅 สรุปยอดขายเปรียบเทียบรายปี (อ้างอิงจาก CCS เช่น /69, /70)</b>
+        ${years.length?`<div style="display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:20px;border-bottom:1px solid var(--bd)">
+          ${years.slice(-10).map(y=>{const v=yv(y);return `<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="ปี ${y}: ${money(v)} บาท">
+            <span style="font-size:10px;color:var(--mu);margin-bottom:4px">${kfmt(v)}</span>
+            <div style="width:100%;max-width:40px;height:${Math.max(pctW(v,maxY),4)}%;background:var(--pri);border-radius:6px 6px 0 0"></div>
+            <span style="font-size:11px;font-weight:600;margin-top:6px">ปี ${y}</span></div>`}).join('')}
+        </div>`:'<p style="color:var(--mu);font-size:13px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลยอดขายรายปี</p>'}
       </div></div>`;
   }
   const recent=[...T].sort((a,b)=>(b.progressAt||b.created||'').localeCompare(a.progressAt||a.created||'')).slice(0,4);
@@ -453,48 +441,77 @@ function openC(id){
 const delC=id=>head&&confirm('ลบสัญญาโครงการนี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบสัญญาโครงการแล้ว');playBeep('error')});
 
 /* ---------- งานขาย ---------- */
-const filteredSales=()=>{const q=salesFlt.q.trim().toLowerCase();return Sales.filter(x=>(!salesYear||(x.ccs||x.date||'').slice(0,4).includes(salesYear))&&(!q||[x.name,x.loc,x.ccs,x.startDate,x.endDate].join(' ').toLowerCase().includes(q))&&(!salesFlt.s||x.status===salesFlt.s)).sort((a,b)=>(b.ccs||b.date||'').localeCompare(a.ccs||a.date||''))};
+const getSalesYear = x => {
+  const code = x.ccs || x.date || '';
+  if (code.includes('/')) {
+    const parts = code.split('/');
+    return parts[parts.length - 1].trim(); // ดึงหลังสแลช เช่น 69 จาก KX15/69
+  }
+  return code.slice(2, 4); // เผื่อกรณีพิมพ์แบบติดกัน
+};
+
+const filteredSales = () => {
+  const q = salesFlt.q.trim().toLowerCase();
+  return Sales.filter(x => {
+    const y = getSalesYear(x);
+    const matchYear = !salesYear || y === salesYear;
+    const matchQuery = !q || [x.name, x.loc, x.ccs, x.startDate, x.endDate].join(' ').toLowerCase().includes(q);
+    const matchStatus = !salesFlt.s || x.status === salesFlt.s;
+    return matchYear && matchQuery && matchStatus;
+  }).sort((a, b) => (b.ccs || b.date || '').localeCompare(a.ccs || a.date || ''));
+};
+
 function sales(){
   if(!head)return lock('ข้อมูลงานขายและใบเสนอราคา');
-  const years=[...new Set(Sales.map(x=>(x.ccs||x.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
-  const grand=Sales.reduce((s,x)=>s+num(x.val),0);
-  const ys=years.map(y=>{const a=Sales.filter(x=>(x.ccs||x.date||'').startsWith(y)),v=a.reduce((s,x)=>s+num(x.val),0);return {y,v,count:a.length,pct:grand>0?(v/grand*100).toFixed(1):'0.0'}});
-  const list=filteredSales();
-  const tv=list.reduce((s,x)=>s+num(x.val),0),tc=list.reduce((s,x)=>s+num(x.cost),0),tp=list.reduce((s,x)=>s+profitOf(x),0);
-  const share=grand>0?(tv/grand*100).toFixed(1):'0.0';
-  const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px">${n}</small><div class="num m" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
+  
+  const years = [...new Set(Sales.map(getSalesYear).filter(Boolean))].sort().reverse();
+  const grand = Sales.reduce((s, x) => s + num(x.val), 0);
+  const ys = years.map(y => {
+    const a = Sales.filter(x => getSalesYear(x) === y);
+    const v = a.reduce((s, x) => s + num(x.val), 0);
+    return { y, v, count: a.length, pct: grand > 0 ? (v / grand * 100).toFixed(1) : '0.0' };
+  });
+
+  const list = filteredSales();
+  const tv = list.reduce((s, x) => s + num(x.val), 0);
+  const tc = list.reduce((s, x) => s + num(x.cost), 0);
+  const tp = list.reduce((s, x) => s + profitOf(x), 0);
+  const share = grand > 0 ? (tv / grand * 100).toFixed(1) : '0.0';
+  
+  const c = (n, v, col) => `<div class="card st" style="padding:12px 16px"><small style="font-size:11px">${n}</small><div class="num m" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
+  const statuses = [['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
+  
   return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
       <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองข้อมูล</b>
       <div style="font-size:12.5px;font-weight:600;color:var(--pri)">สัดส่วนยอดขายที่แสดง: <span style="font-size:14px">${share}%</span></div>
     </div>
-    <div class="filter-pill-bar">${statuses.map(([v,l])=>`<button class="f-pill ${salesFlt.s===v?'active':''}" onclick="salesFlt.s='${v}';render()">${l}</button>`).join('')}</div>
+    <div class="filter-pill-bar">${statuses.map(([v, l]) => `<button class="f-pill ${salesFlt.s === v ? 'active' : ''}" onclick="salesFlt.s='${v}';render()">${l}</button>`).join('')}</div>
     <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
       <select onchange="salesYear=this.value;render()" style="padding:8px 10px;font-size:12.5px;width:100%">
         <option value="">📅 ทุกปีทั้งหมด</option>
-        ${years.map(y=>`<option value="${esc(y)}" ${salesYear===y?'selected':''}>ปี ${y} (${esc(y)})</option>`).join('')}
+        ${years.map(y => `<option value="${esc(y)}" ${salesYear === y ? 'selected' : ''}>ปี ${y}</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
         <input id="sq" placeholder="ค้นหาเลขที่ CCS, ชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
-        ${(salesFlt.q||salesFlt.s||salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:8px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
+        ${(salesFlt.q || salesFlt.s || salesYear) ? `<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:8px 10px;font-size:11.5px">✕ ล้าง</button>` : ''}
       </div>
     </div>
   </div>
   <div class="ychips">
-    <div class="ychip ${salesYear===''?'on':''}" onclick="salesYear='';render()"><div>ยอดรวมทุกปี</div><div>100%</div></div>
-    ${ys.map(o=>`<div class="ychip ${salesYear===o.y?'on':''}" onclick="salesYear='${esc(o.y)}';render()"><div>ปี ${o.y} (${o.count})</div><div>${o.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(o.v)})</span></div></div>`).join('')}
+    <div class="ychip ${salesYear === '' ? 'on' : ''}" onclick="salesYear='';render()"><div>ยอดรวมทุกปี</div><div>100%</div></div>
+    ${ys.map(o => `<div class="ychip ${salesYear === o.y ? 'on' : ''}" onclick="salesYear='${esc(o.y)}';render()"><div>ปี ${o.y} (${o.count})</div><div>${o.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(o.v)})</span></div></div>`).join('')}
   </div>
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม '+(salesYear?'ปี '+salesYear:'ทุกปี'),tv,'var(--tx)')}${c('ต้นทุนรวมทั้งหมด',tc,'var(--yw)')}${c('กำไรรวมสุทธิ',tp,'var(--gn)')}</div>
+  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม ' + (salesYear ? 'ปี ' + salesYear : 'ทุกปี'), tv, 'var(--tx)')}${c('ต้นทุนรวมทั้งหมด', tc, 'var(--yw)')}${c('กำไรรวมสุทธิ', tp, 'var(--gn)')}</div>
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>เลขที่ CCS</th><th style="text-align:left">โครงการ / สถานที่</th><th>ช่วงเวลา</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
-  ${list.map((s,i)=>{
-    const sD=s.startDate||'',eD=s.endDate||'';
-    const period=(sD||eD)?`<div>⏳ ${esc(sD||'-')} → ${esc(eD||'-')}<br>${dueBadge(eD||sD)}</div>`:'<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
-    const stc=s.status==='วางบิลแล้ว'?'s-done':s.status==='รอวางบิล'?'p2':'s-run';
+  ${list.map((s, i) => {
+    const sD = s.startDate || '', eD = s.endDate || '';
+    const period = (sD || eD) ? `<div>⏳ ${esc(sD || '-')} → ${esc(eD || '-')}<br>${dueBadge(eD || sD)}</div>` : '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
+    const stc = s.status === 'วางบิลแล้ว' ? 's-done' : s.status === 'รอวางบิล' ? 'p2' : 's-run';
     return `<tr>
-      <td>${i+1}</td>
-      <td style="white-space:nowrap"><b>${esc(s.ccs||s.date)}</b></td>
+      <td>${i + 1}</td>
+      <td style="white-space:nowrap"><b>${esc(s.ccs || s.date)}</b></td>
       <td class="l"><b>${esc(s.name)}</b><br><small style="color:var(--mu)">📍 ${esc(s.loc)}</small></td>
       <td style="white-space:nowrap;font-size:11.5px">${period}</td>
       <td style="white-space:nowrap"><b>${money(s.val)}</b></td>
@@ -502,7 +519,8 @@ function sales(){
       <td style="white-space:nowrap;color:var(--gn);font-weight:700">${money(profitOf(s))}</td>
       <td><span class="pill ${stc}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
       <td><span class="acts"><button class="ib" title="แก้ไข" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></span></td>
-    </tr>`}).join('')||'<tr><td colspan="9" class="empty">ไม่พบรายการงานขาย</td></tr>'}
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" class="empty">ไม่พบรายการงานขาย</td></tr>'}
   </tbody></table></div></div>`;
 }
 
@@ -682,7 +700,7 @@ function addFilterRow(){
   container.appendChild(div);
 }
 
-const delPM=id=>confirm('ลบรายการ PM Maintenance นี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
+const delPM=id=>confirm('ลบรายการ PM Maintenance เช่นนี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
 
 /* ---------- ปฏิทิน ---------- */
 function cal(){
