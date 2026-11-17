@@ -573,7 +573,7 @@ function pmRows(){
   return filteredPM().map((x,i)=>{
     const n=dd(x.deadline,TODAY);
     const dlBadge=n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">เหลือ ${n} วัน (ใกล้ถึง)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`;
-    const fList=(x.filters||[]).map(f=>`• ${esc(f.type)}: <b>${f.count} ตัว</b>`).join('<br>')||'-';
+    const fList=(x.filters&&x.filters.length)?x.filters.map(f=>`• ${esc(f.type)}: <b>${f.count} ตัว</b>`).join('<br>'):'<span class="pill s-wait">ไม่มีการเปลี่ยน Filter</span>';
     return `<tr onclick="openPM('${esc(x.id)}')" style="cursor:pointer">
       <td>${i+1}</td>
       <td class="l"><b>${esc(x.title)}</b><br><small style="color:var(--mu)">📅 เดือน: ${esc(x.month||'-')}</small></td>
@@ -586,7 +586,7 @@ function pmRows(){
 
 function pmView(){
   const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  return `<div class="card hd"><div><b style="font-size:18px">🔧 หัวข้อ PM Maintenance</b><p>จัดการและบันทึกรายละเอียดงาน PM (เลือกกรองตามเดือน และเลือกประเภท Filter หลายรายการได้)</p></div><button class="btn d" onclick="openPM()">＋ เพิ่มรายการ PM</button></div>
+  return `<div class="card hd"><div><b style="font-size:18px">🔧 หัวข้อ PM Maintenance</b><p>จัดการและบันทึกรายละเอียดงาน PM (เลือกกรองตามเดือน และเลือกประเภท Filter หลายรายการหรือละไว้ได้)</p></div><button class="btn d" onclick="openPM()">＋ เพิ่มรายการ PM</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div class="filter-pill-bar"><button class="f-pill ${pmMonth===''?'active':''}" onclick="pmMonth='';render()">ทุกเดือน</button>${months.map(m=>`<button class="f-pill ${pmMonth===m?'active':''}" onclick="pmMonth='${m}';render()">${m}</button>`).join('')}</div>
     <input id="pmq" placeholder="ค้นหารายละเอียดงาน, ประเภท Filter, หมายเหตุ..." value="${esc(pmFlt.q)}" oninput="pmFlt.q=this.value;$('#pm-tbody').innerHTML=pmRows()" style="padding:9px 12px;font-size:13px">
@@ -597,7 +597,7 @@ function pmView(){
 function openPM(id){
   editPM=PM.find(x=>x.id===id)||null;
   const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  const x=editPM||{title:'',month:months[new Date().getMonth()],deadline:TODAY,note:'',filters:[{type:PM_FILTER_TYPES[0],count:1}]};
+  const x=editPM||{title:'',month:months[new Date().getMonth()],deadline:TODAY,note:'',filters:[]};
 
   $('#f').innerHTML=`<h3 style="margin:0">${editPM?'แก้ไขรายการ PM Maintenance':'เพิ่มรายการ PM Maintenance ใหม่'}</h3>
   <div class="two">
@@ -605,9 +605,12 @@ function openPM(id){
     <label>Deadline (กำหนดส่งมอบ)<input type="date" name="deadline" required value="${esc(x.deadline||TODAY)}"></label>
   </div>
   <label>รายละเอียดงาน<textarea name="title" rows="2" required>${esc(x.title)}</textarea></label>
-  <label><b>รายการ Filter (เลือกได้หลายชนิดและระบุจำนวน)</b></label>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+    <label style="margin:0"><b>รายการ Filter (ละไว้ได้ถ้าไม่ได้เปลี่ยน)</b></label>
+    <button type="button" class="btn" onclick="$('#filter-rows').innerHTML=''" style="font-size:11.5px;padding:3px 8px;color:var(--rd)">ล้างทั้งหมด</button>
+  </div>
   <div id="filter-rows" style="display:grid;gap:8px"></div>
-  <button type="button" class="btn" onclick="addFilterRow()" style="font-size:12px;padding:6px 12px;width:fit-content">＋ เพิ่มชนิด Filter อีก</button>
+  <button type="button" class="btn" onclick="addFilterRow()" style="font-size:12px;padding:6px 12px;width:fit-content">＋ เพิ่มชนิด Filter</button>
   <label style="margin-top:8px">หมายเหตุ<input name="note" value="${esc(x.note||'')}"></label>
   <div class="tools" style="justify-content:flex-end;margin-top:10px">
     ${editPM?'<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delPM(\''+editPM.id+'\')">🗑 ลบรายการ</button>':''}
@@ -615,7 +618,7 @@ function openPM(id){
   </div>`;
   
   mod.classList.add('on');
-  renderFilterRows(x.filters||[{type:PM_FILTER_TYPES[0],count:1}]);
+  renderFilterRows(x.filters||[]);
 
   $('#f').onsubmit=async e=>{
     e.preventDefault();
@@ -627,7 +630,6 @@ function openPM(id){
       const c=num(r.querySelector('.f-count').value);
       if(c>0)filters.push({type:t,count:c});
     });
-    if(!filters.length)return alert('กรุณาระบุ Filter อย่างน้อย 1 รายการ');
 
     const data={
       title:fd.get('title').trim(),
@@ -647,6 +649,10 @@ function openPM(id){
 
 function renderFilterRows(list){
   const container=$('#filter-rows');
+  if(!list||!list.length){
+    container.innerHTML='';
+    return;
+  }
   container.innerHTML=list.map((f)=>`<div class="filter-row" style="display:flex;gap:8px;align-items:center">
     <select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}" ${f.type===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
     <input type="number" min="1" class="f-count" value="${f.count||1}" style="flex:1" placeholder="จำนวนตัว">
@@ -840,7 +846,7 @@ $('#dm').onclick=()=>{const n=document.documentElement.getAttribute('data-theme'
 $('#ex').onclick=()=>{
   if(view==='pm'){
     const h=['ลำดับ','รายละเอียดงาน','เดือน','รายการ Filter และจำนวน','หมายเหตุ','Deadline'];
-    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredPM().map((x,i)=>[i+1,x.title,x.month,(x.filters||[]).map(f=>f.type+' ('+f.count+' ตัว)').join(', '),x.note||'',x.deadline]);
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredPM().map((x,i)=>[i+1,x.title,x.month,(x.filters&&x.filters.length)?x.filters.map(f=>f.type+' ('+f.count+' ตัว)').join(', '):'ไม่มีการเปลี่ยน Filter',x.note||'',x.deadline]);
     const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='pm-maintenance-'+TODAY+'.csv';
     document.body.appendChild(a);a.click();a.remove();
