@@ -10,164 +10,169 @@
 *{box-sizing:border-box}
 html{max-width:100%;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Sarabun,system-ui,sans-serif;display:flex;min-height:100vh;max-width:100%;overflow-x:clip;padding-top:env(safe-area-inset-top,0px)}
-aside{width:270px;flex:none;border-right:1px solid var(--bd);padding:20px 16px;display:flex;flex-direction:column;gap:14px;background:var(--card);position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo{display:flex;gap:12px;align-items:center}
-.logo img{width:46px;height:46px;border-radius:14px;object-fit:contain}
-.logo b{color:var(--pri);font-size:17px}
-.box{border:1px solid var(--bd);border-radius:18px;padding:12px;background:var(--soft)}
-.box small{font-weight:600;display:block;margin-bottom:8px}
+aside{width:260px;flex:none;border-right:1px solid var(--bd);padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card);position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{display:flex;gap:10px;align-items:center}
+.logo img{width:40px;height:40px;border-radius:12px;object-fit:contain}
+.logo b{color:var(--pri);font-size:16px}
+.box{border:1px solid var(--bd);border-radius:16px;padding:10px;background:var(--soft)}
+.box small{font-weight:600;display:block;margin-bottom:6px}
 .seg{display:flex;gap:6px}
-.seg button{flex:1;border:0;border-radius:99px;padding:7px;font:600 12px Sarabun,sans-serif;background:var(--bd);color:var(--tx);cursor:pointer}
+.seg button{flex:1;border:0;border-radius:99px;padding:6px;font:600 11.5px Sarabun,sans-serif;background:var(--bd);color:var(--tx);cursor:pointer}
 .seg button.on{background:var(--pri);color:#fff}
-nav{display:flex;flex-direction:column;gap:6px}
-nav button{text-align:left;border:0;background:none;padding:13px 16px;border-radius:16px;font:600 14px Sarabun,sans-serif;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
+nav{display:flex;flex-direction:column;gap:4px}
+nav button{text-align:left;border:0;background:none;padding:11px 14px;border-radius:14px;font:600 13.5px Sarabun,sans-serif;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
 nav button:hover{background:var(--soft);color:var(--tx)}
 nav button.on{background:var(--dk);color:#fff}
-main{flex:1;padding:24px;min-width:0;display:flex;flex-direction:column;gap:20px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:22px;min-width:0;box-shadow:0 10px 30px -5px rgba(0,0,0,.05)}
-.hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.hd h1{margin:0;font-size:21px}.hd p{margin:4px 0 0;color:var(--mu);font-size:13px}
-.sub{color:var(--mu);font-size:12.5px;margin:4px 0 14px}
-.btn{border:1px solid var(--bd);border-radius:14px;padding:11px 16px;font:600 13px Sarabun,sans-serif;cursor:pointer;background:var(--soft);color:var(--tx);transition:filter .15s,box-shadow .15s}
-.btn:hover{filter:brightness(1.05);box-shadow:0 4px 14px rgba(0,0,0,.1)}
+main{flex:1;padding:20px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:18px;min-width:0;box-shadow:0 10px 30px -5px rgba(0,0,0,.04)}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.hd h1{margin:0;font-size:19px}.hd p{margin:2px 0 0;color:var(--mu);font-size:12px}
+.sub{color:var(--mu);font-size:12px;margin:2px 0 12px}
+.btn{border:1px solid var(--bd);border-radius:12px;padding:10px 14px;font:600 13px Sarabun,sans-serif;cursor:pointer;background:var(--soft);color:var(--tx);transition:all .15s}
+.btn:hover{filter:brightness(1.05)}
 .btn.d{background:var(--pri);color:#fff;border-color:transparent}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.grid{display:grid;gap:16px}
-.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
-.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
 .g4f{grid-template-columns:repeat(4,1fr)}
 .st small{color:var(--mu);font-weight:600}
-.num{font-size:30px;font-weight:800;margin:10px 0 4px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;overflow-wrap:anywhere}
-.num span{font-size:13px;color:var(--mu);font-weight:400}
-.num.m{font-size:24px}
-.big{font-size:56px;font-weight:800;color:var(--pri);text-align:center;margin:14px 0 4px}
-.bar{height:8px;border-radius:9px;background:var(--bd);overflow:hidden}
+.num{font-size:26px;font-weight:800;margin:8px 0 2px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px}
+.num span{font-size:12px;color:var(--mu);font-weight:400}
+.num.m{font-size:20px}
+.big{font-size:48px;font-weight:800;color:var(--pri);text-align:center;margin:10px 0 2px}
+.bar{height:7px;border-radius:9px;background:var(--bd);overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#10b981)}
-.pill{display:inline-block;padding:4px 12px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid;white-space:nowrap}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;border:1px solid;white-space:nowrap}
 .p0,.p1,.p2,.p3,.s-run,.s-done,.s-late,.ev,.btn.g{--c:var(--in);color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border-color:color-mix(in srgb,var(--c) 35%,transparent)}
 .p0,.s-done,.ev.ok,.btn.g{--c:var(--gn)}.p1{--c:var(--bl)}.p2{--c:var(--yw)}.p3,.s-late{--c:var(--rd)}
 .s-wait{color:var(--mu);background:var(--soft);border-color:var(--bd)}
 .s-late{animation:pulse 1.6s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rd) 45%,transparent)}70%,100%{box-shadow:0 0 0 6px transparent}}
-.pc{border:1px solid var(--bd);border-radius:18px;padding:14px;text-align:center;background:var(--card)}
-.pc b{display:block;font-size:24px;margin:6px 0 2px}.pc small{color:var(--mu)}
+.pc{border:1px solid var(--bd);border-radius:16px;padding:12px;text-align:center;background:var(--card)}
+.pc b{display:block;font-size:20px;margin:4px 0 2px}.pc small{color:var(--mu)}
 .pc.ok{background:color-mix(in srgb,var(--gn) 12%,transparent)}.pc.ok b{color:var(--gn)}
 .pc.wn{background:color-mix(in srgb,var(--yw) 12%,transparent)}.pc.wn b{color:var(--yw)}
-.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input,select,textarea{font:14px Sarabun,sans-serif;border:1px solid var(--bd);border-radius:14px;padding:11px 15px;background:var(--soft);color:var(--tx);max-width:100%;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(99,102,241,.18);outline:none;background:var(--card)}
-.tools input{flex:1;min-width:180px}.tools select{flex:1;min-width:130px}
-.filter-pill-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.f-pill{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:6px 14px;border-radius:99px;font:600 12.5px Sarabun,sans-serif;cursor:pointer}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea{font:14px Sarabun,sans-serif;border:1px solid var(--bd);border-radius:12px;padding:10px 14px;background:var(--soft);color:var(--tx);max-width:100%;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(99,102,241,.18);outline:none;background:var(--card)}
+.tools input{flex:1;min-width:160px}.tools select{flex:1;min-width:120px}
+.filter-pill-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.f-pill{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:5px 12px;border-radius:99px;font:600 12px Sarabun,sans-serif;cursor:pointer}
 .f-pill:hover{border-color:var(--pri)}
 .f-pill.active{background:var(--pri);color:#fff;border-color:var(--pri)}
-.ychips{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
-.ychip{min-width:100px;padding:6px 10px;border-radius:10px;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd);text-align:center}
+.ychips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.ychip{min-width:90px;padding:6px 8px;border-radius:10px;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd);text-align:center}
 .ychip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.ychip div:first-child{font-size:10px;opacity:.85}.ychip div:last-child{font-size:12px;font-weight:700;margin-top:1px}
+.ychip div:first-child{font-size:9.5px;opacity:.85}.ychip div:last-child{font-size:11.5px;font-weight:700}
 
-/* ตารางและ Mobile Card View */
+/* ตารางปกติสำหรับจอใหญ่ */
 .tw{width:100%}
-.tcard{background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-th,td{padding:12px 10px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
+.tcard{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:10px 8px;border-top:1px solid var(--bd);vertical-align:middle;text-align:center}
 th{background:var(--soft);font-weight:700;color:var(--mu);border-top:0}
 td.l{text-align:left}
 tbody tr:hover{background:color-mix(in srgb,var(--pri) 6%,transparent)}
-td.empty{color:var(--mu);padding:24px}
+td.empty{color:var(--mu);padding:20px}
 .acts{display:inline-flex;gap:4px}
-.ib{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;transition:all .15s}
+.ib{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11.5px;font-weight:600;white-space:nowrap;transition:all .15s}
 .ib:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
 .assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
-.assignee-chip{background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
+.assignee-chip{background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 6px;font-size:10.5px;font-weight:600}
 
 /* กราฟแท่งแนวนอน */
-.hb-list{max-height:440px;overflow-y:auto;padding-right:4px}
-.hb{padding:9px 0;border-bottom:1px dashed var(--bd)}.hb:last-child{border-bottom:0}
-.hb-top{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12.5px;margin-bottom:6px}
+.hb-list{max-height:400px;overflow-y:auto;padding-right:4px}
+.hb{padding:8px 0;border-bottom:1px dashed var(--bd)}.hb:last-child{border-bottom:0}
+.hb-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;margin-bottom:4px}
 .hb-name{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hb-track{height:10px;border-radius:99px;background:var(--soft);overflow:hidden;flex:1}
+.hb-track{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;flex:1}
 .hb-track i{display:block;height:100%;border-radius:99px}
-.hb-line{display:flex;align-items:center;gap:8px;font-size:11.5px;margin-top:4px}
-.hb-line small{width:44px;color:var(--mu);flex:none}
-.hb-line b{width:62px;text-align:right;flex:none}
-.legend{display:flex;gap:14px;font-size:12px;font-weight:600;flex-wrap:wrap}
-.legend span{display:flex;align-items:center;gap:5px}
-.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend{display:flex;gap:12px;font-size:11.5px;font-weight:600;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
 
 /* ปฏิทิน */
-.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.cal .h{background:var(--soft);border-radius:10px;padding:8px 2px;text-align:center;font-weight:600;font-size:12px}
-.cal .d{min-width:0;min-height:95px;border:1px solid var(--bd);border-radius:12px;padding:6px;font-weight:600;font-size:12px;display:flex;flex-direction:column;gap:3px;transition:background .15s}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .h{background:var(--soft);border-radius:8px;padding:6px 2px;text-align:center;font-weight:600;font-size:11px}
+.cal .d{min-width:0;min-height:85px;border:1px solid var(--bd);border-radius:10px;padding:4px;font-weight:600;font-size:11px;display:flex;flex-direction:column;gap:2px}
 .cal .d.e{border-color:transparent;opacity:.3}
 .cal .d.t{border:2px solid var(--pri)}
-.cal .d.t .dn{background:var(--pri);color:#fff;border-radius:6px;padding:1px 6px}
+.cal .d.t .dn{background:var(--pri);color:#fff;border-radius:4px;padding:1px 4px}
 .cal .d.c{cursor:pointer}.cal .d.c:hover{background:var(--soft)}
 .pl{font-style:normal;color:var(--pri);opacity:0;font-weight:800}.cal .d.c:hover .pl{opacity:1}
-.ev{font-size:10px;font-weight:500;padding:2px 6px;border-radius:99px;border:1px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.emp{display:flex;gap:12px;align-items:center;justify-content:space-between}
-.row{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid var(--bd);border-radius:12px;margin-top:6px;font-size:13px;align-items:center;transition:background .15s}
+.ev{font-size:9px;font-weight:500;padding:1px 4px;border-radius:99px;border:1px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emp{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.row{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--bd);border-radius:10px;margin-top:4px;font-size:12px;align-items:center}
 .row:hover{background:var(--soft)}
 .row.s{background:var(--soft);color:var(--pri);font-weight:600}
 
 /* Modal */
-.mod{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;place-items:center;z-index:50;padding:12px}
+.mod{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;place-items:center;z-index:50;padding:10px}
 .mod.on{display:grid}
-.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;width:min(580px,100%);max-height:90vh;overflow:auto;display:grid;gap:14px;box-shadow:0 30px 60px -12px rgba(0,0,0,.4);animation:pop .25s ease-out}
-@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
-.mod label,.mod .fl{font-size:13px;font-weight:700;display:grid;gap:6px;color:var(--tx)}
-.chk{display:flex;gap:10px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:6px;cursor:pointer}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:20px;width:min(520px,100%);max-height:92vh;overflow:auto;display:grid;gap:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,.4)}
+.mod label,.mod .fl{font-size:12.5px;font-weight:700;display:grid;gap:4px;color:var(--tx)}
+.chk{display:flex;gap:8px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:4px;cursor:pointer;font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .hide{display:none!important}
 
-.pie-container{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px 0}
-.pie-chart{width:140px;height:140px;flex:none;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center}
-.pie-chart::after{content:'';position:absolute;width:80px;height:80px;background:var(--card);border-radius:50%}
-.pie-legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px;font-weight:600;max-width:260px;max-height:160px;overflow-y:auto}
-.pie-item{display:flex;align-items:center;gap:8px}
-.pie-dot{width:12px;height:12px;border-radius:4px;flex:none}
-.ic{margin-right:8px}.sh,.sw{display:none}
+.pie-container{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:8px 0}
+.pie-chart{width:120px;height:120px;flex:none;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center}
+.pie-chart::after{content:'';position:absolute;width:68px;height:68px;background:var(--card);border-radius:50%}
+.pie-legend{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;max-width:24px;max-height:140px;overflow-y:auto}
+.pie-item{display:flex;align-items:center;gap:6px}
+.pie-dot{width:10px;height:10px;border-radius:3px;flex:none}
+.ic{margin-right:6px}.sh,.sw{display:none}
 
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:calc(100% - 24px);text-align:center;background:var(--dk);color:#fff;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,.3);font-size:13px}
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);max-width:calc(100% - 24px);text-align:center;background:var(--dk);color:#fff;padding:10px 18px;border-radius:99px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;font-weight:600;box-shadow:0 8px 20px rgba(0,0,0,.3);font-size:12.5px}
 #toast.on{opacity:1}
 
+/* ปรับแต่งสำหรับมือถือ (Mobile First Layout) */
 @media(max-width:820px){
- body{flex-direction:column;padding-bottom:76px}
- aside{width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:10px 12px;gap:8px;border-right:0;border-bottom:1px solid var(--bd);overflow:visible}
+ body{flex-direction:column;padding-bottom:72px}
+ aside{width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:8px 12px;gap:6px;border-right:0;border-bottom:1px solid var(--bd);overflow:visible}
  aside>div[style="flex:1"],aside .box:last-child,aside .box small{display:none}
- aside .box{padding:6px 10px;flex:1;border-radius:12px}
- .logo img{width:32px;height:32px}
- .logo b{font-size:14px;white-space:nowrap}
- nav{position:fixed;left:0;right:0;bottom:0;z-index:40;flex-direction:row;background:var(--card);border-top:1px solid var(--bd);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));gap:4px;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
- nav button{flex:1;min-width:0;padding:6px 4px;text-align:center;font-size:10px;border-radius:10px;display:flex;flex-direction:column;align-items:center}
- .ic{display:block;margin:0 0 2px;font-size:16px}.lb{display:none}.sh{display:block}.sw{display:inline}.fw{display:none}
- main{padding:12px;gap:12px}
- .card{padding:16px;border-radius:18px}
- .hd h1{font-size:17px}
- .hd .tools{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}
- .hd .tools .btn{padding:9px;font-size:12px;text-align:center}
+ aside .box{padding:4px 8px;flex:none;border-radius:10px}
+ .logo img{width:28px;height:28px}
+ .logo b{font-size:13px;white-space:nowrap}
+ nav{position:fixed;left:0;right:0;bottom:0;z-index:40;flex-direction:row;background:var(--card);border-top:1px solid var(--bd);padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px));gap:2px;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+ nav button{flex:1;min-width:0;padding:5px 2px;text-align:center;font-size:9.5px;border-radius:10px;display:flex;flex-direction:column;align-items:center}
+ .ic{display:block;margin:0 0 1px;font-size:16px}.lb{display:none}.sh{display:block}.sw{display:inline}.fw{display:none}
+ main{padding:10px;gap:10px}
+ .card{padding:12px;border-radius:16px}
+ .hd h1{font-size:16px}
+ .hd .tools{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+ .hd .tools .btn{padding:8px;font-size:11.5px;text-align:center}
  #dm{grid-column:span 2}
- .g4,.g4f{grid-template-columns:repeat(2,1fr);gap:10px}
- .num{font-size:20px}.big{font-size:38px}
- .tools input,.tools select{width:100%;min-width:100%}
+ .g4,.g4f{grid-template-columns:repeat(2,1fr);gap:8px}
+ .num{font-size:18px}.big{font-size:32px}
+ .tools input,.tools select{width:100%;min-width:100%;padding:9px 12px}
  .two{grid-template-columns:1fr}
+ 
+ /* แปลงตารางเป็น Card View บนมือถือเพื่อความสะดวกในการอ่าน */
+ .tcard table,.tcard thead,.tcard tbody,.tcard tr,.tcard th{display:none}
+ .tcard{background:transparent;border:0;box-shadow:none}
+ .m-card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.02);display:flex;flex-direction:column;gap:6px}
+ .m-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+ .m-card-body{font-size:12px;color:var(--mu);display:grid;gap:3px;border-top:1px dashed var(--bd);border-bottom:1px dashed var(--bd);padding:6px 0}
+ .m-card-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;padding-top:2px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <aside>
  <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"><div><b>BEST SERVICE KK</b></div></div>
- <div class="box"><small>🛡 สิทธิ์ผู้ใช้งาน:</small><div class="seg"><button id="rH">👑 หัวหน้างาน</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
+ <div class="box"><small>🛡 สิทธิ์:</small><div class="seg"><button id="rH">👑 หัวหน้า</button><button id="rE" class="on">👤 พนักงาน</button></div></div>
  <nav id="nav"></nav>
  <div style="flex:1"></div>
- <div class="box"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>สถานะระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:12px monospace;color:var(--pri);margin-top:6px"></div></div>
+ <div class="box"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu)"><span>ระบบ:</span><b style="color:var(--gn)">⚡ เรียลไทม์</b></div><div id="today" style="font:11px monospace;color:var(--pri);margin-top:4px"></div></div>
 </aside>
 <main>
  <div class="card hd"><div><h1 id="ttl"></h1><p id="sub"></p></div>
-  <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ ส่งออก CSV</button><button class="btn d" id="nt">＋ คีย์งานใหม่</button></div></div>
+  <div class="tools"><button class="btn" id="dm">🌙</button><button class="btn g" id="ex">⬇ CSV</button><button class="btn d" id="nt">＋ เพิ่ม</button></div></div>
  <div id="v"></div>
 </main>
-<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:13px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
+<div class="mod" id="lm"><form id="lf"><h3 style="margin:0">เข้าสู่ระบบหัวหน้างาน</h3><label>อีเมล<input type="email" name="em" required autocomplete="username"></label><label>รหัสผ่าน<input type="password" name="pw" required autocomplete="current-password"></label><div id="le" style="color:var(--rd);font-size:12px"></div><div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="lm.classList.remove('on')">ยกเลิก</button><button class="btn d">เข้าสู่ระบบ</button></div></form></div>
 <div class="mod" id="pm"><div class="pbox" id="pb"></div></div>
 <div id="toast"></div>
 <div class="mod" id="mod"><form id="f"></form></div>
@@ -206,17 +211,17 @@ const nm=id=>(E.find(e=>e.id===id)||{name:'(ไม่พบ)'}).name;
 const sc=s=>s==='เสร็จสิ้น'?'s-done':s==='รอเริ่ม'?'s-wait':'s-run';
 const avg=a=>a.length?Math.round(a.reduce((s,t)=>s+t.progress,0)/a.length):0;
 const mine=id=>T.filter(t=>t.assignees.includes(id));
-const lock=what=>`<div class="card" style="text-align:center;padding:50px 20px;color:var(--rd)"><h3>🔒 สำหรับหัวหน้างานเท่านั้น</h3><p>คุณไม่มีสิทธิ์เข้าถึง${what} กรุณาเข้าสู่ระบบด้วยสิทธิ์หัวหน้างาน</p></div>`;
+const lock=what=>`<div class="card" style="text-align:center;padding:40px 16px;color:var(--rd)"><h3>🔒 เฉพาะหัวหน้างาน</h3><p>ไม่มีสิทธิ์เข้าถึง${what}</p></div>`;
 const dueBadge=d=>{if(!d)return '<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';const n=dd(d,TODAY);return n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">ใกล้ถึงกำหนด (${n} วัน)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`};
 
 const VIEWS={
-  ov:['หน้าภาพรวมรายงาน (Overview Report)','ภาพรวม (Overview)'],
-  tb:['ตารางงานทั้งหมด (Task List Table)','ตารางงาน'],
-  pm:['หัวข้อ PM Maintenance','PM Maintenance'],
-  cal:['ปฏิทินวางแผนงานรายเดือน (Monthly Planner)','ปฏิทินรายเดือน'],
-  em:['รายชื่อพนักงานในแผนกและการมอบหมายงาน','พนักงานในแผนก'],
-  ct:['บริหารจัดการสัญญาโครงการและรายได้','สัญญาโครงการ'],
-  sl:['งานขายและติดตามใบเสนอราคา','งานขาย']
+  ov:['ภาพรวมรายงาน','ภาพรวม'],
+  tb:['ตารางงาน','ตารางงาน'],
+  pm:['PM Maintenance','PM Maintenance'],
+  cal:['ปฏิทิน','ปฏิทิน'],
+  em:['พนักงานในแผนก','พนักงาน'],
+  ct:['สัญญาโครงการ','สัญญา'],
+  sl:['งานขาย','งานขาย']
 };
 const IC={ov:'📊',tb:'☰',pm:'🔧',cal:'📅',em:'👥',ct:'💼',sl:'📈'};
 const SH={ov:'ภาพรวม',tb:'ตารางงาน',pm:'PM',cal:'ปฏิทิน',em:'พนักงาน',ct:'สัญญา',sl:'งานขาย'};
@@ -241,26 +246,26 @@ function render(){
   $('#rE').className=head?'':'on';
 
   $('#ttl').textContent=VIEWS[view][0];
-  $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
+  $('#sub').textContent=head?'👑 โหมดหัวหน้างาน':'👤 โหมดพนักงาน: จัดการ PM และอัปเดตงานได้';
   
   const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
   $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
-    let tabs=[['ov1','1. หน้าภาพรวมรายงาน'],['ov2','2. Dashboard พนักงาน']];
-    if(head)tabs=tabs.concat([['ov3','3. Dashboard สัญญาโครงการ'],['ov4','4. Dashboard งานขาย']]);
+    let tabs=[['ov1','ภาพรวม'],['ov2','ทีม']];
+    if(head)tabs=tabs.concat([['ov3','สัญญา'],['ov4','ยอดขาย']]);
     v.innerHTML=`<div class="tabs">${tabs.map(([k,l])=>`<button class="btn ${subView===k?'d':''}" onclick="subView='${k}';render()">${l}</button>`).join('')}</div>`+({ov1:overviewMain,ov2:dash,ov3:contractsDash,ov4:salesDash}[subView])();
   }else v.innerHTML=({tb,pm:pmView,cal,em,ct:contracts,sl:sales})[view]();
 
-  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;$('#tbody').innerHTML=rows()}}
-  if(view==='pm'){const q=$('#pmq');if(q)q.oninput=()=>{pmFlt.q=q.value;$('#pm-tbody').innerHTML=pmRows()}}
+  if(view==='tb'){const q=$('#fq');if(q)q.oninput=()=>{flt.q=q.value;const tbody=$('#tbody');if(tbody)tbody.innerHTML=rows();const mc=$('#m-cards');if(mc)mc.innerHTML=renderMobileCards()}}
+  if(view==='pm'){const q=$('#pmq');if(q)q.oninput=()=>{pmFlt.q=q.value;const tbody=$('#pm-tbody');if(tbody)tbody.innerHTML=pmRows();const mc=$('#pm-m-cards');if(mc)mc.innerHTML=renderPMMobileCards()}}
   if(aid){const n=document.getElementById(aid);if(n){n.focus();if(ps!=null){try{n.setSelectionRange(ps,pe)}catch(_){}}}}
 }
 
 /* ---------- ภาพรวม ---------- */
 function overviewMain(){
-  const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:16px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดข้อมูลตัวอย่าง</button></div>':'';
+  const sd=head&&!T.length&&!E.length?'<div class="card" style="margin-bottom:14px">ยังไม่มีข้อมูล <button class="btn d" onclick="seed()">โหลดตัวอย่าง</button></div>':'';
   const total=T.length,done=T.filter(t=>t.progress>=100).length,run=T.filter(t=>t.progress>0&&t.progress<100).length,wait=T.filter(t=>t.progress===0).length,nr=T.filter(near).length,p=avg(T);
   const pc=[0,1,2,3].map(i=>T.filter(t=>t.priority===i).length);
   const pD=total?done/total*100:0,pR=total?run/total*100:0;
@@ -276,76 +281,74 @@ function overviewMain(){
     const mn=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
     const mv=mn.map((_,i)=>Sales.filter(x=>(x.date||'').startsWith(ly+'-'+String(i+1).padStart(2,'0'))).reduce((s,x)=>s+num(x.val),0));
     const maxM=Math.max(1,...mv);
-    salesBlock=`<div class="card" style="margin-top:16px;background:var(--soft)">
-      <b style="font-size:16px">📈 กราฟวิเคราะห์และสรุปยอดขาย (Sales Analytics)</b>
-      <p class="sub">แสดงเปรียบเทียบยอดขายรวม (Pre-VAT) แยกตามรายปีและรายเดือน</p>
-      <div class="grid g2">
-        <div class="card" style="padding:16px"><b style="font-size:13.5px;display:block;margin-bottom:12px">📅 สรุปยอดขายเปรียบเทียบรายปี</b>
-          ${years.length?`<div style="display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:20px;border-bottom:1px solid var(--bd)">
-            ${years.slice(-8).map(y=>{const v=yv(y);return `<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${money(v)} บาท">
-              <span style="font-size:10px;color:var(--mu);margin-bottom:4px">${kfmt(v)}</span>
-              <div style="width:100%;max-width:40px;height:${Math.max(pctW(v,maxY),4)}%;background:var(--pri);border-radius:6px 6px 0 0"></div>
-              <span style="font-size:11px;font-weight:600;margin-top:6px">${+y+543}</span></div>`}).join('')}
-          </div>`:'<p style="color:var(--mu);font-size:13px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลยอดขายรายปี</p>'}
+    salesBlock=`<div class="card" style="margin-top:14px;background:var(--soft)">
+      <b style="font-size:15px">📈 สรุปยอดขาย (Sales Analytics)</b>
+      <div class="grid g2" style="margin-top:10px">
+        <div class="card" style="padding:12px"><b style="font-size:12.5px;display:block;margin-bottom:8px">รายปี</b>
+          ${years.length?`<div style="display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:10px;border-bottom:1px solid var(--bd)">
+            ${years.slice(-6).map(y=>{const v=yv(y);return `<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${money(v)} บาท">
+              <span style="font-size:9px;color:var(--mu)">${kfmt(v)}</span>
+              <div style="width:100%;max-width:30px;height:${Math.max(pctW(v,maxY),4)}%;background:var(--pri);border-radius:4px 4px 0 0"></div>
+              <span style="font-size:10px;font-weight:600;margin-top:4px">${+y+543}</span></div>`}).join('')}
+          </div>`:'<p style="color:var(--mu);font-size:12px;text-align:center;padding:20px 0">ไม่มีข้อมูล</p>'}
         </div>
-        <div class="card" style="padding:16px"><b style="font-size:13.5px;display:block;margin-bottom:12px">📊 สรุปยอดขายรายเดือน (ปี ${+ly+543})</b>
-          <div style="display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:20px;border-bottom:1px solid var(--bd)">
-            ${mv.map((v,i)=>`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${mn[i]}: ${money(v)} บาท">
-              <div style="width:100%;height:${Math.max(pctW(v,maxM),3)}%;background:var(--gn);border-radius:4px 4px 0 0"></div>
-              <span style="font-size:9px;color:var(--mu);margin-top:6px;white-space:nowrap">${mn[i]}</span></div>`).join('')}
+        <div class="card" style="padding:12px"><b style="font-size:12.5px;display:block;margin-bottom:8px">รายเดือน (ปี ${+ly+543})</b>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:120px;padding-top:10px;border-bottom:1px solid var(--bd)">
+            ${mv.map((v,i)=>`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end" title="${mn[i]}: ${money(v)}">
+              <div style="width:100%;height:${Math.max(pctW(v,maxM),3)}%;background:var(--gn);border-radius:3px 3px 0 0"></div>
+              <span style="font-size:8px;color:var(--mu);margin-top:4px">${mn[i]}</span></div>`).join('')}
           </div>
         </div>
       </div></div>`;
   }
-  const recent=[...T].sort((a,b)=>(b.progressAt||b.created||'').localeCompare(a.progressAt||a.created||'')).slice(0,4);
-  return sd+`<div class="grid g4">${c('งานทั้งหมด',total,'ครอบคลุมภารกิจทั้งหมดในระบบ','var(--tx)')}${c('งานที่เสร็จแล้ว',done,'เสร็จสมบูรณ์ความคืบหน้า 100%','var(--gn)')}${c('งานที่ค้าง',total-done,'รอดำเนินการ / กำลังทำ','var(--yw)')}${c('งานใกล้ DEADLINE',nr,'เหลือเวลาอีกไม่เกิน 3 วัน','var(--rd)')}</div>
-  <div class="grid g2" style="margin-top:16px">
-    <div class="card"><b>📊 สัดส่วนสถานะงานรวม</b><p class="sub">ภาพรวมสถานะการดำเนินงานทั้งหมดในระบบ</p>
+  const recent=[...T].sort((a,b)=>(b.progressAt||b.created||'').localeCompare(a.progressAt||a.created||'')).slice(0,3);
+  return sd+`<div class="grid g4">${c('ทั้งหมด',total,'งานในระบบ','var(--tx)')}${c('เสร็จแล้ว',done,'ความคืบหน้า 100%','var(--gn)')}${c('ค้างอยู่',total-done,'รอดำเนินการ','var(--yw)')}${c('ใกล้ Deadline',nr,'≤ 3 วัน','var(--rd)')}</div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><b>📊 สถานะงานรวม</b>
       <div class="pie-container"><div class="pie-chart" style="background:conic-gradient(${grad})"></div>
         <div class="pie-legend">
-          <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จสิ้น (${done} งาน)</span></div>
-          <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>กำลังดำเนินการ (${run} งาน)</span></div>
-          <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอเริ่ม (${wait} งาน)</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--gn)"></div><span>เสร็จ (${done})</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--in)"></div><span>ทำอยู่ (${run})</span></div>
+          <div class="pie-item"><div class="pie-dot" style="background:var(--mu)"></div><span>รอ (${wait})</span></div>
         </div></div></div>
-    <div class="card"><b>✦ ภาพรวมความคืบหน้าเฉลี่ย</b><p class="sub">คำนวณจากเปอร์เซ็นต์ความสำเร็จของทุกงาน</p>
-      <div class="big">${p}%</div><p style="text-align:center;color:var(--mu);font-size:13px">อัตราความสำเร็จโดยรวม</p><div class="bar"><i style="width:${p}%"></i></div></div>
+    <div class="card"><b>✦ ความคืบหน้าเฉลี่ย</b>
+      <div class="big">${p}%</div><p style="text-align:center;color:var(--mu);font-size:12px">อัตราสำเร็จรวม</p><div class="bar"><i style="width:${p}%"></i></div></div>
   </div>
-  <div class="card" style="margin-top:16px"><b style="display:block;margin-bottom:12px">⚡ กิจกรรมและงานอัปเดตล่าสุดในระบบ</b>
-    <div class="grid g2" style="gap:10px">
-      ${recent.map(t=>`<div class="row" style="margin-top:0;cursor:pointer;background:var(--soft);padding:12px" onclick="showT('${esc(t.id)}')">
-        <div style="overflow:hidden;min-width:0"><b style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.title)}</b><small style="color:var(--mu);font-size:11px">📅 Deadline: ${esc(t.deadline)}</small></div>
-        <span class="pill ${t.progress>=100?'s-done':'s-run'}" style="flex-shrink:0">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu);font-size:13px">ยังไม่มีกิจกรรมในระบบ</p>'}
+  <div class="card" style="margin-top:14px"><b style="display:block;margin-bottom:10px">⚡ อัปเดตล่าสุด</b>
+    <div class="grid" style="gap:8px">
+      ${recent.map(t=>`<div class="row" style="margin-top:0;cursor:pointer;background:var(--soft);padding:10px" onclick="showT('${esc(t.id)}')">
+        <div style="overflow:hidden;min-width:0"><b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.title)}</b><small style="color:var(--mu);font-size:10.5px">📅 ${esc(t.deadline)}</small></div>
+        <span class="pill ${t.progress>=100?'s-done':'s-run'}" style="flex-shrink:0">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu);font-size:12px">ไม่มีกิจกรรม</p>'}
     </div></div>
   ${salesBlock}
-  <div class="card" style="margin-top:16px"><b>🔥 สัดส่วนงานตามความสำคัญ</b>
-    <div class="grid g4f" style="margin-top:16px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>รายการ</small></div>`).join('')}</div></div>`;
+  <div class="card" style="margin-top:14px"><b>🔥 งานตามความสำคัญ</b>
+    <div class="grid g4f" style="margin-top:12px">${PR.map((n,i)=>`<div class="pc"><span class="pill p${i}">${n}</span><b>${pc[i]}</b><small>ราย</small></div>`).join('')}</div></div>`;
 }
 
 function dash(){
   const p=avg(T);
-  return `<div class="grid g3"><div class="card st"><small>พนักงานทั้งหมดในแผนก</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานที่มอบหมายแล้วทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>อัตราความสำเร็จเฉลี่ยของทีม</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
-  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:16px">
-    <div class="emp"><div><b style="font-size:15px">${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div><div style="text-align:right"><b style="font-size:22px;color:var(--in)">${a}%</b><br><small style="color:var(--mu)">เฉลี่ย</small></div></div>
-    <div style="display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:600;font-size:12.5px"><span>ความสำเร็จรวม</span><span>${d} / ${m.length} งานเสร็จสิ้น</span></div><div class="bar" style="height:6px"><i style="width:${a}%"></i></div>
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px;gap:8px"><div class="pc" style="padding:8px"><small>ทั้งหมด</small><b style="font-size:18px">${m.length}</b></div><div class="pc ok" style="padding:8px"><small>เสร็จแล้ว</small><b style="font-size:18px">${d}</b></div><div class="pc wn" style="padding:8px"><small>กำลังทำ</small><b style="font-size:18px">${m.length-d}</b></div></div>
-    <p style="font-size:11.5px;color:var(--mu);margin:10px 0 0">งานในความรับผิดชอบ:</p>
-    ${m.map(t=>`<div class="row" style="padding:8px 12px;margin-top:4px;font-size:12.5px;cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}<br><small style="color:var(--mu);font-size:11px">Deadline: ${esc(t.deadline)}</small></span><span class="pill ${sc(status(t))}" style="padding:2px 8px;font-size:11px">${status(t)} (${t.progress}%)</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}
+  return `<div class="grid g3"><div class="card st"><small>พนักงาน</small><div class="num" style="color:var(--in)">${E.length}<span>คน</span></div></div><div class="card st"><small>งานทั้งหมด</small><div class="num" style="color:var(--bl)">${T.length}<span>งาน</span></div></div><div class="card st"><small>สำเร็จเฉลี่ย</small><div class="num" style="color:var(--gn)">${p}%</div></div></div>
+  <div class="grid g2" style="margin-top:14px">${E.map(e=>{const m=mine(e.id),d=m.filter(t=>t.progress>=100).length,a=avg(m);return `<div class="card" style="padding:14px">
+    <div class="emp"><div><b style="font-size:14px">${esc(e.name)}</b><br><small style="color:var(--mu);font-size:11px">${esc(e.role)}</small></div><div style="text-align:right"><b style="font-size:20px;color:var(--in)">${a}%</b></div></div>
+    <div style="display:flex;justify-content:space-between;margin:10px 0 4px;font-weight:600;font-size:12px"><span>ความสำเร็จ</span><span>${d} / ${m.length} เสร็จ</span></div><div class="bar" style="height:5px"><i style="width:${a}%"></i></div>
+    <p style="font-size:11px;color:var(--mu);margin:8px 0 0">งานที่รับผิดชอบ:</p>
+    ${m.map(t=>`<div class="row" style="padding:6px 10px;margin-top:3px;font-size:11.5px;cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${sc(status(t))}" style="padding:1px 6px;font-size:10px">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu);font-size:11px">ไม่มีงาน</div>'}
   </div>`}).join('')}</div>`;
 }
 
 /* ---------- Dashboard การเงิน ---------- */
 const COLORS=['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#3b82f6','#14b8a6','#f97316','#84cc16'];
-const EMPTY='<p style="color:var(--mu);font-size:13px;text-align:center;padding:30px 0">ยังไม่มีข้อมูล</p>';
+const EMPTY='<p style="color:var(--mu);font-size:12px;text-align:center;padding:20px 0">ยังไม่มีข้อมูล</p>';
 function groupByLoc(arr){
   const m={};
-  arr.forEach(x=>{const k=(x.loc||'').trim()||'ไม่ระบุสถานที่';const o=m[k]||(m[k]={name:k,val:0,cost:0,profit:0,count:0});o.val+=num(x.val);o.cost+=num(x.cost);o.profit+=profitOf(x);o.count++});
+  arr.forEach(x=>{const k=(x.loc||'').trim()||'ไม่ระบุ';const o=m[k]||(m[k]={name:k,val:0,cost:0,profit:0,count:0});o.val+=num(x.val);o.cost+=num(x.cost);o.profit+=profitOf(x);o.count++});
   return Object.values(m).sort((a,b)=>b.val-a.val);
 }
 function pieHTML(items,total){
   let acc=0;
   const sl=items.map((it,i)=>{const p=total>0?Math.max(0,it.val)/total*100:0;const s={...it,p,start:acc,end:acc+p,color:COLORS[i%COLORS.length]};acc+=p;return s});
   const grad=total>0?sl.map(s=>`${s.color} ${s.start}% ${s.end}%`).join(','):'var(--bd) 0% 100%';
-  return `<div class="pie-container"><div class="pie-chart" style="background:conic-gradient(${grad})"></div><div class="pie-legend">${sl.map(s=>`<div class="pie-item"><div class="pie-dot" style="background:${s.color}"></div><span style="font-size:12px">${esc(s.name)} (${s.p.toFixed(1)}%)</span></div>`).join('')||'<span style="color:var(--mu)">ยังไม่มีข้อมูล</span>'}</div></div>`;
+  return `<div class="pie-container"><div class="pie-chart" style="background:conic-gradient(${grad})"></div><div class="pie-legend">${sl.map(s=>`<div class="pie-item"><div class="pie-dot" style="background:${s.color}"></div><span style="font-size:11.5px">${esc(s.name)} (${s.p.toFixed(1)}%)</span></div>`).join('')||'<span style="color:var(--mu)">ไม่มีข้อมูล</span>'}</div></div>`;
 }
 function valBars(items,color){
   const max=Math.max(1,...items.map(i=>i.val));
@@ -354,144 +357,115 @@ function valBars(items,color){
 function cpBars(items){
   const max=Math.max(1,...items.map(i=>Math.max(i.cost,i.profit)));
   return items.length?`<div class="hb-list">${items.map(i=>{const m=i.cost>0?(i.profit/i.cost*100).toFixed(1):'0.0';return `<div class="hb">
-    <div class="hb-top"><span class="hb-name" title="${esc(i.name)}">${esc(i.name)}</span><span class="pill p0" style="padding:2px 8px;font-size:10.5px">กำไร ${m}% ของต้นทุน</span></div>
-    <div class="hb-line"><small>ต้นทุน</small><div class="hb-track"><i style="width:${pctW(i.cost,max)}%;background:var(--yw)"></i></div><b title="${money(i.cost)}">${kfmt(i.cost)}</b></div>
-    <div class="hb-line"><small>กำไร</small><div class="hb-track"><i style="width:${pctW(i.profit,max)}%;background:var(--gn)"></i></div><b title="${money(i.profit)}">${kfmt(i.profit)}</b></div></div>`}).join('')}</div>`:EMPTY;
+    <div class="hb-top"><span class="hb-name" title="${esc(i.name)}">${esc(i.name)}</span><span class="pill p0" style="padding:2px 6px;font-size:10px">กำไร ${m}%</span></div>
+    <div class="hb-line"><small style="font-size:10px">ต้นทุน:</small><div class="hb-track"><i style="width:${pctW(i.cost,max)}%;background:var(--yw)"></i></div><b style="font-size:11px">${kfmt(i.cost)}</b></div>
+    <div class="hb-line"><small style="font-size:10px">กำไร:</small><div class="hb-track"><i style="width:${pctW(i.profit,max)}%;background:var(--gn)"></i></div><b style="font-size:11px">${kfmt(i.profit)}</b></div></div>`}).join('')}</div>`:EMPTY;
 }
 function finDash(arr,o){
   if(!head)return lock(o.lock);
   const items=groupByLoc(arr),tv=arr.reduce((s,x)=>s+num(x.val),0),tc=arr.reduce((s,x)=>s+num(x.cost),0),tp=arr.reduce((s,x)=>s+profitOf(x),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num m" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  return `<div class="card hd"><div><b style="font-size:18px">${o.title}</b><p>${o.desc}</p></div></div>
-  <div class="grid g4" style="margin-top:16px">${c(o.l1,tv,'var(--tx)')}${c(o.l2,tc,'var(--yw)')}${c(o.l3,tp,'var(--gn)')}<div class="card st"><small>${o.l4}</small><div class="num m" style="color:var(--bl)">${arr.length}<span>${o.unit}</span></div></div></div>
-  <div class="card st" style="margin-top:16px;background:var(--soft);padding:16px"><div style="font-size:14px;font-weight:700;color:var(--pri);margin-bottom:4px">🏥 ${o.hosp}</div><div style="font-size:28px;font-weight:800">${items.length} <span style="font-size:14px;color:var(--mu);font-weight:400">แห่ง</span></div></div>
-  <div class="grid g2" style="margin-top:16px">
-    <div class="card"><b>🔵 ${o.pieT}</b><p class="sub">เปอร์เซ็นต์ของแต่ละโรงพยาบาลเทียบกับยอดรวม</p>${pieHTML(items,tv)}</div>
-    <div class="card"><b>📊 ${o.barT}</b><p class="sub">มูลค่า Pre-VAT เรียงจากมากไปน้อย</p>${valBars(items,o.color)}</div>
+  return `<div class="card hd"><div><b style="font-size:17px">${o.title}</b><p>${o.desc}</p></div></div>
+  <div class="grid g4" style="margin-top:14px">${c(o.l1,tv,'var(--tx)')}${c(o.l2,tc,'var(--yw)')}${c(o.l3,tp,'var(--gn)')}<div class="card st"><small>${o.l4}</small><div class="num m" style="color:var(--bl)">${arr.length}<span>${o.unit}</span></div></div></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><b>🔵 สัดส่วนมูลค่าแยกตาม รพ.</b>${pieHTML(items,tv)}</div>
+    <div class="card"><b>📊 มูลค่าเรียงจากมากไปน้อย</b>${valBars(items,o.color)}</div>
   </div>
-  <div class="card" style="margin-top:16px">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px">
-      <div><b>📊 เปรียบเทียบต้นทุนและกำไรสุทธิแยกตามโรงพยาบาล</b><p class="sub" style="margin-bottom:0">พร้อมอัตรากำไรเทียบต้นทุน (% Margin)</p></div>
-      <div class="legend"><span><i style="background:var(--yw)"></i>ต้นทุน</span><span><i style="background:var(--gn)"></i>กำไรสุทธิ</span></div>
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+      <div><b>📊 เปรียบเทียบต้นทุนและกำไรสุทธิ</b></div>
+      <div class="legend"><span><i style="background:var(--yw)"></i>ต้นทุน</span><span><i style="background:var(--gn)"></i>กำไร</span></div>
     </div>${cpBars(items)}</div>`;
 }
-const contractsDash=()=>finDash(Contracts,{lock:'ข้อมูล Dashboard สัญญาโครงการ',title:'📊 Dashboard สรุปสัญญาโครงการและรายได้',desc:'วิเคราะห์มูลค่า ต้นทุน กำไร และสัดส่วนสัญญาบริการแยกตามโรงพยาบาล',l1:'มูลค่างานรวม (Pre-VAT)',l2:'ต้นทุนรวมทั้งหมด',l3:'กำไรรวมสุทธิ',l4:'สัญญาบริการทั้งหมด',unit:'สัญญา',hosp:'โรงพยาบาลที่ได้รับสัญญาบริการ',pieT:'สัดส่วนมูลค่างานแยกตามโรงพยาบาล',barT:'มูลค่าสัญญาตามโรงพยาบาล',color:'var(--pri)'});
-const salesDash=()=>finDash(Sales,{lock:'ข้อมูล Dashboard งานขาย',title:'📈 Dashboard สรุปงานขายและใบเสนอราคา',desc:'วิเคราะห์ยอดขาย ต้นทุน กำไร และสัดส่วนใบเสนอราคาแยกตามโรงพยาบาล',l1:'ยอดขายรวมทั้งหมด (Pre-VAT)',l2:'ต้นทุนงานขายรวม',l3:'กำไรงานขายสุทธิ',l4:'รายการงานขายทั้งหมด',unit:'รายการ',hosp:'โรงพยาบาลในระบบงานขาย',pieT:'สัดส่วนยอดขายแยกตามโรงพยาบาล',barT:'ยอดขายตามโรงพยาบาล',color:'var(--in)'});
+const contractsDash=()=>finDash(Contracts,{lock:'สัญญาโครงการ',title:'📊 สรุปสัญญาโครงการ',desc:'วิเคราะห์มูลค่า ต้นทุน และกำไร',l1:'มูลค่ารวม',l2:'ต้นทุนรวม',l3:'กำไรสุทธิ',l4:'สัญญา',color:'var(--pri)'});
+const salesDash=()=>finDash(Sales,{lock:'งานขาย',title:'📈 สรุปงานขาย',desc:'วิเคราะห์ยอดขายและใบเสนอราคา',l1:'ยอดขายรวม',l2:'ต้นทุนรวม',l3:'กำไรสุทธิ',l4:'รายการ',color:'var(--in)'});
 
 /* ---------- สัญญาโครงการ ---------- */
 const filteredContracts=()=>{const q=contractFlt.q.trim().toLowerCase();return Contracts.filter(c=>(!q||[c.name,c.code,c.loc].join(' ').toLowerCase().includes(q))&&(!contractFlt.s||c.status===contractFlt.s))};
 function contracts(){
-  if(!head)return lock('ข้อมูลสัญญาโครงการ');
+  if(!head)return lock('สัญญาโครงการ');
   const list=filteredContracts();
   const tv=list.reduce((s,c)=>s+num(c.val),0),tc=list.reduce((s,c)=>s+num(c.cost),0),tp=list.reduce((s,c)=>s+profitOf(c),0);
   const c=(n,v,col)=>`<div class="card st"><small>${n}</small><div class="num m" style="color:${col}">${money(v)}<span>บาท</span></div></div>`;
   const statuses=[['','ทั้งหมด'],['เซ็นสัญญาแล้ว','เซ็นสัญญาแล้ว'],['รอดำเนินการ','รอดำเนินการ']];
-  return `<div class="card hd"><div><b style="font-size:18px">💼 บริหารสัญญาโครงการและรายได้</b><p>ข้อมูลสรุปโครงการ มูลค่า ต้นทุน และกำไร (จัดการได้เฉพาะหัวหน้างาน)</p></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญาโครงการ</button></div>
-  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
-    <b style="font-size:12.5px;display:block;margin-bottom:8px">🔍 ค้นหาและตัวกรองสัญญาโครงการ</b>
+  return `<div class="card hd"><div><b style="font-size:17px">💼 สัญญาโครงการและรายได้</b></div><button class="btn d" onclick="openC()">＋ เพิ่มสัญญา</button></div>
+  <div class="card" style="margin-top:14px;padding:10px 14px;background:var(--soft)">
     <div class="filter-pill-bar">${statuses.map(([v,l])=>`<button class="f-pill ${contractFlt.s===v?'active':''}" onclick="contractFlt.s='${v}';render()">${l}</button>`).join('')}</div>
     <div style="display:flex;gap:6px">
-      <input id="cq" placeholder="ค้นหาเลขที่ใบเสนอราคา, ชื่อโครงการ, สถานที่..." value="${esc(contractFlt.q)}" oninput="contractFlt.q=this.value;render()" style="padding:8px 12px;font-size:12.5px;flex:1;min-width:0">
-      ${(contractFlt.q||contractFlt.s)?`<button class="btn" onclick="contractFlt={q:'',s:''};render()" style="padding:8px 12px;font-size:11.5px">✕ ล้าง</button>`:''}
+      <input id="cq" placeholder="ค้นหา..." value="${esc(contractFlt.q)}" oninput="contractFlt.q=this.value;render()" style="padding:8px 10px;font-size:12px;flex:1">
+      ${contractFlt.q||contractFlt.s?`<button class="btn" onclick="contractFlt={q:'',s:''};render()" style="padding:8px 10px;font-size:11px">✕ ล้าง</button>`:''}
     </div>
   </div>
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่างานรวม (Pre-VAT)',tv,'var(--tx)')}${c('ต้นทุนรวมทั้งหมด',tc,'var(--yw)')}${c('กำไรรวมสุทธิ',tp,'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>เลขที่ใบเสนอราคา</th><th style="text-align:left">ชื่อโครงการ / สถานที่</th><th>Deadline</th><th>มูลค่างาน</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะ</th><th>การชำระเงิน</th><th>จัดการ</th></tr></thead><tbody>
+  <div class="grid g3" style="margin-top:14px">${c('มูลค่างานรวม',tv,'var(--tx)')}${c('ต้นทุนรวม',tc,'var(--yw)')}${c('กำไรรวม',tp,'var(--gn)')}</div>
+  <div class="tw" style="margin-top:14px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>เลขที่</th><th style="text-align:left">โครงการ / สถานที่</th><th>Deadline</th><th>มูลค่า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>
   ${list.map((ct,i)=>`<tr>
     <td>${i+1}</td>
-    <td style="white-space:nowrap">${esc(ct.code)}</td>
+    <td>${esc(ct.code)}</td>
     <td class="l"><b>${esc(ct.name)}</b><br><small style="color:var(--mu)">📍 ${esc(ct.loc)}</small></td>
-    <td style="white-space:nowrap"><div>${ct.deadline?`<b>${esc(ct.deadline)}</b><br>`:''}${dueBadge(ct.deadline)}</div></td>
-    <td style="white-space:nowrap"><b>${money(ct.val)}</b></td>
-    <td style="white-space:nowrap;color:var(--yw)">${money(ct.cost)}</td>
-    <td style="white-space:nowrap;color:var(--gn);font-weight:700">${money(profitOf(ct))}</td>
+    <td>${dueBadge(ct.deadline)}</td>
+    <td><b>${money(ct.val)}</b></td>
     <td><span class="pill ${ct.status==='เซ็นสัญญาแล้ว'?'s-done':'p2'}">${esc(ct.status)}</span></td>
-    <td><span class="pill s-run">${esc(ct.pay||'-')}</span></td>
-    <td><span class="acts"><button class="ib" title="แก้ไข" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></span></td>
-  </tr>`).join('')||'<tr><td colspan="10" class="empty">ไม่พบข้อมูลสัญญา</td></tr>'}
+    <td><span class="acts"><button class="ib" onclick="openC('${esc(ct.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delC('${esc(ct.id)}')">🗑</button></span></td>
+  </tr>`).join('')||'<tr><td colspan="7" class="empty">ไม่พบข้อมูล</td></tr>'}
   </tbody></table></div></div>`;
 }
 
 function closeMod(){mod.classList.remove('on');$('#f').onsubmit=mainFormSubmit}
-
 function openC(id){
   if(!head)return;
   editC=Contracts.find(c=>c.id===id)||null;
   const c=editC||{code:'',name:'',loc:'',deadline:'',val:'',cost:'',status:'เซ็นสัญญาแล้ว',pay:''};
   const nv=v=>v!==''&&v!=null?esc(v):'';
-  $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญาโครงการ':'เพิ่มสัญญาโครงการใหม่'}</h3>
-  <div class="two"><label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(c.loc)}"></label></div>
+  $('#f').innerHTML=`<h3 style="margin:0">${editC?'แก้ไขสัญญา':'เพิ่มสัญญา'}</h3>
+  <div class="two"><label>เลขที่ใบเสนอราคา<input name="code" value="${esc(c.code)}"></label><label>สถานที่<input name="loc" required value="${esc(c.loc)}"></label></div>
   <label>ชื่อโครงการ<textarea name="name" rows="2" required>${esc(c.name)}</textarea></label>
-  <div class="two"><label>Deadline (กำหนดส่งมอบ) <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="deadline" value="${esc(c.deadline||'')}"></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
-  <div class="two"><label>มูลค่างาน (Pre-VAT)<input type="number" step="any" min="0" name="val" value="${nv(c.val)}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" min="0" name="cost" value="${nv(c.cost)}"></label></div>
-  <label>สถานะสัญญา<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกสัญญา</button></div>`;
+  <div class="two"><label>Deadline<input type="date" name="deadline" value="${esc(c.deadline||'')}"></label><label>การชำระเงิน<input name="pay" value="${esc(c.pay)}"></label></div>
+  <div class="two"><label>มูลค่า (Pre-VAT)<input type="number" step="any" min="0" name="val" value="${nv(c.val)}"></label><label>ต้นทุน<input type="number" step="any" min="0" name="cost" value="${nv(c.cost)}"></label></div>
+  <label>สถานะ<select name="status"><option value="เซ็นสัญญาแล้ว" ${c.status==='เซ็นสัญญาแล้ว'?'selected':''}>เซ็นสัญญาแล้ว</option><option value="รอดำเนินการ" ${c.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option></select></label>
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit=async e=>{
     e.preventDefault();
     const fd=new FormData(e.target),val=num(fd.get('val')),cost=num(fd.get('cost'));
     const data={code:fd.get('code').trim()||'-',name:fd.get('name').trim(),loc:fd.get('loc').trim(),deadline:fd.get('deadline').trim(),val,cost,profit:Number((val-cost).toFixed(2)),status:fd.get('status'),pay:fd.get('pay').trim()||'-'};
-    if(data.code!=='-'&&Contracts.some(x=>x.code===data.code&&(!editC||x.id!==editC.id))&&!confirm('เลขที่ใบเสนอราคา "'+data.code+'" มีอยู่แล้วในระบบ ต้องการบันทึกซ้ำหรือไม่?'))return;
     await w(async()=>{
-      if(editC){await db.doc('contracts/'+editC.id).update(data);toast('✅ บันทึกการแก้ไขสัญญาแล้ว')}
-      else{await db.doc('contracts/'+uid()).set(data);toast('✅ เพิ่มสัญญาโครงการใหม่แล้ว')}
+      if(editC){await db.doc('contracts/'+editC.id).update(data);toast('✅ บันทึกแล้ว')}
+      else{await db.doc('contracts/'+uid()).set(data);toast('✅ เพิ่มแล้ว')}
       playBeep('success');closeMod();
     });
   };
 }
-const delC=id=>head&&confirm('ลบสัญญาโครงการนี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบสัญญาโครงการแล้ว');playBeep('error')});
+const delC=id=>head&&confirm('ลบสัญญานี้?')&&w(async()=>{await db.doc('contracts/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error')});
 
 /* ---------- งานขาย ---------- */
 const filteredSales=()=>{const q=salesFlt.q.trim().toLowerCase();return Sales.filter(x=>(!salesYear||(x.date||'').startsWith(salesYear))&&(!q||[x.name,x.loc,x.startDate,x.endDate].join(' ').toLowerCase().includes(q))&&(!salesFlt.s||x.status===salesFlt.s)).sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
 function sales(){
-  if(!head)return lock('ข้อมูลงานขายและใบเสนอราคา');
+  if(!head)return lock('งานขาย');
   const years=[...new Set(Sales.map(x=>(x.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
   const grand=Sales.reduce((s,x)=>s+num(x.val),0);
   const ys=years.map(y=>{const a=Sales.filter(x=>(x.date||'').startsWith(y)),v=a.reduce((s,x)=>s+num(x.val),0);return {y,v,count:a.length,pct:grand>0?(v/grand*100).toFixed(1):'0.0'}});
   const list=filteredSales();
   const tv=list.reduce((s,x)=>s+num(x.val),0),tc=list.reduce((s,x)=>s+num(x.cost),0),tp=list.reduce((s,x)=>s+profitOf(x),0);
-  const share=grand>0?(tv/grand*100).toFixed(1):'0.0';
-  const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small style="font-size:11px">${n}</small><div class="num m" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
-  return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
-  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
-      <b style="font-size:12.5px">🔍 ค้นหาและตัวกรองข้อมูล</b>
-      <div style="font-size:12.5px;font-weight:600;color:var(--pri)">สัดส่วนยอดขายที่แสดง: <span style="font-size:14px">${share}%</span></div>
-    </div>
+  const c=(n,v,col)=>`<div class="card st" style="padding:10px 14px"><small>${n}</small><div class="num m" style="font-size:18px;margin:2px 0;color:${col}">${money(v)}<span>บาท</span></div></div>`;
+  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว']];
+  return `<div class="card hd"><div><b style="font-size:17px">📈 งานขายและใบเสนอราคา</b></div><button class="btn d" onclick="openS()">＋ เพิ่มงานขาย</button></div>
+  <div class="card" style="margin-top:14px;padding:10px 14px;background:var(--soft)">
     <div class="filter-pill-bar">${statuses.map(([v,l])=>`<button class="f-pill ${salesFlt.s===v?'active':''}" onclick="salesFlt.s='${v}';render()">${l}</button>`).join('')}</div>
-    <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
-      <select onchange="salesYear=this.value;render()" style="padding:8px 10px;font-size:12.5px;width:100%">
-        <option value="">📅 ทุกปีทั้งหมด</option>
-        ${years.map(y=>`<option value="${esc(y)}" ${salesYear===y?'selected':''}>ปี ${+y+543} (${esc(y)})</option>`).join('')}
-      </select>
-      <div style="display:flex;gap:6px">
-        <input id="sq" placeholder="ค้นหาชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
-        ${(salesFlt.q||salesFlt.s||salesYear)?`<button class="btn" onclick="salesFlt={q:'',s:''};salesYear='';render()" style="padding:8px 10px;font-size:11.5px">✕ ล้าง</button>`:''}
-      </div>
+    <div style="display:flex;gap:6px">
+      <select onchange="salesYear=this.value;render()" style="padding:6px 8px;font-size:12px;width:130px"><option value="">ทุกปี</option>${years.map(y=>`<option value="${y}" ${salesYear===y?'selected':''}>${+y+543}</option>`).join('')}</select>
+      <input id="sq" placeholder="ค้นหา..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12px;flex:1">
     </div>
   </div>
-  <div class="ychips">
-    <div class="ychip ${salesYear===''?'on':''}" onclick="salesYear='';render()"><div>ยอดรวมทุกปี</div><div>100%</div></div>
-    ${ys.map(o=>`<div class="ychip ${salesYear===o.y?'on':''}" onclick="salesYear='${esc(o.y)}';render()"><div>ปี ${+o.y+543} (${o.count})</div><div>${o.pct}% <span style="font-size:9px;font-weight:400">(${kfmt(o.v)})</span></div></div>`).join('')}
-  </div>
-  <div class="grid g3" style="margin-top:16px">${c('มูลค่าขายรวม '+(salesYear?'ปี '+(+salesYear+543):'ทุกปี'),tv,'var(--tx)')}${c('ต้นทุนรวมทั้งหมด',tc,'var(--yw)')}${c('กำไรรวมสุทธิ',tp,'var(--gn)')}</div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>วันที่บันทึก</th><th style="text-align:left">โครงการ / สถานที่</th><th>ช่วงเวลา</th><th>มูลค่าก่อน VAT</th><th>ต้นทุน</th><th>กำไรสุทธิ</th><th>สถานะใบเสนอราคา</th><th>จัดการ</th></tr></thead><tbody>
-  ${list.map((s,i)=>{
-    const sD=s.startDate||'',eD=s.endDate||'';
-    const period=(sD||eD)?`<div>⏳ ${esc(sD||'-')} → ${esc(eD||'-')}<br>${dueBadge(eD||sD)}</div>`:'<span style="color:var(--mu);font-size:11px">ไม่ระบุ</span>';
-    const stc=s.status==='วางบิลแล้ว'?'s-done':s.status==='รอวางบิล'?'p2':'s-run';
-    return `<tr>
-      <td>${i+1}</td>
-      <td style="white-space:nowrap"><b>${esc(s.date)}</b></td>
-      <td class="l"><b>${esc(s.name)}</b><br><small style="color:var(--mu);font-size:11px">📍 ${esc(s.loc)}</small></td>
-      <td style="white-space:nowrap;font-size:11.5px">${period}</td>
-      <td style="white-space:nowrap"><b>${money(s.val)}</b></td>
-      <td style="white-space:nowrap;color:var(--yw)">${money(s.cost)}</td>
-      <td style="white-space:nowrap;color:var(--gn);font-weight:700">${money(profitOf(s))}</td>
-      <td><span class="pill ${stc}" style="padding:2px 8px;font-size:11px">${esc(s.status)}</span></td>
-      <td><span class="acts"><button class="ib" title="แก้ไข" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></span></td>
-    </tr>`}).join('')||'<tr><td colspan="9" class="empty">ไม่พบรายการงานขาย</td></tr>'}
+  <div class="grid g3" style="margin-top:14px">${c('ยอดขายรวม',tv,'var(--tx)')}${c('ต้นทุนรวม',tc,'var(--yw)')}${c('กำไรรวม',tp,'var(--gn)')}</div>
+  <div class="tw" style="margin-top:14px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th>วันที่</th><th style="text-align:left">โครงการ</th><th>มูลค่า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>
+  ${list.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${esc(s.date)}</td>
+    <td class="l"><b>${esc(s.name)}</b><br><small style="color:var(--mu)">📍 ${esc(s.loc)}</small></td>
+    <td><b>${money(s.val)}</b></td>
+    <td><span class="pill ${s.status==='วางบิลแล้ว'?'s-done':'p2'}">${esc(s.status)}</span></td>
+    <td><span class="acts"><button class="ib" onclick="openS('${esc(s.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delS('${esc(s.id)}')">🗑</button></span></td>
+  </tr>`).join('')||'<tr><td colspan="6" class="empty">ไม่พบข้อมูล</td></tr>'}
   </tbody></table></div></div>`;
 }
 
@@ -501,30 +475,50 @@ function openS(id){
   const s=editS||{date:TODAY,name:'',loc:'',startDate:'',endDate:'',val:'',cost:'',status:'รอวางบิล'};
   const nv=v=>v!==''&&v!=null?esc(v):'';
   const opts=['รอวางบิล','วางบิลแล้ว','เสนอให้กับทางโรงพยาบาลแล้ว','อยู่ระหว่างรอดำเนินการ'];
-  $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขรายการงานขาย':'เพิ่มรายการงานขายใหม่'}</h3>
-  <div class="two"><label>วันที่บันทึก<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่ปฏิบัติงาน<input name="loc" required value="${esc(s.loc)}"></label></div>
-  <label>ชื่อโครงการ / รายละเอียดงาน<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
-  <div class="two"><label>วันที่เริ่มต้น <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="startDate" value="${esc(s.startDate||'')}"></label><label>วันที่สิ้นสุด <small style="color:var(--mu);font-weight:400">(เว้นว่างได้)</small><input type="date" name="endDate" value="${esc(s.endDate||'')}"></label></div>
-  <div class="two"><label>มูลค่าสัญญา (Pre-VAT)<input type="number" step="any" min="0" name="val" value="${nv(s.val)}"></label><label>ต้นทุนทั้งหมด<input type="number" step="any" min="0" name="cost" value="${nv(s.cost)}"></label></div>
-  <label>สถานะใบเสนอราคา<select name="status">${opts.map(o=>`<option value="${o}" ${s.status===o?'selected':''}>${o}</option>`).join('')}</select></label>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกงานขาย</button></div>`;
+  $('#f').innerHTML=`<h3 style="margin:0">${editS?'แก้ไขงานขาย':'เพิ่มงานขาย'}</h3>
+  <div class="two"><label>วันที่<input type="date" name="date" required value="${esc(s.date)}"></label><label>สถานที่<input name="loc" required value="${esc(s.loc)}"></label></div>
+  <label>โครงการ<textarea name="name" rows="2" required>${esc(s.name)}</textarea></label>
+  <div class="two"><label>มูลค่า Pre-VAT<input type="number" step="any" min="0" name="val" value="${nv(s.val)}"></label><label>ต้นทุน<input type="number" step="any" min="0" name="cost" value="${nv(s.cost)}"></label></div>
+  <label>สถานะ<select name="status">${opts.map(o=>`<option value="${o}" ${s.status===o?'selected':''}>${o}</option>`).join('')}</select></label>
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit=async e=>{
     e.preventDefault();
     const fd=new FormData(e.target),val=num(fd.get('val')),cost=num(fd.get('cost'));
-    const data={date:fd.get('date'),name:fd.get('name').trim(),loc:fd.get('loc').trim(),startDate:fd.get('startDate').trim(),endDate:fd.get('endDate').trim(),val,cost,profit:Number((val-cost).toFixed(2)),status:fd.get('status')};
-    if(data.startDate&&data.endDate&&data.endDate<data.startDate)return alert('"วันที่สิ้นสุด" ต้องไม่ก่อน "วันที่เริ่มต้น"');
+    const data={date:fd.get('date'),name:fd.get('name').trim(),loc:fd.get('loc').trim(),startDate:'',endDate:'',val,cost,profit:Number((val-cost).toFixed(2)),status:fd.get('status')};
     await w(async()=>{
-      if(editS){await db.doc('sales/'+editS.id).update(data);toast('✅ บันทึกการแก้ไขงานขายแล้ว')}
-      else{await db.doc('sales/'+uid()).set(data);toast('✅ เพิ่มรายการงานขายใหม่แล้ว')}
+      if(editS){await db.doc('sales/'+editS.id).update(data);toast('✅ บันทึกแล้ว')}
+      else{await db.doc('sales/'+uid()).set(data);toast('✅ เพิ่มแล้ว')}
       playBeep('success');closeMod();
     });
   };
 }
-const delS=id=>head&&confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error')});
+const delS=id=>head&&confirm('ลบงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error')});
 
 /* ---------- ตารางงาน ---------- */
 function list(){const q=flt.q.trim().toLowerCase();return T.filter(t=>(!q||(t.title+' '+(t.code||'')+' '+t.assignees.map(nm).join(' ')).toLowerCase().includes(q))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority===+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>(a.created||'').localeCompare(b.created||''))}
+
+function renderMobileCards(){
+  const items=list();
+  if(!items.length)return '<div class="card" style="text-align:center;color:var(--mu);padding:20px">ไม่พบงาน</div>';
+  return items.map((t,i)=>{
+    const l=left(t),id=esc(t.id);
+    const act=head
+      ?`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button><button class="ib" onclick="event.stopPropagation();openT('${id}')">✎ แก้ไข</button>`
+      :`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต %</button>`;
+    return `<div class="m-card" onclick="showT('${id}')">
+      <div class="m-card-top"><div><span style="font-size:10px;color:var(--mu)">#${i+1}</span> <b style="font-size:13.5px">${esc(t.title)}</b></div><span class="pill p${t.priority}">${PR[t.priority]}</span></div>
+      <div class="m-card-body">
+        <div>📍 ผู้รับผิดชอบ: <b>${t.assignees.map(a=>esc(nm(a))).join(', ')||'-'}</b></div>
+        <div>📅 Deadline: <b>${esc(t.deadline)}</b> (${l.x})</div>
+        <div>📌 สถานะ: <span class="pill ${sc(status(t))}" style="padding:1px 6px;font-size:10px">${status(t)}</span></div>
+      </div>
+      <div class="m-card-foot">
+        <div style="flex:1;margin-right:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>ความคืบหน้า</span><b>${t.progress}%</b></div><div class="bar" style="height:5px"><i style="width:${t.progress}%"></i></div></div>
+        <div class="acts">${act}</div>
+      </div></div>`;
+  }).join('');
+}
 
 function rows(){
   return list().map((t,i)=>{
@@ -534,29 +528,29 @@ function rows(){
       :`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button>`;
     return `<tr onclick="showT('${id}')" style="cursor:pointer">
     <td>${i+1}</td>
-    <td class="l"><b>${esc(t.title)}</b>${t.code?`<br><small style="color:var(--mu)">${esc(t.code)}</small>`:''}</td>
+    <td class="l"><b>${esc(t.title)}</b></td>
     <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
     <td><span class="pill p${t.priority}">${PR[t.priority]}</span></td>
-    <td style="white-space:nowrap"><b>${esc(t.deadline)}</b></td>
-    <td style="white-space:nowrap;font-size:11.5px"><div>${esc(t.start)}<br>ถึง ${esc(t.end)}</div></td>
+    <td><b>${esc(t.deadline)}</b></td>
     <td><span class="pill ${sc(status(t))}">${status(t)}</span></td>
     <td><span class="pill ${l.c}">${l.x}</span></td>
-    <td><div style="min-width:70px"><b>${t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${t.progress}%"></i></div></div></td>
+    <td><div style="min-width:60px"><b>${t.progress}%</b><div class="bar" style="margin-top:2px"><i style="width:${t.progress}%"></i></div></div></td>
     <td>${act}</td>
-  </tr>`}).join('')||'<tr><td colspan="10" class="empty">ไม่พบงาน</td></tr>';
+  </tr>`}).join('')||'<tr><td colspan="9" class="empty">ไม่พบงาน</td></tr>';
 }
 
 function tb(){
   const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
-  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
+  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหา..." value="${esc(flt.q)}">
   <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
-  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
-  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
-  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
+  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select></div>
+  <div class="tw" style="margin-top:14px">
+    <div class="tcard"><table class="hide-mobile"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
+    <div class="show-mobile" id="m-cards">${renderMobileCards()}</div>
+  </div>`;
 }
 
-/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
+/* ---------- หน้า PM Maintenance ---------- */
 const PM_FILTER_TYPES = [
   'PRE (24"x24"x2")', 'PRE (24"x12"x2")',
   'CARBON (24"x24"x2")', 'CARBON (24"x12"x2")',
@@ -569,29 +563,53 @@ const filteredPM=()=>{
   return PM.filter(x=>(!pmMonth||x.month===pmMonth)&&(!q||[x.title,x.note,JSON.stringify(x.filters||[])].join(' ').toLowerCase().includes(q))).sort((a,b)=>(a.deadline||'').localeCompare(b.deadline||''));
 };
 
+function renderPMMobileCards(){
+  const items=filteredPM();
+  if(!items.length)return '<div class="card" style="text-align:center;color:var(--mu);padding:20px">ยังไม่มีข้อมูล PM</div>';
+  return items.map((x,i)=>{
+    const n=dd(x.deadline,TODAY);
+    const dlBadge=n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">เหลือ ${n} วัน</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`;
+    const fList=(x.filters||[]).map(f=>`• ${esc(f.type)}: <b>${f.count} ตัว</b>`).join('<br>');
+    return `<div class="m-card" onclick="openPM('${esc(x.id)}')">
+      <div class="m-card-top"><div><span style="font-size:10px;color:var(--mu)">#${i+1}</span> <b style="font-size:13.5px">${esc(x.title)}</b></div><span class="pill s-done">${esc(x.month||'-')}</span></div>
+      <div class="m-card-body">
+        <div><b>รายการ Filter:</b><br>${fList}</div>
+        ${x.note?`<div>💬 หมายเหตุ: ${esc(x.note)}</div>`:''}
+        <div>⏳ Deadline: <b>${esc(x.deadline||'-')}</b> (${dlBadge})</div>
+      </div>
+      <div class="m-card-foot">
+        <span style="font-size:11px;color:var(--mu)">แตะเพื่อจัดการรายการ</span>
+        <div class="acts"><button class="ib" onclick="event.stopPropagation();openPM('${esc(x.id)}')">✎ จัดการ</button></div>
+      </div></div>`;
+  }).join('');
+}
+
 function pmRows(){
   return filteredPM().map((x,i)=>{
     const n=dd(x.deadline,TODAY);
-    const dlBadge=n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">เหลือ ${n} วัน (ใกล้ถึง)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`;
+    const dlBadge=n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">เหลือ ${n} วัน</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`;
     const fList=(x.filters||[]).map(f=>`• ${esc(f.type)}: <b>${f.count} ตัว</b>`).join('<br>')||'-';
     return `<tr onclick="openPM('${esc(x.id)}')" style="cursor:pointer">
       <td>${i+1}</td>
       <td class="l"><b>${esc(x.title)}</b><br><small style="color:var(--mu)">📅 เดือน: ${esc(x.month||'-')}</small></td>
       <td class="l">${fList}${x.note?'<br><small style="color:var(--mu)">หมายเหตุ: '+esc(x.note)+'</small>':''}</td>
-      <td style="white-space:nowrap">${esc(x.deadline||'-')}<br>${dlBadge}</td>
-      <td><span class="acts"><button class="ib" title="จัดการ/แก้ไข" onclick="event.stopPropagation();openPM('${esc(x.id)}')">✎ จัดการ</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="event.stopPropagation();delPM('${esc(x.id)}')">🗑</button></span></td>
+      <td><b>${esc(x.deadline||'-')}</b><br>${dlBadge}</td>
+      <td><span class="acts"><button class="ib" onclick="event.stopPropagation();openPM('${esc(x.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="event.stopPropagation();delPM('${esc(x.id)}')">🗑</button></span></td>
     </tr>`;
   }).join('')||'<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล PM Maintenance</td></tr>';
 }
 
 function pmView(){
   const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  return `<div class="card hd"><div><b style="font-size:18px">🔧 หัวข้อ PM Maintenance</b><p>จัดการและบันทึกรายละเอียดงาน PM (เลือกกรองตามเดือน และเลือกประเภท Filter หลายรายการได้)</p></div><button class="btn d" onclick="openPM()">＋ เพิ่มรายการ PM</button></div>
-  <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
+  return `<div class="card hd"><div><b style="font-size:17px">🔧 PM Maintenance</b></div><button class="btn d" onclick="openPM()">＋ เพิ่ม PM</button></div>
+  <div class="card" style="margin-top:14px;padding:10px 14px;background:var(--soft)">
     <div class="filter-pill-bar"><button class="f-pill ${pmMonth===''?'active':''}" onclick="pmMonth='';render()">ทุกเดือน</button>${months.map(m=>`<button class="f-pill ${pmMonth===m?'active':''}" onclick="pmMonth='${m}';render()">${m}</button>`).join('')}</div>
-    <input id="pmq" placeholder="ค้นหารายละเอียดงาน, ประเภท Filter, หมายเหตุ..." value="${esc(pmFlt.q)}" oninput="pmFlt.q=this.value;$('#pm-tbody').innerHTML=pmRows()" style="padding:9px 12px;font-size:13px">
+    <input id="pmq" placeholder="ค้นหา..." value="${esc(pmFlt.q)}" oninput="pmFlt.q=this.value;$('#pm-tbody').innerHTML=pmRows();$('#pm-m-cards').innerHTML=renderPMMobileCards()" style="padding:8px 10px;font-size:12px">
   </div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน / เดือน</th><th style="text-align:left">รายการ Filter และจำนวน</th><th>Deadline & นับถอยหลัง</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div></div>`;
+  <div class="tw" style="margin-top:14px">
+    <div class="tcard"><table class="hide-mobile"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน / เดือน</th><th style="text-align:left">รายการ Filter และจำนวน</th><th>Deadline</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div>
+    <div class="show-mobile" id="pm-m-cards">${renderPMMobileCards()}</div>
+  </div>`;
 }
 
 function openPM(id){
@@ -599,19 +617,19 @@ function openPM(id){
   const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
   const x=editPM||{title:'',month:months[new Date().getMonth()],deadline:TODAY,note:'',filters:[{type:PM_FILTER_TYPES[0],count:1}]};
 
-  $('#f').innerHTML=`<h3 style="margin:0">${editPM?'แก้ไขรายการ PM Maintenance':'เพิ่มรายการ PM Maintenance ใหม่'}</h3>
+  $('#f').innerHTML=`<h3 style="margin:0">${editPM?'แก้ไข PM':'เพิ่ม PM ใหม่'}</h3>
   <div class="two">
-    <label>เลือกเดือน PM<select name="month">${months.map(m=>`<option value="${m}" ${x.month===m?'selected':''}>${m}</option>`).join('')}</select></label>
-    <label>Deadline (กำหนดส่งมอบ)<input type="date" name="deadline" required value="${esc(x.deadline||TODAY)}"></label>
+    <label>เดือน<select name="month">${months.map(m=>`<option value="${m}" ${x.month===m?'selected':''}>${m}</option>`).join('')}</select></label>
+    <label>Deadline<input type="date" name="deadline" required value="${esc(x.deadline||TODAY)}"></label>
   </div>
   <label>รายละเอียดงาน<textarea name="title" rows="2" required>${esc(x.title)}</textarea></label>
-  <label><b>รายการ Filter (เลือกได้หลายชนิดและระบุจำนวน)</b></label>
-  <div id="filter-rows" style="display:grid;gap:8px"></div>
-  <button type="button" class="btn" onclick="addFilterRow()" style="font-size:12px;padding:6px 12px;width:fit-content">＋ เพิ่มชนิด Filter อีก</button>
-  <label style="margin-top:8px">หมายเหตุ<input name="note" value="${esc(x.note||'')}"></label>
-  <div class="tools" style="justify-content:flex-end;margin-top:10px">
-    ${editPM?'<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delPM(\''+editPM.id+'\')">🗑 ลบรายการ</button>':''}
-    <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกข้อมูล PM</button>
+  <label><b>รายการ Filter</b></label>
+  <div id="filter-rows" style="display:grid;gap:6px"></div>
+  <button type="button" class="btn" onclick="addFilterRow()" style="font-size:11.5px;padding:5px 10px;width:fit-content">＋ เพิ่ม Filter</button>
+  <label style="margin-top:4px">หมายเหตุ<input name="note" value="${esc(x.note||'')}"></label>
+  <div class="tools" style="justify-content:flex-end;margin-top:8px">
+    ${editPM?'<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delPM(\''+editPM.id+'\')">🗑 ลบ</button>':''}
+    <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button>
   </div>`;
   
   mod.classList.add('on');
@@ -638,8 +656,8 @@ function openPM(id){
       created:editPM?editPM.created:TODAY
     };
     await w(async()=>{
-      if(editPM){await db.doc('pm_tasks/'+editPM.id).update(data);toast('✅ บันทึกการแก้ไข PM แล้ว')}
-      else{await db.doc('pm_tasks/'+uid()).set(data);toast('✅ เพิ่มรายการ PM ใหม่แล้ว')}
+      if(editPM){await db.doc('pm_tasks/'+editPM.id).update(data);toast('✅ บันทึกแล้ว')}
+      else{await db.doc('pm_tasks/'+uid()).set(data);toast('✅ เพิ่มแล้ว')}
       playBeep('success');closeMod();
     });
   };
@@ -647,25 +665,24 @@ function openPM(id){
 
 function renderFilterRows(list){
   const container=$('#filter-rows');
-  container.innerHTML=list.map((f)=>`<div class="filter-row" style="display:flex;gap:8px;align-items:center">
+  container.innerHTML=list.map((f)=>`<div class="filter-row" style="display:flex;gap:6px;align-items:center">
     <select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}" ${f.type===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
-    <input type="number" min="1" class="f-count" value="${f.count||1}" style="flex:1" placeholder="จำนวนตัว">
-    <button type="button" class="btn" style="color:var(--rd);padding:10px 12px" onclick="this.closest('.filter-row').remove()">✕</button>
+    <input type="number" min="1" class="f-count" value="${f.count||1}" style="flex:1" placeholder="จำนวน">
+    <button type="button" class="btn" style="color:var(--rd);padding:8px 10px" onclick="this.closest('.filter-row').remove()">✕</button>
   </div>`).join('');
 }
-
 function addFilterRow(){
   const container=$('#filter-rows');
   const div=document.createElement('div');
   div.className='filter-row';
-  div.style.cssText='display:flex;gap:8px;align-items:center';
+  div.style.cssText='display:flex;gap:6px;align-items:center';
   div.innerHTML=`<select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select>
-  <input type="number" min="1" class="f-count" value="1" style="flex:1" placeholder="จำนวนตัว">
-  <button type="button" class="btn" style="color:var(--rd);padding:10px 12px" onclick="this.closest('.filter-row').remove()">✕</button>`;
+  <input type="number" min="1" class="f-count" value="1" style="flex:1" placeholder="จำนวน">
+  <button type="button" class="btn" style="color:var(--rd);padding:8px 10px" onclick="this.closest('.filter-row').remove()">✕</button>`;
   container.appendChild(div);
 }
 
-const delPM=id=>confirm('ลบรายการ PM Maintenance นี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
+const delPM=id=>confirm('ลบรายการนี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error');pm.classList.remove('on')});
 
 /* ---------- ปฏิทิน ---------- */
 function cal(){
@@ -674,23 +691,22 @@ function cal(){
   for(let i=0;i<off;i++)h+='<div class="d e"></div>';
   for(let d=1;d<=n;d++){
     const s=ymd(new Date(y,m,d));
-    h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span class="dn">${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
+    h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span>${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
   }
-  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
+  return `<div class="card hd"><div><b style="font-size:17px">📅 ${TH[m]} ${y+543}</b></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">วันนี้</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:14px">${h}</div>`;
 }
 
 function em(){
-  return `<div class="card hd"><div><b style="font-size:18px">👥 รายชื่อพนักงานในแผนกและการมอบหมายงาน</b></div>${head?'<button class="btn d" onclick="openE()">＋ เพิ่มพนักงานใหม่</button>':''}</div>
-  <div class="grid g2" style="margin-top:16px">${E.map(e=>{const m=mine(e.id);return `<div class="card"><div class="emp"><div><b>${esc(e.name)}</b><br><small style="color:var(--mu)">${esc(e.role)}</small></div>${head?`<span class="acts"><button class="ib" onclick="openE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></span>`:''}</div>
-  <div class="row s"><span style="color:var(--tx);font-weight:400">ภารกิจทั้งหมด:</span><span>${m.length} งาน (เสร็จแล้ว ${m.filter(t=>t.progress>=100).length})</span></div>
-  <p style="font-size:12px;color:var(--mu);margin:14px 0 0">งานที่รับผิดชอบ:</p>
-  ${m.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu)">ยังไม่มีงาน</div>'}</div>`}).join('')}</div>`;
+  return `<div class="card hd"><div><b style="font-size:17px">👥 พนักงานในแผนก</b></div>${head?'<button class="btn d" onclick="openE()">＋ เพิ่ม</button>':''}</div>
+  <div class="grid g2" style="margin-top:14px">${E.map(e=>{const m=mine(e.id);return `<div class="card" style="padding:14px"><div class="emp"><div><b>${esc(e.name)}</b><br><small style="color:var(--mu);font-size:11px">${esc(e.role)}</small></div>${head?`<span class="acts"><button class="ib" onclick="openE('${esc(e.id)}')">✎</button><button class="ib" style="color:var(--rd)" onclick="delE('${esc(e.id)}')">🗑</button></span>`:''}</div>
+  <p style="font-size:11.5px;color:var(--mu);margin:10px 0 4px">งานที่รับผิดชอบ (${m.length}):</p>
+  ${m.map(t=>`<div class="row" style="padding:6px 10px;font-size:11.5px;cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}" style="padding:1px 6px;font-size:10px">${t.progress}%</span></div>`).join('')||'<div class="row" style="color:var(--mu);font-size:11.5px">ไม่มีงาน</div>'}</div>`}).join('')}</div>`;
 }
 
 function openE(id){
   if(!head)return;
   const e=E.find(x=>x.id===id)||null,o=e||{name:'',role:''};
-  $('#f').innerHTML=`<h3 style="margin:0">${e?'แก้ไขข้อมูลพนักงาน':'เพิ่มพนักงานใหม่'}</h3>
+  $('#f').innerHTML=`<h3 style="margin:0">${e?'แก้ไขพนักงาน':'เพิ่มพนักงาน'}</h3>
   <label>ชื่อ-นามสกุล<input name="name" required value="${esc(o.name)}"></label>
   <label>ตำแหน่ง<input name="role" value="${esc(o.role)}" placeholder="Staff"></label>
   <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
@@ -698,10 +714,10 @@ function openE(id){
   $('#f').onsubmit=async ev=>{
     ev.preventDefault();
     const fd=new FormData(ev.target),data={name:fd.get('name').trim(),role:fd.get('role').trim()||'Staff'};
-    if(!data.name)return alert('กรุณาระบุชื่อพนักงาน');
+    if(!data.name)return alert('ระบุชื่อ');
     await w(async()=>{
       if(e)await db.doc('employees/'+e.id).update(data);else await db.doc('employees/'+uid()).set(data);
-      toast('✅ บันทึกพนักงานแล้ว');playBeep('success');closeMod();
+      toast('✅ บันทึกแล้ว');playBeep('success');closeMod();
     });
   };
 }
@@ -715,12 +731,12 @@ document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
 function showT(id){
   const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
   const by=t.progressBy?`<div class="row"><span>อัปเดตล่าสุดโดย</span><span>${esc(t.progressBy)}</span></div>`:'';
-  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><h3 style="margin:0 0 4px">${esc(t.title)}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0;font-size:16px">${esc(t.title)}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div><span class="pill p${t.priority}">${PR[t.priority]}</span> <span class="pill ${sc(status(t))}">${status(t)}</span> <span class="pill ${l.c}">${l.x}</span></div>
   <div><div class="row"><span>ผู้รับผิดชอบ</span><span>${t.assignees.map(a=>esc(nm(a))).join(', ')||'-'}</span></div><div class="row"><span>ระยะเวลา</span><span>${esc(t.start)} → ${esc(t.end)}</span></div><div class="row"><span>Deadline</span><b>${esc(t.deadline)}</b></div>${by}</div>
-  <div><div style="margin-bottom:6px;font-weight:600">ความคืบหน้า ${t.progress}%</div><div class="bar"><i style="width:${t.progress}%"></i></div></div>
+  <div><div style="margin-bottom:4px;font-weight:600;font-size:12px">ความคืบหน้า ${t.progress}%</div><div class="bar"><i style="width:${t.progress}%"></i></div></div>
   <div class="tools" style="justify-content:space-between">
-    <button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดตความคืบหน้า</button>
+    <button class="btn g" onclick="openProgress('${esc(t.id)}')">📊 อัปเดต %</button>
     ${head?`<div class="tools"><button class="btn d" onclick="pm.classList.remove('on');openT('${esc(t.id)}')">✎ แก้ไข</button><button class="btn" style="color:var(--rd)" onclick="delT('${esc(t.id)}')">🗑 ลบ</button></div>`:''}
   </div>`;
   pm.classList.add('on');
@@ -729,31 +745,31 @@ function showT(id){
 function openProgress(id){
   const t=T.find(x=>x.id===id);if(!t)return;
   pm.classList.remove('on');
-  $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้างาน</h3>
-  <p style="margin:0;color:var(--mu);font-size:13px">${esc(t.title)}</p>
-  <label>ความคืบหน้าปัจจุบัน: <span id="pv2">${t.progress}</span>%
+  $('#f').innerHTML=`<h3 style="margin:0">อัปเดตความคืบหน้า</h3>
+  <p style="margin:0;color:var(--mu);font-size:12px">${esc(t.title)}</p>
+  <label>ความคืบหน้า: <span id="pv2">${t.progress}</span>%
   <input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv2.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกความคืบหน้า</button></div>`;
+  <div class="tools" style="justify-content:flex-end"><button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
   mod.classList.add('on');
   $('#f').onsubmit=async e=>{
     e.preventDefault();
     const np=Math.round(+new FormData(e.target).get('progress'));
     await w(async()=>{
-      await db.doc('tasks/'+id).update({progress:np,progressBy:head?'หัวหน้างาน':'พนักงาน'});
-      toast('✅ อัปเดตความคืบหน้าเป็น '+np+'% แล้ว');playBeep('success');closeMod();
+      await db.doc('tasks/'+id).update({progress:np,progressBy:head?'หัวหน้า':'พนักงาน'});
+      toast('✅ อัปเดตเป็น '+np+'% แล้ว');playBeep('success');closeMod();
     });
   };
 }
 
 function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
-  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
-  <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
+  $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0;font-size:16px">📅 ${d.getDate()} ${TH[d.getMonth()]}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
+  <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}" style="padding:1px 6px;font-size:10px">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu);font-size:12px">ไม่มีงานวันนี้</p>'}</div>
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงาน</button>`:''}`;
   pm.classList.add('on');
 }
 
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและสิทธิ์การใช้งาน')}}
+async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 function openT(id,date){
@@ -761,19 +777,19 @@ function openT(id,date){
   if(!E.length)return alert('กรุณาเพิ่มพนักงานก่อน');
   edit=T.find(t=>t.id===id)||null;
   const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
-  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
+  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'เพิ่มงาน'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
   <div class="fl">ผู้รับผิดชอบ<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
   <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority===i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
-  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
+  <label>เริ่ม<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึง<input type="date" name="end" required value="${esc(t.end)}"></label></div>
   <label>ความคืบหน้า: <span id="pv">${t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบ</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
   mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
 }
 
 const mainFormSubmit=async e=>{
   e.preventDefault();if(!head)return;
   const f=new FormData(e.target),as=f.getAll('as');
-  if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
+  if(!as.length)return alert('เลือกผู้รับผิดชอบอย่างน้อย 1 คน');
   const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:Math.round(+f.get('progress'))};
   await w(async()=>{
     if(edit)await db.doc('tasks/'+edit.id).update(o);
@@ -781,15 +797,15 @@ const mainFormSubmit=async e=>{
       const n=Math.max(0,...T.map(t=>parseInt(String(t.code||'').split('-')[1])||0))+1;
       await db.doc('tasks/'+uid()).set({...o,created:TODAY,code:'TSK-'+String(n).padStart(3,'0')});
     }
-    toast('✅ บันทึกเรียบร้อย');playBeep('success');closeMod();
+    toast('✅ บันทึกแล้ว');playBeep('success');closeMod();
   });
 };
 $('#f').onsubmit=mainFormSubmit;
 
-const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
-const delE=id=>head&&confirm('ลบพนักงานคนนี้?')&&w(async()=>{
+const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error');pm.classList.remove('on')});
+const delE=id=>head&&confirm('ลบพนักงาน?')&&w(async()=>{
   for(const t of T.filter(t=>t.assignees.includes(id))){const as=t.assignees.filter(a=>a!==id);await db.doc('tasks/'+t.id).update({assignees:as})}
-  await db.doc('employees/'+id).delete();toast('🗑 ลบพนักงานแล้ว');playBeep('error');
+  await db.doc('employees/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error');
 });
 
 $('#nt').onclick=()=> {
@@ -798,14 +814,12 @@ $('#nt').onclick=()=> {
 };
 
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
-$('#rE').onclick=()=>{if(head){head=false;watchAll();render();toast('สลับเป็นโหมดพนักงานแล้ว')}};
+$('#rE').onclick=()=>{if(head){head=false;watchAll();render();toast('โหมดพนักงาน')}};
 $('#lf').onsubmit=async e=>{
   e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';
-  if(!window.login){$('#le').textContent='ยังไม่ได้เชื่อมต่อ Firebase Auth';return}
-  try{
-    await login(f.get('em').trim(),f.get('pw'));
-    lm.classList.remove('on');e.target.reset();playBeep('success');
-  }catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
+  if(!window.login){$('#le').textContent='ยังไม่เชื่อมต่อ Firebase';return}
+  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
+  catch(x){$('#le').textContent='รหัสผ่านไม่ถูกต้อง';playBeep('error')}
 };
 
 let unsubs=[];
@@ -839,14 +853,14 @@ $('#dm').onclick=()=>{const n=document.documentElement.getAttribute('data-theme'
 
 $('#ex').onclick=()=>{
   if(view==='pm'){
-    const h=['ลำดับ','รายละเอียดงาน','เดือน','รายการ Filter และจำนวน','หมายเหตุ','Deadline'];
+    const h=['ลำดับ','รายละเอียดงาน','เดือน','Filter และจำนวน','หมายเหตุ','Deadline'];
     const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredPM().map((x,i)=>[i+1,x.title,x.month,(x.filters||[]).map(f=>f.type+' ('+f.count+' ตัว)').join(', '),x.note||'',x.deadline]);
     const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
-    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='pm-maintenance-'+TODAY+'.csv';
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='pm-'+TODAY+'.csv';
     document.body.appendChild(a);a.click();a.remove();
     return;
   }
-  const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่มวันที่','ถึงวันที่','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
+  const h=['ลำดับ','เพิ่มเมื่อ','รายละเอียดงาน','ผู้รับผิดชอบ','ความสำคัญ','Deadline','เริ่ม','ถึง','สถานะ','วันคงเหลือ','ความคืบหน้า(%)'];
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
   const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';
@@ -854,18 +868,15 @@ $('#ex').onclick=()=>{
 };
 
 window.seed=()=>head&&w(async()=>{
-  const em=[['e1','สมชาย ใจดี','Lead UI/UX Designer'],['e2','วิภาดา รักงาน','Senior Backend Developer'],['e3','กิตติ มุ่งมั่น','Fullstack Engineer'],['e4','นภา พัฒนา','QA & Security Specialist']];
+  const em=[['e1','สมชาย ใจดี','Lead UI/UX'],['e2','วิภาดา รักงาน','Backend'],['e3','กิตติ มุ่งมั่น','Fullstack'],['e4','นภา พัฒนา','QA']];
   for(const [id,name,role_] of em)await db.doc('employees/'+id).set({name,role:role_});
-  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงินใหม่ รองรับ PromptPay & Credit Card'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบรักษาความปลอดภัย SSL & Audit Firewall Database'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API Gateway และทำ Caching Redis']];
+  const t=[['t1','TSK-001','2026-11-01','2026-11-04',3,75,['e1','e2'],'ออกแบบ UI/UX หน้าชำระเงิน'],['t2','TSK-002','2026-11-02','2026-11-05',1,30,['e2'],'ติดตั้งระบบ SSL'],['t3','TSK-003','2026-10-28','2026-11-02',0,100,['e1','e3'],'ปรับปรุงความเร็ว API']];
   for(const [id,code,st,dl,priority,progress,assignees,title] of t)await db.doc('tasks/'+id).set({code,created:st,start:st,end:dl,deadline:dl,priority,progress,assignees,title});
-  const ct=[['c1','KS003/68','งานจ้างเหมาบำรุงรักษาห้องควบคุมความชื้น ห้อง 5604B','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-']];
+  const ct=[['c1','KS003/68','งานบำรุงรักษาห้องควบคุมความชื้น','รพ.ศรีนครินทร์','2026-12-31',18000,6000,12000,'เซ็นสัญญาแล้ว','-']];
   for(const [id,code,name,loc,deadline,val,cost,profit,status_,pay] of ct)await db.doc('contracts/'+id).set({code,name,loc,deadline,val,cost,profit,status:status_,pay});
-  const sl=[
-    ['s1','2026-09-01','KS001.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศห้อง CSSD','โรงพยาบาลมหาวิทยาลัยเทคโนโลยีสุรนารี',11000,5000,6000,'รอวางบิล'],
-    ['s2','2026-09-01','KS002.69 เปลี่ยนอะไหล่เครื่องควบคุมอากาศ ห้อง Negative Pressure','โรงพยาบาลอุดรธานี',70490,37500,32990,'วางบิลแล้ว']
-  ];
+  const sl=[['s1','2026-09-01','เปลี่ยนอะไหล่แอร์ CSSD','รพ.สุรนารี',11000,5000,6000,'รอวางบิล']];
   for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
-  toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
+  toast('✅ โหลดตัวอย่างแล้ว');
 });
 render();
 </script>
