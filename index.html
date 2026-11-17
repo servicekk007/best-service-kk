@@ -221,7 +221,6 @@ const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.len
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
 function nav(){
-  // พนักงานเห็นเมนูทั่วไปและ PM, ซ่อน สัญญา/งานขาย ถ้าไม่ใช่หัวหน้างาน
   const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
   $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
 }
@@ -243,7 +242,7 @@ function render(){
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='tb'||view==='pm'||view==='em')&&(!(!head&&(view==='tb'||view==='em')));
+  const canNew=(view==='tb'||view==='pm'||view==='em')&&(!( !head && (view==='tb'||view==='em') ));
   $('#nt').classList.toggle('hide',!canNew);
 
   if(view==='ov'){
@@ -366,7 +365,7 @@ function finDash(arr,o){
   <div class="grid g4" style="margin-top:16px">${c(o.l1,tv,'var(--tx)')}${c(o.l2,tc,'var(--yw)')}${c(o.l3,tp,'var(--gn)')}<div class="card st"><small>${o.l4}</small><div class="num m" style="color:var(--bl)">${arr.length}<span>${o.unit}</span></div></div></div>
   <div class="card st" style="margin-top:16px;background:var(--soft);padding:16px"><div style="font-size:14px;font-weight:700;color:var(--pri);margin-bottom:4px">🏥 ${o.hosp}</div><div style="font-size:28px;font-weight:800">${items.length} <span style="font-size:14px;color:var(--mu);font-weight:400">แห่ง</span></div></div>
   <div class="grid g2" style="margin-top:16px">
-    <div class="card"><b>🔵 ${o.pieT}</b><p class="sub">เปอร์เซ็นต์ของแต่ละโรงพยาบาลเทียบกับยอดรวม</p><p class="sub">เปอร์เซ็นต์ของแต่ละโรงพยาบาลเทียบกับยอดรวม</p>${pieHTML(items,tv)}</div>
+    <div class="card"><b>🔵 ${o.pieT}</b><p class="sub">เปอร์เซ็นต์ของแต่ละโรงพยาบาลเทียบกับยอดรวม</p>${pieHTML(items,tv)}</div>
     <div class="card"><b>📊 ${o.barT}</b><p class="sub">มูลค่า Pre-VAT เรียงจากมากไปน้อย</p>${valBars(items,o.color)}</div>
   </div>
   <div class="card" style="margin-top:16px">
@@ -556,7 +555,7 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (ทุกคนจัดการได้เหมือนกัน) ---------- */
+/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้ทั้งหมด) ---------- */
 const pmStatus=p=>p>=100?'เสร็จสิ้น':p>0?'กำลังดำเนินการ':'รอเริ่ม';
 const pmLeft=p=>p>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:{x:'ดำเนินการ',c:'s-run'};
 const filteredPM=()=>{const q=pmFlt.q.trim().toLowerCase();return PM.filter(x=>(!q||[x.title,x.note,x.filterType].join(' ').toLowerCase().includes(q))&&(!pmFlt.s||pmStatus(x.progress)===pmFlt.s)).sort((a,b)=>(b.created||'').localeCompare(a.created||''))};
@@ -764,8 +763,16 @@ $('#nt').onclick=()=> {
   else openT();
 };
 
+function openLogin(){$('#le'].textContent='';lm.classList.add('on')}
+function doLogout(){if(window.logout)window.logout()}
+$('#lf').onsubmit=async e=>{
+  e.preventDefault();const f=new FormData(e.target);$('#le'].textContent='';
+  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
+  catch(x){$('#le'].textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
+};
+
 let unsubs=[];
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress)))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
 
 function watchAll(){
   unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];
@@ -775,22 +782,23 @@ function watchAll(){
   unsubs.push(db.collection('pm_tasks').onSnapshot(x=>{PM=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
   unsubs.push(db.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',...k.data()}));render()},err));
   
-  unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
-  unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
+  if(head){
+    unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
+    unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
+  }else{Contracts=[];Sales=[]}
 }
 
 window.initDb=d=>{
   db=d;
   watchAll();
-  
-  // ตรวจสอบสถานะการล็อกอิน Firebase Auth แบบเรียลไทม์
   const au=window._firebaseAuth;
   if(au){
     import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(({onAuthStateChanged, getIdTokenResult})=>{
       onAuthStateChanged(au,async u=>{
         if(!u){
           head=false; authEmail='';
-          window.setUser(null);
+          document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
+          watchAll(); render();
           return;
         }
         let mgr=false;
