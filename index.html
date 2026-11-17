@@ -114,7 +114,7 @@ td.empty{color:var(--mu);padding:24px}
 /* Modal */
 .mod{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;place-items:center;z-index:50;padding:12px}
 .mod.on{display:grid}
-.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;width:min(520px,100%);max-height:90vh;overflow:auto;display:grid;gap:14px;box-shadow:0 30px 60px -12px rgba(0,0,0,.4);animation:pop .25s ease-out}
+.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;width:min(580px,100%);max-height:90vh;overflow:auto;display:grid;gap:14px;box-shadow:0 30px 60px -12px rgba(0,0,0,.4);animation:pop .25s ease-out}
 @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
 .mod label,.mod .fl{font-size:13px;font-weight:700;display:grid;gap:6px;color:var(--tx)}
 .chk{display:flex;gap:10px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:6px;cursor:pointer}
@@ -181,7 +181,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
+let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmMonth='',pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
 let loaded={t:false,pm:false,e:false};
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
@@ -223,13 +223,18 @@ const SH={ov:'ภาพรวม',tb:'ตารางงาน',pm:'PM',cal:'ป
 const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
-function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${showCnt(k)?' ('+CNT[k]()+')':''}${(k==='ct'||k==='sl')&&!head?' 🔒':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
+function nav(){
+  const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
+  $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
+}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
 
 function render(){
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
+
+  if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
   $('#rH').className=head?'on':'';
@@ -551,75 +556,87 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
-const pmStatus=p=>p>=100?'เสร็จสิ้น':p>0?'กำลังดำเนินการ':'รอเริ่ม';
-const pmLeft=p=>p>=100?{x:'เสร็จสิ้นแล้ว',c:'s-done'}:{x:'ดำเนินการ',c:'s-run'};
-const filteredPM=()=>{const q=pmFlt.q.trim().toLowerCase();return PM.filter(x=>(!q||[x.title,x.note,x.filterType].join(' ').toLowerCase().includes(q))&&(!pmFlt.s||pmStatus(x.progress)===pmFlt.s)).sort((a,b)=>(b.created||'').localeCompare(a.created||''))};
+/* ---------- หน้า PM Maintenance (ปรับปรุงใหม่ตามสั่ง) ---------- */
+const PM_FILTER_TYPES = [
+  'PRE (24"x24"x2")', 'PRE (24"x12"x2")',
+  'CARBON (24"x24"x2")', 'CARBON (24"x12"x2")',
+  'MEDIUM (24"x24"x12")', 'MEDIUM (24"x12"x12")',
+  'MEDIUM SG (24"x24"x4")', 'MEDIUM SG (24"x12"x4")'
+];
+
+const filteredPM=()=>{
+  const q=pmFlt.q.trim().toLowerCase();
+  return PM.filter(x=>(!pmMonth||x.month===pmMonth)&&(!q||[x.title,x.note,JSON.stringify(x.filters||[])].join(' ').toLowerCase().includes(q))).sort((a,b)=>(a.deadline||'').localeCompare(b.deadline||''));
+};
 
 function pmRows(){
   return filteredPM().map((x,i)=>{
-    const l=pmLeft(x.progress);
-    const filterInfo=`<b>${esc(x.filterType||'-')}</b> (${x.count||0} ตัว)<br><small style="color:var(--mu)">ล้างได้: ${esc(x.washable||'-')}${x.note?' | หมายเหตุ: '+esc(x.note):''}</small>`;
+    const n=dd(x.deadline,TODAY);
+    const dlBadge=n<0?`<span class="pill s-late">เลย ${-n} วัน</span>`:n<=3?`<span class="pill p2">เหลือ ${n} วัน (ใกล้ถึง)</span>`:`<span class="pill s-wait">เหลือ ${n} วัน</span>`;
+    const fList=(x.filters||[]).map(f=>`• ${esc(f.type)}: <b>${f.count} ตัว</b>`).join('<br>')||'-';
     return `<tr onclick="openPM('${esc(x.id)}')" style="cursor:pointer">
       <td>${i+1}</td>
-      <td class="l"><b>${esc(x.title)}</b></td>
-      <td class="l">${filterInfo}</td>
-      <td style="white-space:nowrap;font-size:11.5px">${esc(x.start||'-')} → ${esc(x.end||'-')}<br><span class="pill ${sc(pmStatus(x.progress))}">${pmStatus(x.progress)}</span></td>
-      <td><span class="pill ${l.c}">${l.x}</span><div style="min-width:70px;margin-top:4px"><b>${x.progress}%</b><div class="bar"><i style="width:${x.progress}%"></i></div></div></td>
+      <td class="l"><b>${esc(x.title)}</b><br><small style="color:var(--mu)">📅 เดือน: ${esc(x.month||'-')}</small></td>
+      <td class="l">${fList}${x.note?'<br><small style="color:var(--mu)">หมายเหตุ: '+esc(x.note)+'</small>':''}</td>
+      <td style="white-space:nowrap">${esc(x.deadline||'-')}<br>${dlBadge}</td>
       <td><span class="acts"><button class="ib" title="จัดการ/แก้ไข" onclick="event.stopPropagation();openPM('${esc(x.id)}')">✎ จัดการ</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="event.stopPropagation();delPM('${esc(x.id)}')">🗑</button></span></td>
     </tr>`;
-  }).join('')||'<tr><td colspan="6" class="empty">ยังไม่มีข้อมูล PM Maintenance</td></tr>';
+  }).join('')||'<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล PM Maintenance</td></tr>';
 }
 
 function pmView(){
-  const statuses=[['','ทั้งหมด'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']];
-  return `<div class="card hd"><div><b style="font-size:18px">🔧 หัวข้อ PM Maintenance</b><p>จัดการและบันทึกรายละเอียดงาน PM (พนักงานและหัวหน้างานสามารถเพิ่ม แก้ไข และลบได้)</p></div><button class="btn d" onclick="openPM()">＋ เพิ่มรายการ PM</button></div>
+  const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  return `<div class="card hd"><div><b style="font-size:18px">🔧 หัวข้อ PM Maintenance</b><p>จัดการและบันทึกรายละเอียดงาน PM (เลือกกรองตามเดือน และเลือกประเภท Filter หลายรายการได้)</p></div><button class="btn d" onclick="openPM()">＋ เพิ่มรายการ PM</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
-    <div class="filter-pill-bar">${statuses.map(([v,l])=>`<button class="f-pill ${pmFlt.s===v?'active':''}" onclick="pmFlt.s='${v}';render()">${l}</button>`).join('')}</div>
+    <div class="filter-pill-bar"><button class="f-pill ${pmMonth===''?'active':''}" onclick="pmMonth='';render()">ทุกเดือน</button>${months.map(m=>`<button class="f-pill ${pmMonth===m?'active':''}" onclick="pmMonth='${m}';render()">${m}</button>`).join('')}</div>
     <input id="pmq" placeholder="ค้นหารายละเอียดงาน, ประเภท Filter, หมายเหตุ..." value="${esc(pmFlt.q)}" oninput="pmFlt.q=this.value;$('#pm-tbody').innerHTML=pmRows()" style="padding:9px 12px;font-size:13px">
   </div>
-  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th style="text-align:left">จำนวน Filter & รายละเอียด</th><th>ช่วงเวลาและสถานะ</th><th>วันคงเหลือและความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div></div>`;
+  <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน / เดือน</th><th style="text-align:left">รายการ Filter และจำนวน</th><th>Deadline & นับถอยหลัง</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div></div>`;
 }
 
 function openPM(id){
   editPM=PM.find(x=>x.id===id)||null;
-  const x=editPM||{title:'',filterType:'PRE',count:1,washable:'ได้',note:'',start:TODAY,end:TODAY,progress:0};
-  const ftOpts=['PRE','MEDIUM','CABON'],washOpts=['ได้','ไม่ได้ (เปลี่ยนอย่างเดียว)'];
+  const months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const x=editPM||{title:'',month:months[new Date().getMonth()],deadline:TODAY,note:'',filters:[{type:PM_FILTER_TYPES[0],count:1}]};
+
   $('#f').innerHTML=`<h3 style="margin:0">${editPM?'แก้ไขรายการ PM Maintenance':'เพิ่มรายการ PM Maintenance ใหม่'}</h3>
+  <div class="two">
+    <label>เลือกเดือน PM<select name="month">${months.map(m=>`<option value="${m}" ${x.month===m?'selected':''}>${m}</option>`).join('')}</select></label>
+    <label>Deadline (กำหนดส่งมอบ)<input type="date" name="deadline" required value="${esc(x.deadline||TODAY)}"></label>
+  </div>
   <label>รายละเอียดงาน<textarea name="title" rows="2" required>${esc(x.title)}</textarea></label>
-  <div class="two">
-    <label>ประเภท Filter<select name="filterType">${ftOpts.map(o=>`<option value="${o}" ${x.filterType===o?'selected':''}>${o}</option>`).join('')}</select></label>
-    <label>จำนวนกี่ตัว<input type="number" min="1" name="count" required value="${num(x.count)||1}"></label>
-  </div>
-  <div class="two">
-    <label>สามารถล้างได้หรือไม่<select name="washable">${washOpts.map(o=>`<option value="${o}" ${x.washable===o?'selected':''}>${o}</option>`).join('')}</select></label>
-    <label>หมายเหตุ<input name="note" value="${esc(x.note||'')}"></label>
-  </div>
-  <div class="two">
-    <label>ช่วงเวลา เริ่มต้น<input type="date" name="start" required value="${esc(x.start||TODAY)}"></label>
-    <label>ช่วงเวลา สิ้นสุด<input type="date" name="end" required value="${esc(x.end||TODAY)}"></label>
-  </div>
-  <label>ความคืบหน้า: <span id="pmv">${x.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${x.progress}" oninput="pmv.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">
+  <label><b>รายการ Filter (เลือกได้หลายชนิดและระบุจำนวน)</b></label>
+  <div id="filter-rows" style="display:grid;gap:8px"></div>
+  <button type="button" class="btn" onclick="addFilterRow()" style="font-size:12px;padding:6px 12px;width:fit-content">＋ เพิ่มชนิด Filter อีก</button>
+  <label style="margin-top:8px">หมายเหตุ<input name="note" value="${esc(x.note||'')}"></label>
+  <div class="tools" style="justify-content:flex-end;margin-top:10px">
     ${editPM?'<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delPM(\''+editPM.id+'\')">🗑 ลบรายการ</button>':''}
     <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึกข้อมูล PM</button>
   </div>`;
+  
   mod.classList.add('on');
+  renderFilterRows(x.filters||[{type:PM_FILTER_TYPES[0],count:1}]);
+
   $('#f').onsubmit=async e=>{
     e.preventDefault();
     const fd=new FormData(e.target);
+    const rowsNodes=document.querySelectorAll('.filter-row');
+    const filters=[];
+    rowsNodes.forEach(r=>{
+      const t=r.querySelector('.f-type').value;
+      const c=num(r.querySelector('.f-count').value);
+      if(c>0)filters.push({type:t,count:c});
+    });
+    if(!filters.length)return alert('กรุณาระบุ Filter อย่างน้อย 1 รายการ');
+
     const data={
       title:fd.get('title').trim(),
-      filterType:fd.get('filterType'),
-      count:num(fd.get('count')),
-      washable:fd.get('washable'),
+      month:fd.get('month'),
+      deadline:fd.get('deadline'),
       note:fd.get('note').trim(),
-      start:fd.get('start'),
-      end:fd.get('end'),
-      progress:Math.round(+fd.get('progress')),
+      filters,
       created:editPM?editPM.created:TODAY
     };
-    if(data.end<data.start)return alert('"ช่วงเวลาสิ้นสุด" ต้องไม่ก่อน "ช่วงเวลาเริ่มต้น"');
     await w(async()=>{
       if(editPM){await db.doc('pm_tasks/'+editPM.id).update(data);toast('✅ บันทึกการแก้ไข PM แล้ว')}
       else{await db.doc('pm_tasks/'+uid()).set(data);toast('✅ เพิ่มรายการ PM ใหม่แล้ว')}
@@ -627,6 +644,26 @@ function openPM(id){
     });
   };
 }
+
+function renderFilterRows(list){
+  const container=$('#filter-rows');
+  container.innerHTML=list.map((f,idx)=>`<div class="filter-row" style="display:flex;gap:8px;align-items:center">
+    <select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}" ${f.type===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
+    <input type="number" min="1" class="f-count" value="${f.count||1}" style="flex:1" placeholder="จำนวนตัว">
+    <button type="button" class="btn" style="color:var(--rd);padding:10px 12px" onclick="this.closest('.filter-row').remove()">✕</button>
+  </div>`).join('');
+}
+function addFilterRow(){
+  const container=$('#filter-rows');
+  const div=document.createElement('div');
+  div.className='filter-row';
+  div.style.cssText='display:flex;gap:8px;align-items:center';
+  div.innerHTML=`<select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select>
+  <input type="number" min="1" class="f-count" value="1" style="flex:1" placeholder="จำนวนตัว">
+  <button type="button" class="btn" style="color:var(--rd);padding:10px 12px" onclick="this.closest('.filter-row').remove()">✕</button>`;
+  container.appendChild(div);
+}
+
 const delPM=id=>confirm('ลบรายการ PM Maintenance นี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
 
 /* ---------- ปฏิทิน ---------- */
@@ -712,7 +749,7 @@ function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;
   pm.classList.add('on');
 }
 
@@ -781,25 +818,18 @@ function watchAll(){
   unsubs.push(db.collection('tasks').onSnapshot(x=>{T=x.docs.map(normT);render()},err));
   unsubs.push(db.collection('pm_tasks').onSnapshot(x=>{PM=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
   unsubs.push(db.collection('employees').onSnapshot(x=>{E=x.docs.map(k=>({id:k.id,name:'',role:'',...k.data()}));render()},err));
-  
   if(head){
     unsubs.push(db.collection('contracts').onSnapshot(x=>{Contracts=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
     unsubs.push(db.collection('sales').onSnapshot(x=>{Sales=x.docs.map(k=>({id:k.id,...k.data()}));render()},err));
   }else{Contracts=[];Sales=[]}
 }
-
 window.setUser=isMgr=>{
   head=isMgr===true;
   if(!head){salesYear='';salesFlt={q:'',s:''};contractFlt={q:'',s:''}}
   document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));
   watchAll();render();
 };
-
-window.initDb=d=>{
-  db=d;
-  watchAll();
-  render();
-};
+window.initDb=d=>{db=d;watchAll();render()};
 
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);$('#dm').textContent=t==='dark'?'☀️':'🌙'};
 let theme=localStorage.getItem('theme');
@@ -809,8 +839,8 @@ $('#dm').onclick=()=>{const n=document.documentElement.getAttribute('data-theme'
 
 $('#ex').onclick=()=>{
   if(view==='pm'){
-    const h=['ลำดับ','รายละเอียดงาน','ประเภท Filter','จำนวน (ตัว)','สามารถล้างได้','หมายเหตุ','ช่วงเวลาเริ่มต้น','ช่วงเวลาสิ้นสุด','ความคืบหน้า(%)'];
-    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredPM().map((x,i)=>[i+1,x.title,x.filterType,x.count,x.washable,x.note||'',x.start,x.end,x.progress]);
+    const h=['ลำดับ','รายละเอียดงาน','เดือน','รายการ Filter และจำนวน','หมายเหตุ','Deadline'];
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=filteredPM().map((x,i)=>[i+1,x.title,x.month,(x.filters||[]).map(f=>f.type+' ('+f.count+' ตัว)').join(', '),x.note||'',x.deadline]);
     const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='pm-maintenance-'+TODAY+'.csv';
     document.body.appendChild(a);a.click();a.remove();
@@ -837,7 +867,6 @@ window.seed=()=>head&&w(async()=>{
   for(const [id,date,name,loc,val,cost,profit,status_] of sl)await db.doc('sales/'+id).set({date,name,loc,startDate:'',endDate:'',val,cost,profit,status:status_});
   toast('✅ โหลดข้อมูลตัวอย่างแล้ว');
 });
-
 render();
 </script>
 <script type="module">
