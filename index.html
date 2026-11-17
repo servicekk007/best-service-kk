@@ -235,7 +235,7 @@ const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.len
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
 function nav(){
-  const keys=Object.keys(VIEWS);
+  const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
   $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
 }
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
@@ -245,6 +245,7 @@ function render(){
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
 
+  if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
   $('#rH').className=head?'on':'';
@@ -253,8 +254,8 @@ function render(){
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'||view==='ct'||view==='sl'));
-  $('#nt').classList.toggle('hide',!canNew);
+  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
+  $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
@@ -444,9 +445,9 @@ const getSalesYear = x => {
   const code = x.ccs || x.date || '';
   if (code.includes('/')) {
     const parts = code.split('/');
-    return parts[parts.length - 1].trim();
+    return parts[parts.length - 1].trim(); // ดึงหลังสแลช เช่น 69 จาก KX15/69
   }
-  return code.slice(2, 4);
+  return code.slice(2, 4); // เผื่อกรณีพิมพ์แบบติดกัน
 };
 
 const filteredSales = () => {
@@ -457,12 +458,7 @@ const filteredSales = () => {
     const matchQuery = !q || [x.name, x.loc, x.ccs, x.startDate, x.endDate].join(' ').toLowerCase().includes(q);
     const matchStatus = !salesFlt.s || x.status === salesFlt.s;
     return matchYear && matchQuery && matchStatus;
-  }).sort((a, b) => {
-    // เรียงจากใหม่ไปเก่า (รายการใหม่หรือเลขที่สูงกว่าอยู่บนสุดเสมอ)
-    const ccsA = a.ccs || a.date || '';
-    const ccsB = b.ccs || b.date || '';
-    return ccsB.localeCompare(ccsA, undefined, { numeric: true, sensitivity: 'base' });
-  });
+  }).sort((a, b) => (b.ccs || b.date || '').localeCompare(a.ccs || a.date || ''));
 };
 
 function sales(){
@@ -483,7 +479,7 @@ function sales(){
   const share = grand > 0 ? (tv / grand * 100).toFixed(1) : '0.0';
   
   const c = (n, v, col) => `<div class="card st" style="padding:12px 16px"><small style="font-size:11px">${n}</small><div class="num m" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
+  const statuses = [['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
   
   return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
@@ -495,7 +491,7 @@ function sales(){
     <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
       <select onchange="salesYear=this.value;render()" style="padding:8px 10px;font-size:12.5px;width:100%">
         <option value="">📅 ทุกปีทั้งหมด</option>
-        ${years.map(y => `<option value="${esc(y)}" ${salesYear === y ? 'selected' : ''}>ปี ${y} (${esc(y)})</option>`).join('')}
+        ${years.map(y => `<option value="${esc(y)}" ${salesYear === y ? 'selected' : ''}>ปี ${y}</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
         <input id="sq" placeholder="ค้นหาเลขที่ CCS, ชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
@@ -704,7 +700,7 @@ function addFilterRow(){
   container.appendChild(div);
 }
 
-const delPM=id=>confirm('ลบรายการ PM Maintenance นี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
+const delPM=id=>confirm('ลบรายการ PM Maintenance เช่นนี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
 
 /* ---------- ปฏิทิน ---------- */
 function cal(){
@@ -788,7 +784,7 @@ function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
   pm.classList.add('on');
 }
 
@@ -874,8 +870,6 @@ const delE=id=>head&&confirm('ลบพนักงานคนนี้?')&&w(a
 
 $('#nt').onclick=()=> {
   if(view==='pm') openPM();
-  else if(view==='ct') openC();
-  else if(view==='sl') openS();
   else openT();
 };
 
