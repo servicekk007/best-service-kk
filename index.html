@@ -235,7 +235,7 @@ const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.len
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
 function nav(){
-  const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
+  const keys=Object.keys(VIEWS);
   $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
 }
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
@@ -245,7 +245,6 @@ function render(){
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
 
-  if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
   $('#rH').className=head?'on':'';
@@ -254,8 +253,8 @@ function render(){
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
-  $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
+  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'||view==='ct'||view==='sl'));
+  $('#nt').classList.toggle('hide',!canNew);
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
@@ -459,10 +458,10 @@ const filteredSales = () => {
     const matchStatus = !salesFlt.s || x.status === salesFlt.s;
     return matchYear && matchQuery && matchStatus;
   }).sort((a, b) => {
-    // เรียงจากใหม่ไปเก่า (รายการใหม่หรือเลขที่สูงกว่าอยู่บนสุด)
+    // เรียงจากใหม่ไปเก่า (รายการใหม่หรือเลขที่สูงกว่าอยู่บนสุดเสมอ)
     const ccsA = a.ccs || a.date || '';
     const ccsB = b.ccs || b.date || '';
-    return ccsA.localeCompare(ccsB, undefined, { numeric: true, sensitivity: 'base' }) * -1;
+    return ccsB.localeCompare(ccsA, undefined, { numeric: true, sensitivity: 'base' });
   });
 };
 
@@ -875,6 +874,8 @@ const delE=id=>head&&confirm('ลบพนักงานคนนี้?')&&w(a
 
 $('#nt').onclick=()=> {
   if(view==='pm') openPM();
+  else if(view==='ct') openC();
+  else if(view==='sl') openS();
   else openT();
 };
 
