@@ -129,6 +129,10 @@ td.empty{color:var(--mu);padding:32px;font-size:14px}
 #toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);max-width:calc(100% - 32px);text-align:center;background:var(--dk);color:#fff;padding:12px 24px;border-radius:99px;opacity:0;transition:all .3s;z-index:99;pointer-events:none;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,.2);font-size:13px}
 #toast.on{opacity:1;bottom:92px}
 
+/* คลาสควบคุมการแสดงผลบนมือถือและคอม */
+.desktop-table{display:table}
+.mobile-cards{display:none}
+
 /* มือถือ Responsive */
 @media(max-width:820px){
  body{flex-direction:column;padding-bottom:76px}
@@ -151,11 +155,11 @@ td.empty{color:var(--mu);padding:32px;font-size:14px}
  .tools input,.tools select{width:100%;min-width:100%;padding:10px 14px}
  .two{grid-template-columns:1fr}
  
- /* Mobile Card View สวยงาม อ่านง่าย */
- .tcard table,.tcard thead,.tcard tbody,.tcard tr,.tcard th{display:none}
+ /* สลับให้ตารางซ่อน และแสดงการ์ดบนมือถือแทน */
+ .desktop-table{display:none!important}
+ .mobile-cards{display:flex!important;flex-direction:column;gap:10px}
  .tcard{background:transparent;border:0;box-shadow:none}
- .m-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,.03);display:flex;flex-direction:column;gap:8px;transition:all .2s}
- .m-card:active{transform:scale(0.99)}
+ .m-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.03);display:flex;flex-direction:column;gap:8px}
  .m-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
  .m-card-body{font-size:12.5px;color:var(--mu);display:grid;gap:4px;border-top:1px dashed var(--bd);border-bottom:1px dashed var(--bd);padding:8px 0}
  .m-card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px}
@@ -449,7 +453,7 @@ function sales(){
   const list=filteredSales();
   const tv=list.reduce((s,x)=>s+num(x.val),0),tc=list.reduce((s,x)=>s+num(x.cost),0),tp=list.reduce((s,x)=>s+profitOf(x),0);
   const c=(n,v,col)=>`<div class="card st" style="padding:12px 16px"><small>${n}</small><div class="num m" style="font-size:20px;margin:4px 0;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว']];
+  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอให้กับทางโรงพยาบาลแล้ว']];
   return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b></div><button class="btn d" onclick="openS()">＋ เพิ่มงานขาย</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
     <div class="filter-pill-bar">${statuses.map(([v,l])=>`<button class="f-pill ${salesFlt.s===v?'active':''}" onclick="salesFlt.s='${v}';render()">${l}</button>`).join('')}</div>
@@ -547,8 +551,8 @@ function tb(){
   <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
   <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select></div>
   <div class="tw" style="margin-top:16px">
-    <div class="tcard"><table class="hide-mobile"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
-    <div class="show-mobile" id="m-cards">${renderMobileCards()}</div>
+    <div class="tcard"><table class="desktop-table"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
+    <div class="mobile-cards" id="m-cards">${renderMobileCards()}</div>
   </div>`;
 }
 
@@ -609,8 +613,8 @@ function pmView(){
     <input id="pmq" placeholder="ค้นหาชื่องาน, Filter, หมายเหตุ..." value="${esc(pmFlt.q)}" oninput="pmFlt.q=this.value;$('#pm-tbody').innerHTML=pmRows();$('#pm-m-cards').innerHTML=renderPMMobileCards()" style="padding:9px 14px;font-size:13px">
   </div>
   <div class="tw" style="margin-top:16px">
-    <div class="tcard"><table class="hide-mobile"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน / เดือน</th><th style="text-align:left">รายการ Filter และจำนวน</th><th>Deadline</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div>
-    <div class="show-mobile" id="pm-m-cards">${renderPMMobileCards()}</div>
+    <div class="tcard"><table class="desktop-table"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน / เดือน</th><th style="text-align:left">รายการ Filter และจำนวน</th><th>Deadline</th><th>จัดการ</th></tr></thead><tbody id="pm-tbody">${pmRows()}</tbody></table></div>
+    <div class="mobile-cards" id="pm-m-cards">${renderPMMobileCards()}</div>
   </div>`;
 }
 
@@ -771,7 +775,7 @@ function showDay(s){
   pm.classList.add('on');
 }
 
-async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ')}}
+async function w(fn){try{if(!db)throw new Error('db not ready');await fn()}catch(e){console.error(e);alert('บันทึกไม่สำเร็จ: ตรวจสอบการเข้าสู่ระบบและสิทธิ์การใช้งาน')}}
 const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 function openT(id,date){
@@ -791,7 +795,7 @@ function openT(id,date){
 const mainFormSubmit=async e=>{
   e.preventDefault();if(!head)return;
   const f=new FormData(e.target),as=f.getAll('as');
-  if(!as.length)return alert('เลือกผู้รับผิดชอบอย่างน้อย 1 คน');
+  if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
   const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:Math.round(+f.get('progress'))};
   await w(async()=>{
     if(edit)await db.doc('tasks/'+edit.id).update(o);
@@ -799,15 +803,15 @@ const mainFormSubmit=async e=>{
       const n=Math.max(0,...T.map(t=>parseInt(String(t.code||'').split('-')[1])||0))+1;
       await db.doc('tasks/'+uid()).set({...o,created:TODAY,code:'TSK-'+String(n).padStart(3,'0')});
     }
-    toast('✅ บันทึกแล้ว');playBeep('success');closeMod();
+    toast('✅ บันทึกเรียบร้อย');playBeep('success');closeMod();
   });
 };
 $('#f').onsubmit=mainFormSubmit;
 
-const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error');pm.classList.remove('on')});
+const delT=id=>head&&confirm('ลบงานนี้?')&&w(async()=>{await db.doc('tasks/'+id).delete();toast('🗑 ลบงานแล้ว');playBeep('error');pm.classList.remove('on')});
 const delE=id=>head&&confirm('ลบพนักงาน?')&&w(async()=>{
   for(const t of T.filter(t=>t.assignees.includes(id))){const as=t.assignees.filter(a=>a!==id);await db.doc('tasks/'+t.id).update({assignees:as})}
-  await db.doc('employees/'+id).delete();toast('🗑 ลบแล้ว');playBeep('error');
+  await db.doc('employees/'+id).delete();toast('🗑 ลบพนักงานแล้ว');playBeep('error');
 });
 
 $('#nt').onclick=()=> {
@@ -816,12 +820,14 @@ $('#nt').onclick=()=> {
 };
 
 $('#rH').onclick=()=>{if(!head)lm.classList.add('on')};
-$('#rE').onclick=()=>{if(head){head=false;watchAll();render();toast('โหมดพนักงาน')}};
+$('#rE').onclick=()=>{if(head){head=false;watchAll();render();toast('สลับเป็นโหมดพนักงานแล้ว')}};
 $('#lf').onsubmit=async e=>{
   e.preventDefault();const f=new FormData(e.target);$('#le').textContent='';
   if(!window.login){$('#le').textContent='ยังไม่ได้เชื่อมต่อ Firebase Auth';return}
-  try{await login(f.get('em').trim(),f.get('pw'));lm.classList.remove('on');e.target.reset();playBeep('success')}
-  catch(x){$('#le').textContent='รหัสผ่านไม่ถูกต้อง';playBeep('error')}
+  try{
+    await login(f.get('em').trim(),f.get('pw'));
+    lm.classList.remove('on');e.target.reset();playBeep('success');
+  }catch(x){$('#le').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';playBeep('error')}
 };
 
 let unsubs=[];
