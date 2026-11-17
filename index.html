@@ -3,10 +3,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--tx:#0f172a;--mu:#64748b;--bd:#cbd5e1;--pri:#6366f1;--dk:#0f172a;--soft:#e2e8f0;--gn:#059669;--bl:#2563eb;--yw:#d97706;--rd:#e11d48;--in:#4f46e5}
-:root[data-theme=dark]{--bg:#070a14;--card:#111827;--tx:#f3f4f6;--mu:#9ca3af;--bd:#1f2937;--dk:#6366f1;--soft:#1f2937;--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc}
+:root{--bg:#f1f5f9;--card:#fff;--tx:#0f172a;--mu:#64748b;--bd:#cbd5e1;--pri:#6366f1;--pri-light:#eef2ff;--dk:#0f172a;--soft:#e2e8f0;--gn:#059669;--bl:#2563eb;--yw:#d97706;--rd:#e11d48;--in:#4f46e5}
+:root[data-theme=dark]{--bg:#070a14;--card:#111827;--tx:#f3f4f6;--mu:#9ca3af;--bd:#1f2937;--dk:#6366f1;--soft:#1f2937;--gn:#34d399;--bl:#60a5fa;--yw:#fbbf24;--rd:#fb7185;--in:#a5b4fc;--pri-light:#1e1b4b}
 *{box-sizing:border-box}
 html{max-width:100%;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Sarabun,system-ui,sans-serif;display:flex;min-height:100vh;max-width:100%;overflow-x:clip;padding-top:env(safe-area-inset-top,0px)}
@@ -67,7 +67,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0
 .ychip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .ychip div:first-child{font-size:10px;opacity:.85}.ychip div:last-child{font-size:12px;font-weight:700;margin-top:1px}
 
-/* ตารางและ Mobile Card View */
+/* ตาราง */
 .tw{width:100%}
 .tcard{background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -82,7 +82,7 @@ td.empty{color:var(--mu);padding:24px}
 .assignee-chip-container{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
 .assignee-chip{background:var(--soft);color:var(--pri);border:1px solid var(--bd);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
 
-/* กราฟแท่งแนวนอน */
+/* กราฟ */
 .hb-list{max-height:440px;overflow-y:auto;padding-right:4px}
 .hb{padding:9px 0;border-bottom:1px dashed var(--bd)}.hb:last-child{border-bottom:0}
 .hb-top{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12.5px;margin-bottom:6px}
@@ -114,12 +114,25 @@ td.empty{color:var(--mu);padding:24px}
 /* Modal */
 .mod{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;place-items:center;z-index:50;padding:12px}
 .mod.on{display:grid}
-.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;width:min(580px,100%);max-height:90vh;overflow:auto;display:grid;gap:14px;box-shadow:0 30px 60px -12px rgba(0,0,0,.4);animation:pop .25s ease-out}
+.mod form,.pbox{background:var(--card);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:26px;width:min(620px,100%);max-height:90vh;overflow:auto;display:grid;gap:14px;box-shadow:0 30px 60px -12px rgba(0,0,0,.4);animation:pop .25s ease-out}
 @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
 .mod label,.mod .fl{font-size:13px;font-weight:700;display:grid;gap:6px;color:var(--tx)}
-.chk{display:flex;gap:10px;flex-wrap:wrap}.chk label{display:flex;font-weight:400;align-items:center;gap:6px;cursor:pointer}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hide{display:none!important}
+
+/* สไตล์กล่องผู้รับผิดชอบแบบ Card Chip สวยงาม */
+.staff-selector{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:2px}
+.staff-chip{position:relative;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--bd);border-radius:14px;background:var(--card);cursor:pointer;user-select:none;transition:all .15s ease}
+.staff-chip:hover{border-color:var(--pri);background:var(--soft)}
+.staff-chip input[type="checkbox"]{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.staff-chip .cbox{width:16px;height:16px;border-radius:6px;border:1.5px solid var(--bd);background:var(--card);display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff;flex:none;transition:all .15s}
+.staff-chip input:checked ~ .cbox{background:var(--pri);border-color:var(--pri)}
+.staff-chip input:checked ~ .cbox::after{content:'✓'}
+.staff-chip:has(input:checked){border-color:var(--pri);background:var(--pri-light)}
+.staff-chip .s-name{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.25;white-space:normal;word-break:break-word}
+
+/* สไตล์กล่องแสดง % ความคืบหน้าแบบ Badge */
+.prog-badge{background:var(--pri);color:#fff;border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:700}
 
 .pie-container{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px 0}
 .pie-chart{width:140px;height:140px;flex:none;border-radius:50%;background:var(--bd);position:relative;display:grid;place-items:center}
@@ -152,6 +165,7 @@ td.empty{color:var(--mu);padding:24px}
  .num{font-size:20px}.big{font-size:38px}
  .tools input,.tools select{width:100%;min-width:100%}
  .two{grid-template-columns:1fr}
+ .staff-selector{grid-template-columns:repeat(2,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
@@ -767,12 +781,53 @@ function openT(id,date){
   if(!E.length)return alert('กรุณาเพิ่มพนักงานก่อน');
   edit=T.find(t=>t.id===id)||null;
   const D=date||TODAY,t=edit||{title:'',assignees:[],priority:0,deadline:D,start:D,end:D,progress:0};
-  $('#f').innerHTML=`<h3 style="margin:0">${edit?'แก้ไขงาน':'คีย์งานใหม่'}</h3><label>รายละเอียดงาน<input name="title" required value="${esc(t.title)}"></label>
-  <div class="fl">ผู้รับผิดชอบ<div class="chk">${E.map(e=>`<label><input type="checkbox" name="as" value="${esc(e.id)}" ${t.assignees.includes(e.id)?'checked':''}> ${esc(e.name)}</label>`).join('')}</div></div>
-  <div class="two"><label>ความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority===i?'selected':''}>${n}</option>`).join('')}</select></label><label>Deadline<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
-  <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label><label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label></div>
-  <label>ความคืบหน้า: <span id="pv">${t.progress}</span>%<input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv.textContent=this.value"></label>
-  <div class="tools" style="justify-content:flex-end">${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}<button type="button" class="btn" onclick="closeMod()">ยกเลิก</button><button class="btn d">บันทึก</button></div>`;
+  
+  // ปรับการเลือกผู้รับผิดชอบเป็น Card Chip พร้อมช่องติ๊กถูก ป้องกันชื่อตกบรรทัด
+  const staffChips=E.map(e=>{
+    const checked=t.assignees.includes(e.id)?'checked':'';
+    return `<label class="staff-chip">
+      <input type="checkbox" name="as" value="${esc(e.id)}" ${checked}>
+      <span class="cbox"></span>
+      <span class="s-name">${esc(e.name)}</span>
+    </label>`;
+  }).join('');
+
+  $('#f').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd);padding-bottom:10px">
+    <h3 style="margin:0;font-size:17px">${edit?'✏️ แก้ไขงาน':'＋ คีย์งานใหม่'}</h3>
+    ${edit?`<span class="pill s-wait">${esc(t.code||'TSK')}</span>`:''}
+  </div>
+  <label>รายละเอียดงาน<input name="title" required placeholder="เช่น ตรวจสอบความชื้นห้อง CSSD..." value="${esc(t.title)}"></label>
+  
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <label style="margin:0">ผู้รับผิดชอบ <small style="color:var(--mu);font-weight:400">(เลือกอย่างน้อย 1 คน)</small></label>
+    </div>
+    <div class="staff-selector">${staffChips}</div>
+  </div>
+
+  <div class="two">
+    <label>ระดับความสำคัญ<select name="priority">${PR.map((n,i)=>`<option value="${i}" ${t.priority===i?'selected':''}>${n}</option>`).join('')}</select></label>
+    <label>กำหนดส่ง (Deadline)<input type="date" name="deadline" required value="${esc(t.deadline)}"></label>
+  </div>
+
+  <div class="two">
+    <label>เริ่มวันที่<input type="date" name="start" required value="${esc(t.start)}"></label>
+    <label>ถึงวันที่<input type="date" name="end" required value="${esc(t.end)}"></label>
+  </div>
+
+  <div style="background:var(--soft);border:1px solid var(--bd);border-radius:16px;padding:12px 14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-size:13px;font-weight:700">ความคืบหน้างาน</span>
+      <span class="prog-badge"><span id="pv">${t.progress}</span>%</span>
+    </div>
+    <input type="range" name="progress" min="0" max="100" step="5" value="${t.progress}" oninput="pv.textContent=this.value" style="padding:0;accent-color:var(--pri)">
+  </div>
+
+  <div class="tools" style="justify-content:flex-end;margin-top:6px">
+    ${edit?`<button type="button" class="btn" style="color:var(--rd);margin-right:auto" onclick="closeMod();delT('${esc(edit.id)}')">🗑 ลบงาน</button>`:''}
+    <button type="button" class="btn" onclick="closeMod()">ยกเลิก</button>
+    <button class="btn d">บันทึกข้อมูล</button>
+  </div>`;
   mod.classList.add('on');$('#f').onsubmit=mainFormSubmit;
 }
 
@@ -781,6 +836,7 @@ const mainFormSubmit=async e=>{
   const f=new FormData(e.target),as=f.getAll('as');
   if(!as.length)return alert('กรุณาเลือกผู้รับผิดชอบอย่างน้อย 1 คน');
   const o={title:f.get('title').trim(),assignees:as,priority:+f.get('priority'),deadline:f.get('deadline'),start:f.get('start'),end:f.get('end'),progress:Math.round(+f.get('progress'))};
+  if(o.end<o.start)return alert('"ถึงวันที่" ต้องไม่ก่อน "เริ่มวันที่"');
   await w(async()=>{
     if(edit)await db.doc('tasks/'+edit.id).update(o);
     else{
