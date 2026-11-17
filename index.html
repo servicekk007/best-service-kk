@@ -445,9 +445,9 @@ const getSalesYear = x => {
   const code = x.ccs || x.date || '';
   if (code.includes('/')) {
     const parts = code.split('/');
-    return parts[parts.length - 1].trim(); // ดึงหลังสแลช เช่น 69 จาก KX15/69
+    return parts[parts.length - 1].trim();
   }
-  return code.slice(2, 4); // เผื่อกรณีพิมพ์แบบติดกัน
+  return code.slice(2, 4);
 };
 
 const filteredSales = () => {
@@ -458,7 +458,12 @@ const filteredSales = () => {
     const matchQuery = !q || [x.name, x.loc, x.ccs, x.startDate, x.endDate].join(' ').toLowerCase().includes(q);
     const matchStatus = !salesFlt.s || x.status === salesFlt.s;
     return matchYear && matchQuery && matchStatus;
-  }).sort((a, b) => (b.ccs || b.date || '').localeCompare(a.ccs || a.date || ''));
+  }).sort((a, b) => {
+    // เรียงรายการล่าสุดขึ้นบนสุดเสมอ โดยเช็คจากรหัส CCS หรือลำดับเวลาสร้าง
+    const ccsA = a.ccs || a.date || '';
+    const ccsB = b.ccs || b.date || '';
+    return ccsB.localeCompare(ccsA, undefined, { numeric: true, sensitivity: 'base' });
+  });
 };
 
 function sales(){
@@ -479,7 +484,7 @@ function sales(){
   const share = grand > 0 ? (tv / grand * 100).toFixed(1) : '0.0';
   
   const c = (n, v, col) => `<div class="card st" style="padding:12px 16px"><small style="font-size:11px">${n}</small><div class="num m" style="font-size:20px;margin:4px 0 2px;color:${col}">${money(v)}<span>บาท</span></div></div>`;
-  const statuses = [['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
+  const statuses=[['','ทั้งหมด'],['รอวางบิล','รอวางบิล'],['วางบิลแล้ว','วางบิลแล้ว'],['เสนอให้กับทางโรงพยาบาลแล้ว','เสนอโรงพยาบาลแล้ว'],['อยู่ระหว่างรอดำเนินการ','รอดำเนินการ']];
   
   return `<div class="card hd"><div><b style="font-size:18px">📈 งานขายและใบเสนอราคา</b><p>ข้อมูลโครงการซ่อมบำรุง, อะไหล่, ใบเสนอราคา และสรุปยอดขาย</p></div><button class="btn d" onclick="openS()">＋ เพิ่มรายการงานขาย</button></div>
   <div class="card" style="margin-top:16px;padding:12px 16px;background:var(--soft)">
@@ -491,7 +496,7 @@ function sales(){
     <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;align-items:center" class="sales-filter-grid">
       <select onchange="salesYear=this.value;render()" style="padding:8px 10px;font-size:12.5px;width:100%">
         <option value="">📅 ทุกปีทั้งหมด</option>
-        ${years.map(y => `<option value="${esc(y)}" ${salesYear === y ? 'selected' : ''}>ปี ${y}</option>`).join('')}
+        ${years.map(y => `<option value="${esc(y)}" ${salesYear === y ? 'selected' : ''}>ปี ${y} (${esc(y)})</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
         <input id="sq" placeholder="ค้นหาเลขที่ CCS, ชื่อโครงการ, สถานที่..." value="${esc(salesFlt.q)}" oninput="salesFlt.q=this.value;render()" style="padding:8px 10px;font-size:12.5px;flex:1;min-width:0">
@@ -700,7 +705,7 @@ function addFilterRow(){
   container.appendChild(div);
 }
 
-const delPM=id=>confirm('ลบรายการ PM Maintenance เช่นนี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
+const delPM=id=>confirm('ลบรายการ PM Maintenance นี้?')&&w(async()=>{await db.doc('pm_tasks/'+id).delete();toast('🗑 ลบรายการ PM แล้ว');playBeep('error');pm.classList.remove('on')});
 
 /* ---------- ปฏิทิน ---------- */
 function cal(){
