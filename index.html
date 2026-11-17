@@ -181,7 +181,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmMonth='',pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
+let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmMonth='',pmFlt={q:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
 let loaded={t:false,pm:false,e:false};
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
@@ -556,7 +556,7 @@ function tb(){
   <div class="tw" style="margin-top:16px"><div class="tcard"><table><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>ช่วงเวลา</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div></div>`;
 }
 
-/* ---------- หน้า PM Maintenance (ปรับปรุงใหม่ตามสั่ง) ---------- */
+/* ---------- หน้า PM Maintenance (พนักงานและหัวหน้าจัดการได้เหมือนกัน) ---------- */
 const PM_FILTER_TYPES = [
   'PRE (24"x24"x2")', 'PRE (24"x12"x2")',
   'CARBON (24"x24"x2")', 'CARBON (24"x12"x2")',
@@ -647,12 +647,13 @@ function openPM(id){
 
 function renderFilterRows(list){
   const container=$('#filter-rows');
-  container.innerHTML=list.map((f,idx)=>`<div class="filter-row" style="display:flex;gap:8px;align-items:center">
+  container.innerHTML=list.map((f)=>`<div class="filter-row" style="display:flex;gap:8px;align-items:center">
     <select class="f-type" style="flex:2">${PM_FILTER_TYPES.map(o=>`<option value="${esc(o)}" ${f.type===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
     <input type="number" min="1" class="f-count" value="${f.count||1}" style="flex:1" placeholder="จำนวนตัว">
     <button type="button" class="btn" style="color:var(--rd);padding:10px 12px" onclick="this.closest('.filter-row').remove()">✕</button>
   </div>`).join('');
 }
+
 function addFilterRow(){
   const container=$('#filter-rows');
   const div=document.createElement('div');
@@ -675,7 +676,7 @@ function cal(){
     const s=ymd(new Date(y,m,d));
     h+=`<div class="d ${s===TODAY?'t':''} c" onclick="showDay('${s}')"><div style="display:flex;justify-content:space-between"><span class="dn">${d}</span>${head?'<em class="pl">＋</em>':''}</div>${T.filter(t=>t.start<=s&&s<=t.end).map(t=>`<div class="ev ${t.progress>=100?'ok':''}" style="cursor:pointer" title="${esc(t.title)}" onclick="event.stopPropagation();showT('${esc(t.id)}')">${esc(t.title)}</div>`).join('')}</div>`;
   }
-  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน (วันจันทร์ - วันอาทิตย์) • คลิกชื่องานเพื่อดูรายละเอียด${head?' • คลิกวันที่เพื่อเพิ่มงาน':''}</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
+  return `<div class="card hd"><div><b style="font-size:18px">📅 ${TH[m]} ${y+543}</b><p>ปฏิทินวางแผนงานรายเดือน</p></div><div class="tools"><button class="btn" onclick="cm=new Date(${y},${m-1},1);render()">‹</button><button class="btn" onclick="cm=new Date();render()">เดือนปัจจุบัน</button><button class="btn" onclick="cm=new Date(${y},${m+1},1);render()">›</button></div></div><div class="card cal" style="margin-top:16px">${h}</div>`;
 }
 
 function em(){
@@ -710,7 +711,6 @@ let tt;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on
 document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',e=>{
   if(e.target===m){m.classList.remove('on');if(m.id==='mod')$('#f').onsubmit=mainFormSubmit}
 }));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mod.on').forEach(m=>m.classList.remove('on'));$('#f').onsubmit=mainFormSubmit}});
 
 function showT(id){
   const t=T.find(x=>x.id===id);if(!t)return;const l=left(t);
@@ -749,7 +749,7 @@ function showDay(s){
   const d=new Date(s+'T00:00'),a=T.filter(t=>t.start<=s&&s<=t.end);
   $('#pb').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📅 ${d.getDate()} ${TH[d.getMonth()]} ${d.getFullYear()+543}</h3><button class="ib" onclick="pm.classList.remove('on')">✕</button></div>
   <div>${a.map(t=>`<div class="row" style="cursor:pointer" onclick="showT('${esc(t.id)}')"><span>${esc(t.title)}</span><span class="pill ${t.progress>=100?'s-done':'s-run'}">${t.progress}%</span></div>`).join('')||'<p style="color:var(--mu)">ไม่มีงานในวันนี้</p>'}</div>
-  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>':''}`;
+  ${head?`<button class="btn d" style="width:100%" onclick="pm.classList.remove('on');openT(null,'${s}')">＋ เพิ่มงานวันนี้</button>`:''}`;
   pm.classList.add('on');
 }
 
