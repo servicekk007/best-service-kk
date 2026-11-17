@@ -181,7 +181,7 @@ const money=v=>num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFra
 const kfmt=v=>{v=num(v);const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return (v/1e3).toFixed(a>=1e5?0:1).replace(/\.0$/,'')+'k';return String(Math.round(v))};
 const profitOf=x=>x.profit!=null&&x.profit!==''?num(x.profit):num(x.val)-num(x.cost);
 const pctW=(v,max)=>Math.max(0,Math.min(100,max>0?v/max*100:0));
-let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,authEmail='',cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
+let T=[],PM=[],E=[],Contracts=[],Sales=[],view='ov',subView='ov1',head=false,cm=new Date(),flt={q:'',e:'',s:'',p:''},pmFlt={q:'',s:''},salesYear='',salesFlt={q:'',s:''},contractFlt={q:'',s:''},db=null,edit=null,editPM=null,editC=null,editS=null,myId='';
 let loaded={t:false,pm:false,e:false};
 $('#today').textContent=TODAY;
 setInterval(()=>{if(ymd(new Date())!==TODAY)location.reload()},60000);
@@ -223,18 +223,13 @@ const SH={ov:'ภาพรวม',tb:'ตารางงาน',pm:'PM',cal:'ป
 const CNT={tb:()=>T.length,pm:()=>PM.length,em:()=>E.length,ct:()=>Contracts.length,sl:()=>Sales.length};
 const showCnt=k=>CNT[k]&&(head||k==='tb'||k==='pm'||k==='em');
 
-function nav(){
-  const keys=Object.keys(VIEWS).filter(k=>head||(k!=='ct'&&k!=='sl'));
-  $('#nav').innerHTML=keys.map(k=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${VIEWS[k][1]}${showCnt(k)?' ('+CNT[k]()+')':''}</span><span class="sh">${SH[k]}</span></button>`).join('');
-}
+function nav(){$('#nav').innerHTML=Object.entries(VIEWS).map(([k,[,l]])=>`<button data-k="${k}" class="${k===view?'on':''}"><span class="ic">${IC[k]}</span><span class="lb">${l}${showCnt(k)?' ('+CNT[k]()+')':''}${(k==='ct'||k==='sl')&&!head?' 🔒':''}</span><span class="sh">${SH[k]}</span></button>`).join('')}
 $('#nav').onclick=e=>{const b=e.target.closest('button'),k=b&&b.dataset.k;if(k){view=k;if(k==='ov')subView='ov1';scrollTo(0,0);render()}};
 
 function render(){
   const a=document.activeElement,v=$('#v');
   const aid=(a&&a.id&&v.contains(a))?a.id:null;let ps=null,pe=null;
   if(aid){try{ps=a.selectionStart;pe=a.selectionEnd}catch(_){}}
-
-  if(!head&&(view==='ct'||view==='sl'))view='ov';
   nav();
   
   $('#rH').className=head?'on':'';
@@ -777,7 +772,7 @@ $('#lf').onsubmit=async e=>{
 };
 
 let unsubs=[];
-const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress)))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
+const normT=k=>{const d=k.data();return {id:k.id,...d,title:d.title||'',assignees:Array.isArray(d.assignees)?d.assignees:[],progress:Math.min(100,Math.max(0,num(d.progress))),priority:Math.min(3,Math.max(0,Math.round(num(d.priority)))),deadline:d.deadline||'',start:d.start||'',end:d.end||d.start||''}};
 
 function watchAll(){
   unsubs.forEach(u=>{try{u&&u()}catch(_){}});unsubs=[];
@@ -855,7 +850,7 @@ const FB = {
   messagingSenderId: "593763757538",
   appId: "1:593763757538:web:54ac8e4928036a2623ddbb"
 };
-const MANAGER_EMAILS = ['watakarn.palm@gmail.com']; // <-- ใส่อีเมลหัวหน้างานของคุณ
+const MANAGER_EMAILS = ['watakarn.palmmax@gmail.com']; // <-- ใส่อีเมลหัวหน้างานของคุณ
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,doc,onSnapshot,setDoc,updateDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
