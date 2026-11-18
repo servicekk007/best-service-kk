@@ -278,8 +278,8 @@ function render(){
   $('#ttl').textContent=VIEWS[view][0];
   $('#sub').textContent=head?'👑 โหมดหัวหน้างาน: มีสิทธิ์เพิ่ม แก้ไข และลบข้อมูลทั้งหมดในระบบ':'👤 โหมดพนักงาน: จัดการหน้า PM Maintenance ได้เต็มที่ / หน้าอื่นดูและอัปเดต % งานได้';
   
-  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'));
-  $('#nt').classList.toggle('hide',!canNew||view==='ct'||view==='sl');
+  const canNew=(view==='pm')||(head&&(view==='tb'||view==='em'||view==='ct'||view==='sl'));
+  $('#nt').classList.toggle('hide',!canNew);
 
   if(view==='ov'){
     if(!head&&(subView==='ov3'||subView==='ov4'))subView='ov1';
@@ -579,6 +579,63 @@ function openS(id){
   };
 }
 const delS=id=>head&&confirm('ลบรายการงานขายนี้?')&&w(async()=>{await db.doc('sales/'+id).delete();toast('🗑 ลบรายการงานขายแล้ว');playBeep('error')});
+
+/* ---------- ตารางงาน ---------- */
+function list(){const q=flt.q.trim().toLowerCase();return T.filter(t=>(!q||(t.title+' '+(t.code||'')+' '+t.assignees.map(nm).join(' ')).toLowerCase().includes(q))&&(!flt.e||t.assignees.includes(flt.e))&&(!flt.s||status(t)===flt.s)&&(flt.p===''||t.priority===+flt.p)&&(!myId||t.assignees.includes(myId))).sort((a,b)=>(a.created||'').localeCompare(b.created||''))}
+
+function renderMobileCards(){
+  const items=list();
+  if(!items.length)return '<div class="card" style="text-align:center;color:var(--mu);padding:20px">ไม่พบงาน</div>';
+  return items.map((t,i)=>{
+    const l=left(t),id=esc(t.id);
+    const act=head
+      ?`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button><button class="ib" onclick="event.stopPropagation();openT('${id}')">✎ แก้ไข</button>`
+      :`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต %</button>`;
+    return `<div class="m-card" onclick="showT('${id}')">
+      <div class="m-card-top"><div><span style="font-size:10px;color:var(--mu)">#${i+1}</span> <b style="font-size:13px">${esc(t.title)}</b></div><span class="pill p${t.priority}">${PR[t.priority]}</span></div>
+      <div class="m-card-body">
+        <div>📍 ผู้รับผิดชอบ: <b>${t.assignees.map(a=>esc(nm(a))).join(', ')||'-'}</b></div>
+        <div>📅 Deadline: <b>${esc(t.deadline)}</b> (${l.x})</div>
+        <div>📌 สถานะ: <span class="pill ${sc(status(t))}" style="padding:1px 6px;font-size:10px">${status(t)}</span></div>
+      </div>
+      <div class="m-card-foot">
+        <div style="flex:1;margin-right:8px"><div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:2px"><span>ความคืบหน้า</span><b>${t.progress}%</b></div><div class="bar" style="height:5px"><i style="width:${t.progress}%"></i></div></div>
+        <div class="acts">${act}</div>
+      </div></div>`;
+  }).join('');
+}
+
+function rows(){
+  return list().map((t,i)=>{
+    const l=left(t),id=esc(t.id);
+    const act=head
+      ?`<span class="acts"><button class="ib" title="อัปเดต" onclick="event.stopPropagation();openProgress('${id}')">📊</button><button class="ib" title="แก้ไข" onclick="event.stopPropagation();openT('${id}')">✎</button><button class="ib" title="ลบ" style="color:var(--rd)" onclick="event.stopPropagation();delT('${id}')">🗑</button></span>`
+      :`<button class="ib" onclick="event.stopPropagation();openProgress('${id}')">📊 อัปเดต</button>`;
+    return `<tr onclick="showT('${id}')" style="cursor:pointer">
+    <td>${i+1}</td>
+    <td class="l"><b>${esc(t.title)}</b></td>
+    <td><div class="assignee-chip-container">${t.assignees.map(a=>`<span class="assignee-chip">${esc(nm(a))}</span>`).join('')}</div></td>
+    <td><span class="pill p${t.priority}">${PR[t.priority]}</span></td>
+    <td style="white-space:nowrap"><b>${esc(t.deadline)}</b></td>
+    <td><span class="pill ${sc(status(t))}">${status(t)}</span></td>
+    <td><span class="pill ${l.c}">${l.x}</span></td>
+    <td><div style="min-width:70px"><b>${t.progress}%</b><div class="bar" style="margin-top:3px"><i style="width:${t.progress}%"></i></div></div></td>
+    <td>${act}</td>
+  </tr>`}).join('')||'<tr><td colspan="9" class="empty">ไม่พบงาน</td></tr>';
+}
+
+function tb(){
+  const o=(a,sel)=>a.map(([v,l])=>`<option value="${esc(v)}" ${String(sel)===String(v)?'selected':''}>${esc(l)}</option>`).join('');
+  return `<div class="card tools">🔍<input id="fq" placeholder="ค้นหารายละเอียดงาน หรือ ผู้รับผิดชอบ..." value="${esc(flt.q)}"><span style="color:var(--mu)">ตัวกรอง:</span>
+  <select onchange="flt.e=this.value;render()">${o([['','พนักงานทั้งหมด'],...E.map(e=>[e.id,e.name])],flt.e)}</select>
+  <select onchange="flt.s=this.value;render()">${o([['','ทุกสถานะ'],['รอเริ่ม','รอเริ่ม'],['กำลังดำเนินการ','กำลังดำเนินการ'],['เสร็จสิ้น','เสร็จสิ้น']],flt.s)}</select>
+  <select onchange="flt.p=this.value;render()">${o([['','ทุกความสำคัญ'],...PR.map((n,i)=>[i,n])],flt.p)}</select>
+  <select onchange="myId=this.value;render()">${o([['','📌 งานของฉัน (เลือกชื่อ)'],...E.map(e=>[e.id,e.name])],myId)}</select></div>
+  <div class="tw" style="margin-top:16px">
+    <div class="tcard"><table class="desktop-view"><thead><tr><th>ลำดับ</th><th style="text-align:left">รายละเอียดงาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>Deadline</th><th>สถานะ</th><th>วันคงเหลือ</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead><tbody id="tbody">${rows()}</tbody></table></div>
+    <div class="mobile-view" id="m-cards">${renderMobileCards()}</div>
+  </div>`;
+}
 
 /* ---------- หน้า PM Maintenance ---------- */
 const PM_FILTER_TYPES = [
@@ -997,7 +1054,7 @@ $('#ex').onclick=()=>{
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',r=list().map((t,i)=>[i+1,t.created,t.title,t.assignees.map(nm).join(', '),PR[t.priority],t.deadline,t.start,t.end,status(t),left(t).x,t.progress]);
   const csv='\ufeff'+[h,...r].map(x=>x.map(q).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='workschedule-'+TODAY+'.csv';
-    document.body.appendChild(a);a.click();a.remove();
+  document.body.appendChild(a);a.click();a.remove();
 };
 
 window.seed=()=>head&&w(async()=>{
